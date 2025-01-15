@@ -76,7 +76,7 @@ public static class Components {
         typeof(GXGame.UnitTypeComponent),
         typeof(GXGame.BehaviorTreeComponent),
         typeof(GXGame.CollisionBox),
-        typeof(GXGame.RaycastHit),
+        typeof(GXGame.RaycastHitMsg),
         typeof(GXGame.CollisionGroundType),
     };
 

@@ -9,11 +9,12 @@ namespace GXGame
     {
         private Camera camera;
 
-        protected override Collector GetTrigger(World world) => Collector.CreateCollector(world, EcsChangeEventState.ChangeEventState.AddRemoveUpdate, Components.ViewCull);
+        protected override Collector GetTrigger(World world) =>
+            Collector.CreateCollector(world, EcsChangeEventState.ChangeEventState.AddRemoveUpdate, Components.ViewType);
 
         protected override bool Filter(ECSEntity entity)
         {
-            return entity.HasComponent(Components.ViewType);
+            return true;
         }
 
         protected override void Execute(List<ECSEntity> entities)
@@ -29,15 +30,26 @@ namespace GXGame
         {
             foreach (var entity in entities)
             {
-                bool isInView = IsObjectInView(entity);
-                var view = entity.GetView();
-                if (isInView && view == null)
+                if (entity.HasComponent(Components.ViewCull))
                 {
-                    LoadAsset(entity);
+                    bool isInView = IsObjectInView(entity);
+                    var view = entity.GetView();
+                    if (isInView && view == null)
+                    {
+                        LoadAsset(entity);
+                    }
+                    else if (view != null && !isInView)
+                    {
+                        entity.RemoveComponent(Components.View);
+                    }
                 }
-                else if (view != null && !isInView)
+                else
                 {
-                    entity.RemoveComponent(Components.View);
+                    var view = entity.GetView();
+                    if (view == null)
+                    {
+                        LoadAsset(entity);
+                    }
                 }
             }
         }
@@ -52,7 +64,6 @@ namespace GXGame
 
         private bool IsObjectInView(ECSEntity ecsentity)
         {
-            return true;
             var pos = ecsentity.GetWorldPos();
             camera ??= Camera.main;
             Vector3 viewPos = camera.WorldToViewportPoint(pos.Value);

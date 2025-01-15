@@ -44,7 +44,7 @@ namespace GXGame
                     }
                     else
                     {
-                        inputPos.y = variable.Value;
+                        inputPos.z = variable.Value;
                     }
                 }
 
@@ -59,7 +59,6 @@ namespace GXGame
                 entity.SetMoveDirection(inputPos);
             }
         }
-
         
         public void Dispose()
         {

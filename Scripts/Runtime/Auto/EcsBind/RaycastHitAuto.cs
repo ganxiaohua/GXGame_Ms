@@ -12,20 +12,20 @@ public static class AutoRaycastHit
         ecsEntity.AddComponent(Components.RaycastHit);
     }
     
-    public static void AddRaycastHit(this ECSEntity ecsEntity,System.Collections.Generic.List<UnityEngine.RaycastHit2D> param)
+    public static void AddRaycastHit(this ECSEntity ecsEntity,System.Collections.Generic.List<UnityEngine.RaycastHit> param)
     {
-        var p  =  (GXGame.RaycastHit)ecsEntity.AddComponent(Components.RaycastHit);
+        var p  =  (GXGame.RaycastHitMsg)ecsEntity.AddComponent(Components.RaycastHit);
         p.Value = param;
     }
           
-    public static GXGame.RaycastHit GetRaycastHit(this ECSEntity ecsEntity)
+    public static GXGame.RaycastHitMsg GetRaycastHit(this ECSEntity ecsEntity)
     {
-        return (GXGame.RaycastHit)ecsEntity.GetComponent(Components.RaycastHit);
+        return (GXGame.RaycastHitMsg)ecsEntity.GetComponent(Components.RaycastHit);
     }
      
-    public static ECSEntity SetRaycastHit(this ECSEntity ecsEntity,System.Collections.Generic.List<UnityEngine.RaycastHit2D> param)
+    public static ECSEntity SetRaycastHit(this ECSEntity ecsEntity,System.Collections.Generic.List<UnityEngine.RaycastHit> param)
     {
-        var p = (GXGame.RaycastHit)ecsEntity.GetComponent(Components.RaycastHit);
+        var p = (GXGame.RaycastHitMsg)ecsEntity.GetComponent(Components.RaycastHit);
         p.Value = param;
         ((World)ecsEntity.Parent).Reactive(Components.RaycastHit, ecsEntity,EcsChangeEventState.UpdateType);
         

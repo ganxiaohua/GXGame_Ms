@@ -18,16 +18,17 @@ namespace GXGame
             value.BindFromEmpty(Main.CollisionLayer);
             value.gameObject.name = ecsEntity.Name;
             value.gameObject.layer = layerMask;
-            var box = value.gameObject.AddComponent<BoxCollider2D>();
+            var collider = value.gameObject.AddComponent<CapsuleCollider>();
             value.gameObject.AddComponent<CollisionEntity>().Entity = ecsEntity;
-            box.size = Vector2.one * 0.5f;
+            collider.radius = 0.16f;
+            collider.height = 1;
             value.position = ecsEntity.GetWorldPos().Value;
             return value;
         }
 
         public override void Dispose()
         {
-            var box = Value.gameObject.GetComponent<BoxCollider2D>();
+            var box = Value.gameObject.GetComponent<CapsuleCollider>();
             Object.Destroy(box);
             var entity = Value.gameObject.GetComponent<CollisionEntity>();
             Object.Destroy(entity);
@@ -36,9 +37,9 @@ namespace GXGame
         }
     }
 
-    public class RaycastHit : ECSComponent
+    public class RaycastHitMsg : ECSComponent
     {
-        public List<RaycastHit2D> Value;
+        public List<RaycastHit> Value;
         
     }
 

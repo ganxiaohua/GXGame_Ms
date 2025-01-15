@@ -8,9 +8,12 @@ namespace GXGame
     {
         private Animator mAnimator;
 
+        private int curId;
+        
         public override void Init(ECSEntity ecsEntity, GameObjectView gameObjectView)
         {
             base.Init(ecsEntity, gameObjectView);
+            curId = -1;
         }
 
         protected override async UniTask WaitLoadOver()
@@ -28,26 +31,16 @@ namespace GXGame
             mAnimator = null;
             base.Dispose();
         }
-
-        public void Play(string animationName)
+        
+        
+        public void Play(int id)
         {
             if (mAnimator == null)
                 return;
-            mAnimator.Play(animationName);
-        }
-
-        public void SetBool(string name, bool b)
-        {
-            if (mAnimator == null)
+            if(curId == id)
                 return;
-            mAnimator.SetBool(name, b);
-        }
-
-        public void SetInteger(string name, int b)
-        {
-            if (mAnimator == null)
-                return;
-            mAnimator.SetInteger(name, b);
+            curId = id;
+            mAnimator.CrossFadeInFixedTime(id,0.25f);
         }
     }
 }

@@ -17,41 +17,45 @@ namespace GXGame.Logic
             this.AddSystem<CollisionSystem>();
             this.AddSystem<CollisionBehaviorSystem>();
             this.AddSystem<WorldPosChangeSystem>();
+            this.AddSystem<WorldDirChangeBaseSystem>();
             this.AddSystem<CountDowntSystem>();
             this.AddSystem<InputSystem>();
             //最后执行
             this.AddSystem<DestroyBaseSystem>();
-            CreateMap();
+            CreateCamera();
             CreatePlayer();
         }
 
-        private void CreateMap()
+        private void CreateCamera()
         {
-            var map = AddChild();
-            map.Name = "Map";
-            map.AddViewType(typeof(GoBaseView));
-            map.AddAssetPath("Map_BaseMap");
-            map.AddWorldPos(Vector3.zero);
+            var palyer = AddChild();
+            palyer.Name = $"摄像机";
+            palyer.AddViewType(typeof(CameraView));
+            palyer.AddAssetPath("Camera/Prefabs/Camera");
+            palyer.AddWorldPos(new Vector3(0,3,-5.6f));
+            palyer.AddLocalScale(Vector3.one);
         }
 
+        
         private void CreatePlayer()
         {
             var palyer = AddChild();
             palyer.Name = $"主角";
-            palyer.AddViewType(typeof(GoBaseView));
-            palyer.AddAssetPath("Monster_001/Prefab/Monster_001");
-            palyer.AddWorldPos(new Vector3(5.5f, 0, 0));
-            palyer.AddLocalScale(Vector2.one);
+            palyer.AddViewType(typeof(Go3DView));
+            palyer.AddAssetPath("Player/Prefabs/Player");
+            palyer.AddWorldPos(Vector3.zero);
+            palyer.AddLocalScale(Vector3.one);
             palyer.AddMoveDirection();
-            palyer.AddMoveSpeed(2);
+            palyer.AddMoveSpeed(1);
+            palyer.AddWorldRotate(Quaternion.identity);
             palyer.AddFaceDirection();
-            palyer.AddCollisionBox(CollisionBox.Create(palyer, LayerMask.NameToLayer($"Object")));
-            palyer.AddCollisionGroundType(CollisionGroundType.Slide);
+            palyer.AddDirectionSpeed(90);
+            // palyer.AddCollisionBox(CollisionBox.Create(palyer, LayerMask.NameToLayer($"Object")));
+            // palyer.AddCollisionGroundType(CollisionGroundType.Slide);
             palyer.AddCampComponent(GXGame.Camp.SELF);
             palyer.AddGXInput();
             palyer.AddPlayer();
             palyer.AddHP(10);
-            palyer.AddViewCull();
 
             // for (int i = 0; i < monsterCount; i++)
             // {

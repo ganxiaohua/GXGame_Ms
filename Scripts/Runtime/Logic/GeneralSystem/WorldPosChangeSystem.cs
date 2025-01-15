@@ -28,8 +28,6 @@ namespace GXGame
                 if (collisionBox == null)
                 {
                     var dir = entity.GetMoveDirection().Value;
-                    if (dir == Vector3.zero)
-                        continue;
                     var distance = entity.GetMoveSpeed().Value * world.DeltaTime;
                     var pos = entity.GetWorldPos().Value;
                     pos += (dir.normalized * distance);
