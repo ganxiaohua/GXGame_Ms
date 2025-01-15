@@ -1,2 +1,0 @@
-Rules\dock-reset to initial tiles.tmx
-Rules\dock-place tiles.tmx
