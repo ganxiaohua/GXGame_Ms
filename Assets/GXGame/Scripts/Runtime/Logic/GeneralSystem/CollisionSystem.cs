@@ -52,15 +52,15 @@ namespace GXGame
             }
             else if (collisonProority.priority == 2)
             {
-                var hit = entity.GetRaycastHit();
+                var hit = entity.GetRaycastHitMsg();
                 if (hit == null)
                 {
-                    entity.AddRaycastHit(new List<RaycastHit>());
-                    hit = entity.GetRaycastHit();
+                    entity.AddRaycastHitMsg(new List<RaycastHit>());
+                    hit = entity.GetRaycastHitMsg();
                 }
 
                 hit.Value.Add(targetRaycastHit2D);
-                entity.SetRaycastHit(hit.Value);
+                entity.SetRaycastHitMsg(hit.Value);
                 return Vector2.zero;
             }
 

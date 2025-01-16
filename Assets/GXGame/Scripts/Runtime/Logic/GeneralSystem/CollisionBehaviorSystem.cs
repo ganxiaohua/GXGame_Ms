@@ -6,7 +6,7 @@ namespace GXGame
     public class CollisionBehaviorSystem : UpdateReactiveSystem
     {
         protected override Collector GetTrigger(World world) =>
-            Collector.CreateCollector(world, EcsChangeEventState.ChangeEventState.Update, Components.RaycastHit);
+            Collector.CreateCollector(world, EcsChangeEventState.ChangeEventState.Update, Components.RaycastHitMsg);
 
         protected override bool Filter(ECSEntity entity)
         {
@@ -17,7 +17,7 @@ namespace GXGame
         {
             foreach (var entity in entities)
             {
-                var raycastHits = entity.GetRaycastHit();
+                var raycastHits = entity.GetRaycastHitMsg();
                 foreach (var raycastHit in raycastHits.Value)
                 {
                     var campValue = raycastHit.transform.GetComponent<CollisionEntity>().Entity.GetCampComponent().Value;
@@ -32,7 +32,7 @@ namespace GXGame
                         break;
                     }
                 }
-                entity.GetRaycastHit().Value.Clear();
+                entity.GetRaycastHitMsg().Value.Clear();
             }
         }
 

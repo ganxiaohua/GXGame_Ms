@@ -19,27 +19,28 @@ public static class Components {
     public const int LocalPos= 12;
     public const int LocalRotate= 13;
     public const int LocalScale= 14;
-    public const int ViewCull= 15;
-    public const int AssetPath= 16;
-    public const int DestroyCountdown= 17;
-    public const int DirectionSpeed= 18;
-    public const int MeshRendererColor= 19;
-    public const int UseShareMaterial= 20;
-    public const int FaceDirection= 21;
-    public const int GXInput= 22;
-    public const int MoveDirection= 23;
-    public const int MoveSpeed= 24;
-    public const int TargetPos= 25;
-    public const int ViewType= 26;
-    public const int Monster= 27;
-    public const int CampComponent= 28;
-    public const int UnitTypeComponent= 29;
-    public const int BehaviorTreeComponent= 30;
-    public const int CollisionBox= 31;
-    public const int RaycastHit= 32;
-    public const int CollisionGroundType= 33;
+    public const int Gravity= 15;
+    public const int ViewCull= 16;
+    public const int AssetPath= 17;
+    public const int DestroyCountdown= 18;
+    public const int DirectionSpeed= 19;
+    public const int MeshRendererColor= 20;
+    public const int UseShareMaterial= 21;
+    public const int FaceDirection= 22;
+    public const int GXInput= 23;
+    public const int MoveDirection= 24;
+    public const int MoveSpeed= 25;
+    public const int TargetPos= 26;
+    public const int ViewType= 27;
+    public const int Monster= 28;
+    public const int CampComponent= 29;
+    public const int UnitTypeComponent= 30;
+    public const int BehaviorTreeComponent= 31;
+    public const int CollisionBox= 32;
+    public const int RaycastHitMsg= 33;
+    public const int CollisionGroundType= 34;
     
-    public const int TotalComponents = 34;
+    public const int TotalComponents = 35;
     
     
     public static readonly System.Type[] ComponentTypes = {
@@ -59,6 +60,7 @@ public static class Components {
         typeof(GXGame.LocalPos),
         typeof(GXGame.LocalRotate),
         typeof(GXGame.LocalScale),
+        typeof(GXGame.Gravity),
         typeof(GXGame.ViewCull),
         typeof(GXGame.AssetPath),
         typeof(GXGame.DestroyCountdown),
