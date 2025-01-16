@@ -10,6 +10,15 @@ namespace GXGame
     public partial class CollisionSystem : FixedUpdateReactiveSystem
     {
         private RaycastHit[] raycastHit = new RaycastHit[4];
+        private List<RaycastHit> collisionWithObjectLayer;
+        private List<RaycastHit> collisionWithWallLayer;
+
+        public override void OnInitialize(World entity)
+        {
+            base.OnInitialize(entity);
+            collisionWithObjectLayer = new List<RaycastHit>();
+            collisionWithWallLayer = new List<RaycastHit>();
+        }
 
         protected override Collector GetTrigger(World world) =>
             Collector.CreateCollector(world, EcsChangeEventState.ChangeEventState.AddUpdate, Components.MoveDirection, Components.FaceDirection);
@@ -52,45 +61,19 @@ namespace GXGame
 
         private Vector3 GetCollisionDir(Vector3 pos, Vector3 dir, float distance, ECSEntity entity)
         {
+            collisionWithObjectLayer.Clear();
+            collisionWithWallLayer.Clear();
             var box = entity.GetCollisionBox();
             var count = BoxCast(pos, dir, distance, box);
             if (count == 0) return dir;
-            var collisonProority = CollisionPriority(entity, count);
-            RaycastHit targetRaycastHit2D = collisonProority.hit;
-            if (collisonProority.priority == 0)
+            var separation = CollisionSeparation(entity, count);
+            if (!separation)
             {
                 return dir;
             }
-            else if (collisonProority.priority == 2)
-            {
-                var hit = entity.GetRaycastHitMsg();
-                if (hit == null)
-                {
-                    entity.AddRaycastHitMsg(new List<RaycastHit>());
-                    hit = entity.GetRaycastHitMsg();
-                }
 
-                hit.Value.Add(targetRaycastHit2D);
-                entity.SetRaycastHitMsg(hit.Value);
-                return Vector2.zero;
-            }
-
-            if ((entity.GetCollisionGroundType().Type == CollisionGroundType.Slide))
-            {
-                var rayNormal = targetRaycastHit2D.normal.normalized;
-                rayNormal.y = 0;
-                Vector3 projection = Vector3.Dot(-dir, rayNormal) / rayNormal.sqrMagnitude * rayNormal;
-                dir = (dir + projection).normalized;
-            }
-            else if (entity.GetCollisionGroundType().Type == CollisionGroundType.Reflect)
-            {
-                dir = Vector3.Reflect(dir, targetRaycastHit2D.normal).normalized;
-            }
-            else if (entity.GetCollisionGroundType().Type == CollisionGroundType.Bomb)
-            {
-                dir = -dir;
-            }
-            return dir;
+            ObjectCollision(entity);
+            return WallCollision(dir,entity);
         }
 
         private int BoxCast(Vector3 pos, Vector3 dir, float distance, CapsuleCollider box)
@@ -102,6 +85,7 @@ namespace GXGame
             int count = Physics.CapsuleCastNonAlloc(start, end, collider.radius, dir, raycastHit, distance);
             for (int i = 0; i < count; i++)
             {
+                //过滤自己
                 if (raycastHit[i].transform == box.Value.transform)
                 {
                     raycastHit[i] = raycastHit[count - 1];
@@ -118,14 +102,13 @@ namespace GXGame
         /// 碰触优先级,碰到其他东西的优先级 并且过滤掉同阵营的
         /// </summary>
         /// <returns></returns>
-        private (int priority, RaycastHit hit) CollisionPriority(ECSEntity owner, int count)
+        private bool CollisionSeparation(ECSEntity owner, int count)
         {
-            int priority = 0;
-            RaycastHit hit2D = default;
+            bool separation = false;
             var camp = owner.GetCampComponent().Value;
             for (int i = 0; i < count; i++)
             {
-                if (priority < 2 && raycastHit[i].transform.gameObject.layer == LayerMask.NameToLayer($"Object"))
+                if (raycastHit[i].transform.gameObject.layer == LayerMask.NameToLayer($"Object"))
                 {
                     //过滤掉同阵营
                     var rayCamp = raycastHit[i].transform.GetComponent<CollisionEntity>().Entity.GetCampComponent();
@@ -134,22 +117,70 @@ namespace GXGame
                         continue;
                     }
 
-                    priority = 2;
-                    hit2D = raycastHit[i];
+                    collisionWithObjectLayer.Add(raycastHit[i]);
+                    separation = true;
                 }
-                else if (priority < 1 && raycastHit[i].transform.gameObject.layer == LayerMask.NameToLayer($"Wall"))
+                else if (raycastHit[i].transform.gameObject.layer == LayerMask.NameToLayer($"Wall"))
                 {
-                    priority = 1;
-                    hit2D = raycastHit[i];
+                    collisionWithWallLayer.Add(raycastHit[i]);
+                    separation = true;
                 }
             }
 
-            return (priority, hit2D);
+            return separation;
+        }
+
+        private void ObjectCollision(ECSEntity entity)
+        {
+            if (collisionWithObjectLayer.Count != 0)
+            {
+                var hit = entity.GetRaycastHitMsg();
+                if (hit == null)
+                {
+                    entity.AddRaycastHitMsg(new List<RaycastHit>());
+                    hit = entity.GetRaycastHitMsg();
+                }
+
+                foreach (var t in collisionWithObjectLayer)
+                {
+                    hit.Value.Add(t);
+                }
+
+                entity.SetRaycastHitMsg(hit.Value);
+            }
+        }
+
+        private Vector3 WallCollision(Vector3 dir,ECSEntity entity)
+        {
+            Vector3 normal = Vector3.zero;
+            foreach (var collision in collisionWithWallLayer)
+            {
+                normal += collision.normal;
+            }
+
+            if ((entity.GetCollisionGroundType().Type == CollisionGroundType.Slide))
+            {
+                var rayNormal = normal.normalized;
+                rayNormal.y = 0;
+                Vector3 projection = Vector3.Dot(-dir, rayNormal) / rayNormal.sqrMagnitude * rayNormal;
+                dir = (dir + projection).normalized;
+            }
+            else if (entity.GetCollisionGroundType().Type == CollisionGroundType.Reflect)
+            {
+                dir = Vector3.Reflect(dir, normal).normalized;
+            }
+            else if (entity.GetCollisionGroundType().Type == CollisionGroundType.Bomb)
+            {
+                dir = -dir;
+            }
+            return dir;
         }
 
 
         public override void Dispose()
         {
+            collisionWithObjectLayer.Clear();
+            collisionWithWallLayer.Clear();
         }
     }
 }

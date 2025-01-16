@@ -33,7 +33,7 @@ namespace GXGame
 
         private void MoveAnimation()
         {
-            var dir = BindEntity.GetMoveDirection().Value;
+            var dir = BindEntity.GetFaceDirection().Value;
             if (dir != Vector3.zero)
             {
                 animator.Play(walkId);
