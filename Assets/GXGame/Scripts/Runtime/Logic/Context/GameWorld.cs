@@ -6,7 +6,7 @@ namespace GXGame.Logic
     public class GameWorld : World
     {
         private int otherCount = 2;
-        private int monsterCount = 5000;
+        private int monsterCount = 0;
 
         public override void OnInitialize()
         {
