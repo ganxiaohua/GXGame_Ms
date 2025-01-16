@@ -90,7 +90,6 @@ namespace GXGame
             {
                 dir = -dir;
             }
-
             return dir;
         }
 
@@ -98,8 +97,8 @@ namespace GXGame
         {
             var collider = box.Value.gameObject.GetComponent<UnityEngine.CapsuleCollider>();
             float offset = collider.height / 2;
-            Vector3 start = pos - new Vector3(0, offset, 0);
-            Vector3 end = pos + new Vector3(0, offset, 0);
+            Vector3 start = pos - new Vector3(0, offset, 0) + collider.center;
+            Vector3 end = pos + new Vector3(0, offset, 0) + collider.center;
             int count = Physics.CapsuleCastNonAlloc(start, end, collider.radius, dir, raycastHit, distance);
             for (int i = 0; i < count; i++)
             {

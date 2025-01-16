@@ -21,7 +21,8 @@ namespace GXGame
             var collider = value.gameObject.AddComponent<UnityEngine.CapsuleCollider>();
             value.gameObject.AddComponent<CollisionEntity>().Entity = ecsEntity;
             collider.radius = 0.16f;
-            collider.height = 1;
+            collider.height = 1.79f;
+            collider.center = new Vector3(0, 0.92f, 0);
             value.position = ecsEntity.GetWorldPos().Value;
             return value;
         }
