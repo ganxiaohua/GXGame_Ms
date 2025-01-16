@@ -73,8 +73,6 @@ crashlytics-build.properties
 *.bundle
 Config/Gen
 Config/Gen.meta
-ParadoxNotion
-ParadoxNotion.meta
 
 Assets/GXGame/Scripts/Runtime/Temp
 Assets/GXGame/Scripts/Runtime/Temp.meta
