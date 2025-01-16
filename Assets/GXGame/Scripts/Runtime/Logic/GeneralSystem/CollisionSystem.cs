@@ -82,9 +82,9 @@ namespace GXGame
             return dir;
         }
 
-        private int BoxCast(Vector3 pos, Vector3 dir, float distance, CollisionBox box)
+        private int BoxCast(Vector3 pos, Vector3 dir, float distance, CapsuleCollider box)
         {
-            var collider = box.Value.gameObject.GetComponent<CapsuleCollider>();
+            var collider = box.Value.gameObject.GetComponent<UnityEngine.CapsuleCollider>();
             float offset = collider.height / 2;
             Vector3 start = pos - new Vector3(0, offset, 0);
             Vector3 end = pos + new Vector3(0, offset, 0);
@@ -131,7 +131,6 @@ namespace GXGame
                     hit2D = raycastHit[i];
                 }
             }
-
             return (priority, hit2D);
         }
 

@@ -8,7 +8,7 @@ namespace GXGame
     /// <summary>
     /// 由于unity自身碰撞逻辑和渲染并不分离这个组件并不典型.
     /// </summary>
-    public class CollisionBox : ECSComponent
+    public class CapsuleCollider : ECSComponent
     {
         public GXGameObject Value;
 
@@ -18,7 +18,7 @@ namespace GXGame
             value.BindFromEmpty(Main.CollisionLayer);
             value.gameObject.name = ecsEntity.Name;
             value.gameObject.layer = layerMask;
-            var collider = value.gameObject.AddComponent<CapsuleCollider>();
+            var collider = value.gameObject.AddComponent<UnityEngine.CapsuleCollider>();
             value.gameObject.AddComponent<CollisionEntity>().Entity = ecsEntity;
             collider.radius = 0.16f;
             collider.height = 1;
@@ -28,7 +28,7 @@ namespace GXGame
 
         public override void Dispose()
         {
-            var box = Value.gameObject.GetComponent<CapsuleCollider>();
+            var box = Value.gameObject.GetComponent<UnityEngine.CapsuleCollider>();
             Object.Destroy(box);
             var entity = Value.gameObject.GetComponent<CollisionEntity>();
             Object.Destroy(entity);

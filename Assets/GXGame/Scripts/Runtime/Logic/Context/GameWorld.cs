@@ -50,8 +50,9 @@ namespace GXGame.Logic
             palyer.AddWorldRotate(Quaternion.identity);
             palyer.AddFaceDirection();
             palyer.AddDirectionSpeed(180);
-            // palyer.AddCollisionBox(CollisionBox.Create(palyer, LayerMask.NameToLayer($"Object")));
-            // palyer.AddCollisionGroundType(CollisionGroundType.Slide);
+            palyer.AddGravity(9.8f);
+            palyer.AddCollisionBox(CapsuleCollider.Create(palyer, LayerMask.NameToLayer($"Object")));
+            palyer.AddCollisionGroundType(CollisionGroundType.Slide);
             palyer.AddCampComponent(GXGame.Camp.SELF);
             palyer.AddGXInput();
             palyer.AddPlayer();

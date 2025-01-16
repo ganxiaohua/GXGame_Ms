@@ -14,18 +14,18 @@ public static class AutoCollisionBox
     
     public static void AddCollisionBox(this ECSEntity ecsEntity,Common.Runtime.GXGameObject param)
     {
-        var p  =  (GXGame.CollisionBox)ecsEntity.AddComponent(Components.CollisionBox);
+        var p  =  (GXGame.CapsuleCollider)ecsEntity.AddComponent(Components.CollisionBox);
         p.Value = param;
     }
           
-    public static GXGame.CollisionBox GetCollisionBox(this ECSEntity ecsEntity)
+    public static GXGame.CapsuleCollider GetCollisionBox(this ECSEntity ecsEntity)
     {
-        return (GXGame.CollisionBox)ecsEntity.GetComponent(Components.CollisionBox);
+        return (GXGame.CapsuleCollider)ecsEntity.GetComponent(Components.CollisionBox);
     }
      
     public static ECSEntity SetCollisionBox(this ECSEntity ecsEntity,Common.Runtime.GXGameObject param)
     {
-        var p = (GXGame.CollisionBox)ecsEntity.GetComponent(Components.CollisionBox);
+        var p = (GXGame.CapsuleCollider)ecsEntity.GetComponent(Components.CollisionBox);
         p.Value = param;
         ((World)ecsEntity.Parent).Reactive(Components.CollisionBox, ecsEntity,EcsChangeEventState.UpdateType);
         
