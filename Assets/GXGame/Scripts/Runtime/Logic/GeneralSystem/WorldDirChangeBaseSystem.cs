@@ -34,7 +34,6 @@ namespace GXGame
                         Vector3 nowDir = entity.GetWorldRotate().Value * Vector3.forward;
                         float angle = speed * World.DeltaTime;
                         Vector3 curDir = Vector3.RotateTowards(nowDir, dir, Mathf.Deg2Rad * angle, 0);
-                        entity.GetMoveDirection();
                         entity.SetWorldRotate(Quaternion.LookRotation(curDir));
                     }
                 }

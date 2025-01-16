@@ -12,7 +12,7 @@ namespace GXGame
         private RaycastHit[] raycastHit = new RaycastHit[4];
 
         protected override Collector GetTrigger(World world) =>
-            Collector.CreateCollector(world, EcsChangeEventState.ChangeEventState.AddUpdate, Components.MoveDirection);
+            Collector.CreateCollector(world, EcsChangeEventState.ChangeEventState.AddUpdate, Components.MoveDirection, Components.FaceDirection);
 
         protected override bool Filter(ECSEntity entity)
         {
@@ -33,10 +33,21 @@ namespace GXGame
                 dir = GetCollisionDir(pos, dir, distance, entity);
                 entity.SetMoveDirection(dir);
                 pos += dir * distance;
-                var collisionBox = entity.GetCollisionBox();
-                collisionBox.Value.position = pos;
-                entity.SetCollisionBox(collisionBox.Value);
+                var capsuleCollider = entity.GetCollisionBox();
+                capsuleCollider.Value.position = pos;
+                Turn(entity, capsuleCollider);
+                entity.SetCollisionBox(capsuleCollider.Value);
             }
+        }
+
+        private void Turn(ECSEntity entity, CapsuleCollider capsuleCollider)
+        {
+            var dir = entity.GetFaceDirection().Value;
+            float speed = entity.GetDirectionSpeed().Value;
+            Vector3 nowDir = capsuleCollider.Value.rotation * Vector3.forward;
+            float angle = speed * Time.deltaTime * World.Multiple;
+            var curDir = Vector3.RotateTowards(nowDir, dir, Mathf.Deg2Rad * angle, 0);
+            capsuleCollider.Value.rotation = Quaternion.LookRotation(curDir);
         }
 
         private Vector3 GetCollisionDir(Vector3 pos, Vector3 dir, float distance, ECSEntity entity)
@@ -67,6 +78,7 @@ namespace GXGame
             if ((entity.GetCollisionGroundType().Type == CollisionGroundType.Slide))
             {
                 var rayNormal = targetRaycastHit2D.normal.normalized;
+                rayNormal.y = 0;
                 Vector3 projection = Vector3.Dot(-dir, rayNormal) / rayNormal.sqrMagnitude * rayNormal;
                 dir = (dir + projection).normalized;
             }
@@ -122,6 +134,7 @@ namespace GXGame
                     {
                         continue;
                     }
+
                     priority = 2;
                     hit2D = raycastHit[i];
                 }
@@ -131,6 +144,7 @@ namespace GXGame
                     hit2D = raycastHit[i];
                 }
             }
+
             return (priority, hit2D);
         }
 
