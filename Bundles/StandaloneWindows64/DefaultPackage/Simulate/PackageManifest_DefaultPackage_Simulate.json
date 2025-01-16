@@ -1,0 +1,141 @@
+{
+    "FileVersion": "2.0.0",
+    "EnableAddressable": true,
+    "LocationToLower": false,
+    "IncludeAssetGUID": false,
+    "OutputNameStyle": 0,
+    "BuildPipeline": "ScriptableBuildPipeline",
+    "PackageName": "DefaultPackage",
+    "PackageVersion": "Simulate",
+    "AssetList": [
+        {
+            "Address": "Camera/Prefabs/Camera",
+            "AssetPath": "Assets/GXGame/Art/Runtime/Camera/Prefabs/Camera.prefab",
+            "AssetGUID": "",
+            "AssetTags": [],
+            "BundleID": 0
+        },
+        {
+            "Address": "Map/Mat/New Material 1",
+            "AssetPath": "Assets/GXGame/Art/Runtime/Map/Mat/New Material 1.mat",
+            "AssetGUID": "",
+            "AssetTags": [],
+            "BundleID": 1
+        },
+        {
+            "Address": "Map/Mat/New Material",
+            "AssetPath": "Assets/GXGame/Art/Runtime/Map/Mat/New Material.mat",
+            "AssetGUID": "",
+            "AssetTags": [],
+            "BundleID": 1
+        },
+        {
+            "Address": "Player/Animation/Player",
+            "AssetPath": "Assets/GXGame/Art/Runtime/Player/Animation/Player.controller",
+            "AssetGUID": "",
+            "AssetTags": [],
+            "BundleID": 2
+        },
+        {
+            "Address": "Player/Model/Idle",
+            "AssetPath": "Assets/GXGame/Art/Runtime/Player/Model/Idle.fbx",
+            "AssetGUID": "",
+            "AssetTags": [],
+            "BundleID": 2
+        },
+        {
+            "Address": "Player/Model/Player",
+            "AssetPath": "Assets/GXGame/Art/Runtime/Player/Model/Player.fbx",
+            "AssetGUID": "",
+            "AssetTags": [],
+            "BundleID": 2
+        },
+        {
+            "Address": "Player/Model/Walk",
+            "AssetPath": "Assets/GXGame/Art/Runtime/Player/Model/Walk.fbx",
+            "AssetGUID": "",
+            "AssetTags": [],
+            "BundleID": 2
+        },
+        {
+            "Address": "Player/Prefabs/Player",
+            "AssetPath": "Assets/GXGame/Art/Runtime/Player/Prefabs/Player.prefab",
+            "AssetGUID": "",
+            "AssetTags": [],
+            "BundleID": 2
+        },
+        {
+            "Address": "Scene_Game",
+            "AssetPath": "Assets/GXGame/Scenes/Game.unity",
+            "AssetGUID": "",
+            "AssetTags": [],
+            "BundleID": 3
+        },
+        {
+            "Address": "Card_atlas0",
+            "AssetPath": "Assets/GXGame/UI/TestUI/Card_atlas0.png",
+            "AssetGUID": "",
+            "AssetTags": [],
+            "BundleID": 4
+        },
+        {
+            "Address": "Card_fui",
+            "AssetPath": "Assets/GXGame/UI/TestUI/Card_fui.bytes",
+            "AssetGUID": "",
+            "AssetTags": [],
+            "BundleID": 4
+        }
+    ],
+    "BundleList": [
+        {
+            "BundleName": "assets_gxgame_art_runtime_camera.bundle",
+            "UnityCRC": 0,
+            "FileHash": "9aa93c01e8d05b7d4c666a9d338bc86c",
+            "FileCRC": "00000000",
+            "FileSize": 3379,
+            "Encrypted": false,
+            "Tags": [],
+            "DependIDs": []
+        },
+        {
+            "BundleName": "assets_gxgame_art_runtime_map.bundle",
+            "UnityCRC": 0,
+            "FileHash": "8551b2aa02a38bab180ba2a55a7335b4",
+            "FileCRC": "00000000",
+            "FileSize": 7310,
+            "Encrypted": false,
+            "Tags": [],
+            "DependIDs": []
+        },
+        {
+            "BundleName": "assets_gxgame_art_runtime_player.bundle",
+            "UnityCRC": 0,
+            "FileHash": "41c22c882b802746420edf5856bae815",
+            "FileCRC": "00000000",
+            "FileSize": 6718717,
+            "Encrypted": false,
+            "Tags": [],
+            "DependIDs": []
+        },
+        {
+            "BundleName": "assets_gxgame_scenes.bundle",
+            "UnityCRC": 0,
+            "FileHash": "77066d3c97bf775c8ec81eb62af7c6b6",
+            "FileCRC": "00000000",
+            "FileSize": 2071475,
+            "Encrypted": false,
+            "Tags": [],
+            "DependIDs": []
+        },
+        {
+            "BundleName": "assets_gxgame_ui_testui.bundle",
+            "UnityCRC": 0,
+            "FileHash": "3c37be07d5b1594b21d4db78cad7d5e5",
+            "FileCRC": "00000000",
+            "FileSize": 18627,
+            "Encrypted": false,
+            "Tags": [],
+            "DependIDs": []
+        }
+    ]
+}
