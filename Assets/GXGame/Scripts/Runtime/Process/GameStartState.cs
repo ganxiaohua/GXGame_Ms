@@ -10,7 +10,7 @@ namespace GXGame
             base.OnEnter(fsmController);
             QualitySettings.vSyncCount = 0;
             Time.fixedDeltaTime = 1/50.0f;
-            Application.targetFrameRate = 10;
+            Application.targetFrameRate = 60;
             SceneFactory.ChangePlayerScene<GameScene>(this);
         }
     }
