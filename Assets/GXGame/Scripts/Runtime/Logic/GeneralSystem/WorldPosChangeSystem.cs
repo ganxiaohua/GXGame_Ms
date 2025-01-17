@@ -11,10 +11,10 @@ namespace GXGame
         public void OnInitialize(World world)
         {
             this.world = world;
-            Matcher matcher = Matcher.SetAll(Components.MoveDirection);
+            Matcher matcher = Matcher.SetAll(Components.MoveDirection,Components.MoveSpeed).NoneOf(Components.CapsuleCollider);
             group = world.GetGroup(matcher);
         }
-        
+
         public void OnUpdate(float elapseSeconds, float realElapseSeconds)
         {
             Common();
@@ -24,19 +24,11 @@ namespace GXGame
         {
             foreach (var entity in group)
             {
-                var collisionBox = entity.GetCollisionBox();
-                if (collisionBox == null)
-                {
-                    var dir = entity.GetMoveDirection().Value;
-                    var distance = entity.GetMoveSpeed().Value * world.DeltaTime;
-                    var pos = entity.GetWorldPos().Value;
-                    pos += (dir.normalized * distance);
-                    entity.SetWorldPos(pos);
-                }
-                else
-                {
-                    entity.SetWorldPos(collisionBox.Value.position);
-                }
+                var dir = entity.GetMoveDirection().Value;
+                var distance = entity.GetMoveSpeed().Value * world.DeltaTime;
+                var pos = entity.GetWorldPos().Value;
+                pos += (dir.normalized * distance);
+                entity.SetWorldPos(pos);
             }
         }
 

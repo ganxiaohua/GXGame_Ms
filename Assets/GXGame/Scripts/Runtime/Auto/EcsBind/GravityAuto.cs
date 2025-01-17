@@ -27,7 +27,7 @@ public static class AutoGravity
     {
         var p = (GXGame.Gravity)ecsEntity.GetComponent(Components.Gravity);
         p.Value = param;
-        ((World)ecsEntity.Parent).Reactive(Components.Gravity, ecsEntity,EcsChangeEventState.UpdateType);
+        ((World)ecsEntity.Parent).Reactive(Components.Gravity, ecsEntity);
         
         return ecsEntity;
     }

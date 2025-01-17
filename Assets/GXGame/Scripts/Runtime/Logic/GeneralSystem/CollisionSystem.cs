@@ -25,7 +25,7 @@ namespace GXGame
 
         protected override bool Filter(ECSEntity entity)
         {
-            return entity.HasComponent(Components.CollisionBox) &&
+            return entity.HasComponent(Components.CapsuleCollider) &&
                    entity.HasComponent(Components.MoveDirection) && entity.HasComponent(Components.MoveSpeed) && entity.HasComponent(Components.WorldPos);
         }
 
@@ -33,37 +33,45 @@ namespace GXGame
         {
             foreach (var entity in entities)
             {
-                var dir = entity.GetMoveDirection().Value;
-                if (dir == Vector3.zero)
-                    continue;
-                var distance = entity.GetMoveSpeed().Value * Time.deltaTime * World.Multiple;
-                var pos = entity.GetWorldPos().Value;
-                dir = dir.normalized;
-                dir = GetCollisionDir(pos, dir, distance, entity);
-                entity.SetMoveDirection(dir);
-                pos += dir * distance;
-                var capsuleCollider = entity.GetCollisionBox();
-                capsuleCollider.Value.position = pos;
-                Turn(entity, capsuleCollider);
-                entity.SetCollisionBox(capsuleCollider.Value);
+                var capsuleCollider = entity.GetCapsuleCollider();
+                SetWolrdPos(entity, capsuleCollider);
+                SetWorldRotate(entity, capsuleCollider);
+                entity.SetCapsuleCollider(capsuleCollider.Value);
             }
         }
 
-        private void Turn(ECSEntity entity, CapsuleCollider capsuleCollider)
+        private void SetWolrdPos(ECSEntity entity, CapsuleCollider capsuleCollider)
+        {
+            var dir = entity.GetMoveDirection().Value;
+            if (dir == Vector3.zero) 
+                return;
+            var distance = entity.GetMoveSpeed().Value * Time.deltaTime * World.Multiple;
+            var pos = entity.GetWorldPos().Value;
+            dir = dir.normalized;
+            dir = GetCollisionDir(pos, dir, distance, entity);
+            entity.SetMoveDirection(dir);
+            pos += dir * distance;
+            capsuleCollider.Value.position = pos;
+            entity.SetWorldPos(pos);
+        }
+
+        private void SetWorldRotate(ECSEntity entity, CapsuleCollider capsuleCollider)
         {
             var dir = entity.GetFaceDirection().Value;
             float speed = entity.GetDirectionSpeed().Value;
             Vector3 nowDir = capsuleCollider.Value.rotation * Vector3.forward;
             float angle = speed * Time.deltaTime * World.Multiple;
             var curDir = Vector3.RotateTowards(nowDir, dir, Mathf.Deg2Rad * angle, 0);
-            capsuleCollider.Value.rotation = Quaternion.LookRotation(curDir);
+            var drot = Quaternion.LookRotation(curDir);
+            capsuleCollider.Value.rotation = drot;
+            entity.SetWorldRotate(drot);
         }
 
         private Vector3 GetCollisionDir(Vector3 pos, Vector3 dir, float distance, ECSEntity entity)
         {
             collisionWithObjectLayer.Clear();
             collisionWithWallLayer.Clear();
-            var box = entity.GetCollisionBox();
+            var box = entity.GetCapsuleCollider();
             var count = BoxCast(pos, dir, distance, box);
             if (count == 0) return dir;
             var separation = CollisionSeparation(entity, count);
@@ -73,7 +81,7 @@ namespace GXGame
             }
 
             ObjectCollision(entity);
-            return WallCollision(dir,entity);
+            return WallCollision(dir, entity);
         }
 
         private int BoxCast(Vector3 pos, Vector3 dir, float distance, CapsuleCollider box)
@@ -150,7 +158,7 @@ namespace GXGame
             }
         }
 
-        private Vector3 WallCollision(Vector3 dir,ECSEntity entity)
+        private Vector3 WallCollision(Vector3 dir, ECSEntity entity)
         {
             Vector3 normal = Vector3.zero;
             foreach (var collision in collisionWithWallLayer)
@@ -173,6 +181,7 @@ namespace GXGame
             {
                 dir = -dir;
             }
+
             return dir;
         }
 

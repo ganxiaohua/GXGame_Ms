@@ -27,7 +27,7 @@ public static class AutoPlayAtk
     {
         var p = (GXGame.PlayAtk)ecsEntity.GetComponent(Components.PlayAtk);
         p.Id = param;
-        ((World)ecsEntity.Parent).Reactive(Components.PlayAtk, ecsEntity,EcsChangeEventState.UpdateType);
+        ((World)ecsEntity.Parent).Reactive(Components.PlayAtk, ecsEntity);
         View view = ecsEntity.GetView();
         if (view == null) return null;
         ((GXGame.IAtk) (view.Value)).Atk(p);

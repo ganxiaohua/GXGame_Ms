@@ -11,7 +11,8 @@ namespace GXGame
 
         protected override bool Filter(ECSEntity entity)
         {
-            return entity.HasComponent((Components.WorldRotate)) && entity.HasComponent(Components.FaceDirection) &&
+            return !entity.HasComponent(Components.CapsuleCollider) && entity.HasComponent((Components.WorldRotate)) &&
+                   entity.HasComponent(Components.FaceDirection) &&
                    entity.HasComponent(Components.DirectionSpeed);
         }
 
@@ -24,22 +25,14 @@ namespace GXGame
         {
             foreach (var entity in entities)
             {
-                var collisionBox = entity.GetCollisionBox();
-                if (collisionBox == null)
+                var dir = entity.GetFaceDirection().Value;
+                if (dir != Vector3.zero)
                 {
-                    var dir = entity.GetFaceDirection().Value;
-                    if (dir != Vector3.zero)
-                    {
-                        float speed = entity.GetDirectionSpeed().Value;
-                        Vector3 nowDir = entity.GetWorldRotate().Value * Vector3.forward;
-                        float angle = speed * World.DeltaTime;
-                        Vector3 curDir = Vector3.RotateTowards(nowDir, dir, Mathf.Deg2Rad * angle, 0);
-                        entity.SetWorldRotate(Quaternion.LookRotation(curDir));
-                    }
-                }
-                else
-                {
-                    entity.SetWorldRotate(collisionBox.Value.rotation);
+                    float speed = entity.GetDirectionSpeed().Value;
+                    Vector3 nowDir = entity.GetWorldRotate().Value * Vector3.forward;
+                    float angle = speed * World.DeltaTime;
+                    Vector3 curDir = Vector3.RotateTowards(nowDir, dir, Mathf.Deg2Rad * angle, 0);
+                    entity.SetWorldRotate(Quaternion.LookRotation(curDir));
                 }
             }
         }

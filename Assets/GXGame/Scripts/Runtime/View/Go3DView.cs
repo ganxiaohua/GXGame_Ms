@@ -25,16 +25,17 @@ namespace GXGame
             base.Dispose();
         }
 
-        public override void WolrdPosition(WorldPos worldPos)
+        public override void OnUpdate(float elapseSeconds, float realElapseSeconds)
         {
-            base.WolrdPosition(worldPos);
             MoveAnimation();
         }
 
         private void MoveAnimation()
         {
-            var dir = BindEntity.GetFaceDirection().Value;
-            if (dir != Vector3.zero)
+            var dir = BindEntity.GetFaceDirection();
+            if (dir == null)
+                return;
+            if (dir.Value != Vector3.zero)
             {
                 animator.Play(walkId);
             }

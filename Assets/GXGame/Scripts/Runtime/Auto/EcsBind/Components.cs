@@ -36,7 +36,7 @@ public static class Components {
     public const int CampComponent= 29;
     public const int UnitTypeComponent= 30;
     public const int BehaviorTreeComponent= 31;
-    public const int CollisionBox= 32;
+    public const int CapsuleCollider= 32;
     public const int RaycastHitMsg= 33;
     public const int CollisionGroundType= 34;
     
