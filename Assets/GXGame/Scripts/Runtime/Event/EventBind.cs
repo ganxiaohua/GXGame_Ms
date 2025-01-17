@@ -4,11 +4,12 @@
 //------------------------------------------------------------------------------
 using GameFrame;
 
-public class AutoBindEvent
+public static class AutoBindEvent
 {
-    public void AddSystem()
+    public static void AddSystem()
     {
         var  eventData =  EventData.Instance;
+        
         eventData.AddSourceDic(typeof(GXGame.UICardListWindow),typeof(GXGame.ITestEvent1));
     }
 }

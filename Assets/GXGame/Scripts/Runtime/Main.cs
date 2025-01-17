@@ -9,6 +9,7 @@ namespace GXGame
         public static Transform ViewLayer;
         public static Transform CollisionLayer;
         public static Transform BTOLayer;
+
         async UniTaskVoid Start()
         {
             DontDestroyOnLoad(this);
@@ -16,7 +17,7 @@ namespace GXGame
             CollisionLayer = transform.Find("CollisionLayer");
             BTOLayer = transform.Find("BTOLayer");
             Components.SetComponent();
-            new AutoBindEvent().AddSystem();
+            AutoBindEvent.AddSystem();
             await GXGameFrame.Instance.Start();
             GXGameFrame.Instance.RootEntity.AddComponent<GameProcess>();
         }
@@ -35,8 +36,8 @@ namespace GXGame
         {
             GXGameFrame.Instance.FixedUpdate();
         }
-        
-        
+
+
         private void OnApplicationQuit()
         {
             GXGameFrame.Instance.OnDisable();
