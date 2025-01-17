@@ -24,6 +24,7 @@ namespace GXGame
         {
             foreach (var entity in group)
             {
+                Debug.Log("xxxxxxxxxxxxx");
                 var dir = entity.GetMoveDirection().Value;
                 var distance = entity.GetMoveSpeed().Value * world.DeltaTime;
                 var pos = entity.GetWorldPos().Value;

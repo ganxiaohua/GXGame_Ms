@@ -7,31 +7,25 @@ namespace GXGame
     /// <summary>
     /// 碰到了就修正方向
     /// </summary>
-    public partial class CollisionSystem : FixedUpdateReactiveSystem
+    public partial class CollisionSystem : IInitializeSystem<World> ,IFixedUpdateSystem
     {
         private RaycastHit[] raycastHit = new RaycastHit[4];
         private List<RaycastHit> collisionWithObjectLayer;
         private List<RaycastHit> collisionWithWallLayer;
-
-        public override void OnInitialize(World entity)
+        private Group group;
+        private World world;
+        public  void OnInitialize(World entity)
         {
-            base.OnInitialize(entity);
+            world = entity;
             collisionWithObjectLayer = new List<RaycastHit>();
             collisionWithWallLayer = new List<RaycastHit>();
+            Matcher matcher = Matcher.SetAll(Components.MoveDirection, Components.FaceDirection, Components.FaceDirection, Components.CapsuleCollider);
+            group = entity.GetGroup(matcher);
         }
-
-        protected override Collector GetTrigger(World world) =>
-            Collector.CreateCollector(world, EcsChangeEventState.ChangeEventState.AddUpdate, Components.MoveDirection, Components.FaceDirection);
-
-        protected override bool Filter(ECSEntity entity)
+        
+        public void FixedUpdate(float elapseSeconds, float realElapseSeconds)
         {
-            return entity.HasComponent(Components.CapsuleCollider) &&
-                   entity.HasComponent(Components.MoveDirection) && entity.HasComponent(Components.MoveSpeed) && entity.HasComponent(Components.WorldPos);
-        }
-
-        protected override void Execute(List<ECSEntity> entities)
-        {
-            foreach (var entity in entities)
+            foreach (var entity in group)
             {
                 var capsuleCollider = entity.GetCapsuleCollider();
                 SetWolrdPos(entity, capsuleCollider);
@@ -43,14 +37,26 @@ namespace GXGame
         private void SetWolrdPos(ECSEntity entity, CapsuleCollider capsuleCollider)
         {
             var dir = entity.GetMoveDirection().Value;
-            if (dir == Vector3.zero) 
+            if (dir == Vector3.zero)
                 return;
-            var distance = entity.GetMoveSpeed().Value * Time.deltaTime * World.Multiple;
+            var distance = entity.GetMoveSpeed().Value * Time.deltaTime * world.Multiple;
             var pos = entity.GetWorldPos().Value;
             dir = dir.normalized;
-            dir = GetCollisionDir(pos, dir, distance, entity);
-            entity.SetMoveDirection(dir);
-            pos += dir * distance;
+            CollisionTest(pos, dir, distance, entity);
+            var newDir = GetCollisionDir(entity, dir);
+            ObjectCollision(entity);
+            //以下验算新的dir是否会碰撞
+            if (IsResetDir())
+            {
+                CollisionTest(pos, newDir, distance, entity);
+            }
+
+            if (IsResetDir())
+            {
+                return;
+            }
+            //新的方向没有碰撞,执行位置更换
+            pos += newDir * distance;
             capsuleCollider.Value.position = pos;
             entity.SetWorldPos(pos);
         }
@@ -60,27 +66,30 @@ namespace GXGame
             var dir = entity.GetFaceDirection().Value;
             float speed = entity.GetDirectionSpeed().Value;
             Vector3 nowDir = capsuleCollider.Value.rotation * Vector3.forward;
-            float angle = speed * Time.deltaTime * World.Multiple;
+            float angle = speed * Time.deltaTime * world.Multiple;
             var curDir = Vector3.RotateTowards(nowDir, dir, Mathf.Deg2Rad * angle, 0);
             var drot = Quaternion.LookRotation(curDir);
             capsuleCollider.Value.rotation = drot;
             entity.SetWorldRotate(drot);
         }
 
-        private Vector3 GetCollisionDir(Vector3 pos, Vector3 dir, float distance, ECSEntity entity)
+        private void CollisionTest(Vector3 pos, Vector3 dir, float distance, ECSEntity entity)
         {
             collisionWithObjectLayer.Clear();
             collisionWithWallLayer.Clear();
             var box = entity.GetCapsuleCollider();
             var count = BoxCast(pos, dir, distance, box);
-            if (count == 0) return dir;
-            var separation = CollisionSeparation(entity, count);
-            if (!separation)
+            if (count == 0) return;
+            CollisionSeparation(entity, count);
+        }
+
+        private Vector3 GetCollisionDir(ECSEntity entity, Vector3 dir)
+        {
+            if (!IsResetDir())
             {
                 return dir;
             }
 
-            ObjectCollision(entity);
             return WallCollision(dir, entity);
         }
 
@@ -110,9 +119,8 @@ namespace GXGame
         /// 碰触优先级,碰到其他东西的优先级 并且过滤掉同阵营的
         /// </summary>
         /// <returns></returns>
-        private bool CollisionSeparation(ECSEntity owner, int count)
+        private void CollisionSeparation(ECSEntity owner, int count)
         {
-            bool separation = false;
             var camp = owner.GetCampComponent().Value;
             for (int i = 0; i < count; i++)
             {
@@ -126,16 +134,19 @@ namespace GXGame
                     }
 
                     collisionWithObjectLayer.Add(raycastHit[i]);
-                    separation = true;
                 }
                 else if (raycastHit[i].transform.gameObject.layer == LayerMask.NameToLayer($"Wall"))
                 {
                     collisionWithWallLayer.Add(raycastHit[i]);
-                    separation = true;
                 }
             }
+        }
 
-            return separation;
+        private bool IsResetDir()
+        {
+            if (collisionWithWallLayer.Count > 0)
+                return true;
+            return false;
         }
 
         private void ObjectCollision(ECSEntity entity)
@@ -160,6 +171,8 @@ namespace GXGame
 
         private Vector3 WallCollision(Vector3 dir, ECSEntity entity)
         {
+            if (collisionWithWallLayer.Count == 0)
+                return dir;
             Vector3 normal = Vector3.zero;
             foreach (var collision in collisionWithWallLayer)
             {
@@ -186,10 +199,11 @@ namespace GXGame
         }
 
 
-        public override void Dispose()
+        public  void Dispose()
         {
             collisionWithObjectLayer.Clear();
             collisionWithWallLayer.Clear();
         }
+        
     }
 }

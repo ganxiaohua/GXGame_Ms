@@ -32,7 +32,7 @@ namespace GXGame
 
         private void MoveAnimation()
         {
-            var dir = BindEntity.GetFaceDirection();
+            var dir = BindEntity.GetMoveDirection();
             if (dir == null)
                 return;
             if (dir.Value != Vector3.zero)
