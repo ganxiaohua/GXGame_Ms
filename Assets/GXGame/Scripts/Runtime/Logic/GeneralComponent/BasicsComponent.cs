@@ -110,7 +110,12 @@ namespace GXGame
     {
         public Type Value;
     }
-    
+
+    public class JumpSpeed : ECSComponent
+    {
+        public float Value; 
+    }
+
     public class Monster : ECSComponent
     {
         

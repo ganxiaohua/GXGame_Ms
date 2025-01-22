@@ -5,16 +5,19 @@ using UnityEngine;
 namespace GXGame
 {
     /// <summary>
-    /// 碰到了就修正方向
+    /// 碰撞系统
     /// </summary>
-    public partial class CollisionSystem : IInitializeSystem<World> ,IFixedUpdateSystem
+    public partial class CollisionSystem : IInitializeSystem<World>, IFixedUpdateSystem
     {
         private RaycastHit[] raycastHit = new RaycastHit[4];
+        private RaycastHit[] raycastHitFloor = new RaycastHit[4];
         private List<RaycastHit> collisionWithObjectLayer;
         private List<RaycastHit> collisionWithWallLayer;
         private Group group;
         private World world;
-        public  void OnInitialize(World entity)
+        private bool isfloor = false;
+
+        public void OnInitialize(World entity)
         {
             world = entity;
             collisionWithObjectLayer = new List<RaycastHit>();
@@ -22,7 +25,7 @@ namespace GXGame
             Matcher matcher = Matcher.SetAll(Components.MoveDirection, Components.FaceDirection, Components.FaceDirection, Components.CapsuleCollider);
             group = entity.GetGroup(matcher);
         }
-        
+
         public void FixedUpdate(float elapseSeconds, float realElapseSeconds)
         {
             foreach (var entity in group)
@@ -37,26 +40,35 @@ namespace GXGame
         private void SetWolrdPos(ECSEntity entity, CapsuleCollider capsuleCollider)
         {
             var dir = entity.GetMoveDirection().Value;
-            if (dir == Vector3.zero)
-                return;
-            var distance = entity.GetMoveSpeed().Value * Time.deltaTime * world.Multiple;
             var pos = entity.GetWorldPos().Value;
+            var speed = entity.GetMoveSpeed().Value;
+            dir = (new Vector3(dir.x, 0, dir.z).normalized * speed + new Vector3(0, -1, 0)) * Time.deltaTime;
+            var distance = dir.magnitude;
             dir = dir.normalized;
             CollisionTest(pos, dir, distance, entity);
-            var newDir = GetCollisionDir(entity, dir);
+            if (IsFloor())
+            {
+                //如果有碰触到地面,则将向下的距离去掉,同时修正dir
+                dir = new Vector3(dir.x, 0, dir.z).normalized * speed* Time.deltaTime;
+                distance = dir.magnitude;
+                dir = dir.normalized;
+            }
             ObjectCollision(entity);
+            dir = GetCollisionDir(entity, dir);
             //以下验算新的dir是否会碰撞
             if (IsResetDir())
             {
-                CollisionTest(pos, newDir, distance, entity);
+                CollisionTest(pos, dir, distance, entity);
             }
 
             if (IsResetDir())
             {
                 return;
             }
+
+            ObjectCollision(entity);
             //新的方向没有碰撞,执行位置更换
-            pos += newDir * distance;
+            pos += dir * distance;
             capsuleCollider.Value.position = pos;
             entity.SetWorldPos(pos);
         }
@@ -99,7 +111,10 @@ namespace GXGame
             float offset = collider.height / 2;
             Vector3 start = pos - new Vector3(0, offset, 0) + collider.center;
             Vector3 end = pos + new Vector3(0, offset, 0) + collider.center;
+            Vector3 startFloor = new Vector3(start.x, start.y - Time.deltaTime * 1 - 0.01f, start.z);
+            Vector3 endFloor = new Vector3(end.x, end.y - Time.deltaTime * 1 - 0.01f, end.z);
             int count = Physics.CapsuleCastNonAlloc(start, end, collider.radius, dir, raycastHit, distance);
+            int count2 = Physics.CapsuleCastNonAlloc(startFloor, endFloor, collider.radius - 0.01f, dir, raycastHitFloor, distance);
             for (int i = 0; i < count; i++)
             {
                 //过滤自己
@@ -112,6 +127,19 @@ namespace GXGame
                 }
             }
 
+            for (int i = 0; i < count2; i++)
+            {
+                //过滤自己
+                if (raycastHitFloor[i].transform == box.Value.transform)
+                {
+                    raycastHitFloor[i] = raycastHitFloor[count2 - 1];
+                    raycastHitFloor[count2 - 1] = default;
+                    count2--;
+                    break;
+                }
+            }
+            
+            isfloor = count2 > 0;
             return count;
         }
 
@@ -149,6 +177,11 @@ namespace GXGame
             return false;
         }
 
+        private bool IsFloor()
+        {
+            return isfloor;
+        }
+
         private void ObjectCollision(ECSEntity entity)
         {
             if (collisionWithObjectLayer.Count != 0)
@@ -182,8 +215,7 @@ namespace GXGame
             if ((entity.GetCollisionGroundType().Type == CollisionGroundType.Slide))
             {
                 var rayNormal = normal.normalized;
-                rayNormal.y = 0;
-                Vector3 projection = Vector3.Dot(-dir, rayNormal) / rayNormal.sqrMagnitude * rayNormal;
+                Vector3 projection = Vector3.Dot(-dir, rayNormal) * rayNormal;
                 dir = (dir + projection).normalized;
             }
             else if (entity.GetCollisionGroundType().Type == CollisionGroundType.Reflect)
@@ -199,11 +231,10 @@ namespace GXGame
         }
 
 
-        public  void Dispose()
+        public void Dispose()
         {
             collisionWithObjectLayer.Clear();
             collisionWithWallLayer.Clear();
         }
-        
     }
 }

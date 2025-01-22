@@ -32,15 +32,16 @@ public static class Components {
     public const int MoveSpeed= 25;
     public const int TargetPos= 26;
     public const int ViewType= 27;
-    public const int Monster= 28;
-    public const int CampComponent= 29;
-    public const int UnitTypeComponent= 30;
-    public const int BehaviorTreeComponent= 31;
-    public const int CapsuleCollider= 32;
-    public const int RaycastHitMsg= 33;
-    public const int CollisionGroundType= 34;
+    public const int JumpSpeed= 28;
+    public const int Monster= 29;
+    public const int CampComponent= 30;
+    public const int UnitTypeComponent= 31;
+    public const int BehaviorTreeComponent= 32;
+    public const int CapsuleCollider= 33;
+    public const int RaycastHitMsg= 34;
+    public const int CollisionGroundType= 35;
     
-    public const int TotalComponents = 35;
+    public const int TotalComponents = 36;
     
     
     public static readonly System.Type[] ComponentTypes = {
@@ -73,6 +74,7 @@ public static class Components {
         typeof(GXGame.MoveSpeed),
         typeof(GXGame.TargetPos),
         typeof(GXGame.ViewType),
+        typeof(GXGame.JumpSpeed),
         typeof(GXGame.Monster),
         typeof(GXGame.CampComponent),
         typeof(GXGame.UnitTypeComponent),

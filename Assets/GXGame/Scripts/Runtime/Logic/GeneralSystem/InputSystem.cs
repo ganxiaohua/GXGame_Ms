@@ -47,7 +47,6 @@ namespace GXGame
                         inputPos.z = variable.Value;
                     }
                 }
-
                 index++;
             }
 

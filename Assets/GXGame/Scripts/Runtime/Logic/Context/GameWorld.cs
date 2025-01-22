@@ -43,7 +43,7 @@ namespace GXGame.Logic
             palyer.Name = $"主角";
             palyer.AddViewType(typeof(Go3DView));
             palyer.AddAssetPath("Player/Prefabs/Player");
-            palyer.AddWorldPos(Vector3.zero);
+            palyer.AddWorldPos(new Vector3(0,1,0));
             palyer.AddLocalScale(Vector3.one);
             palyer.AddMoveDirection();
             palyer.AddMoveSpeed(1);
@@ -51,6 +51,7 @@ namespace GXGame.Logic
             palyer.AddFaceDirection();
             palyer.AddDirectionSpeed(360);
             palyer.AddGravity(9.8f);
+            palyer.AddJumpSpeed(10);
             palyer.AddCapsuleCollider(CapsuleCollider.Create(palyer, LayerMask.NameToLayer($"Object")));
             palyer.AddCollisionGroundType(CollisionGroundType.Slide);
             palyer.AddCampComponent(GXGame.Camp.SELF);
