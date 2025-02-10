@@ -111,7 +111,7 @@ namespace GXGame
         public Type Value;
     }
 
-    public class JumpSpeed : ECSComponent
+    public class YAxisASpeed : ECSComponent
     {
         public float Value; 
     }

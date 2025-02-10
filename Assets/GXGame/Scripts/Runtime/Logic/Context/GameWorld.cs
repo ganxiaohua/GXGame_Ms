@@ -46,12 +46,13 @@ namespace GXGame.Logic
             palyer.AddWorldPos(new Vector3(0,1,0));
             palyer.AddLocalScale(Vector3.one);
             palyer.AddMoveDirection();
-            palyer.AddMoveSpeed(1);
             palyer.AddWorldRotate(Quaternion.identity);
+            palyer.AddMoveSpeed(2);
             palyer.AddFaceDirection();
             palyer.AddDirectionSpeed(360);
             palyer.AddGravity(9.8f);
-            palyer.AddJumpSpeed(10);
+            palyer.AddYAxisASpeed(4);
+            palyer.AddYAxisAcceleration(false);
             palyer.AddCapsuleCollider(CapsuleCollider.Create(palyer, LayerMask.NameToLayer($"Object")));
             palyer.AddCollisionGroundType(CollisionGroundType.Slide);
             palyer.AddCampComponent(GXGame.Camp.SELF);

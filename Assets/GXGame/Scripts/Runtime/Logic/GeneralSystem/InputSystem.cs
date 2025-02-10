@@ -1,7 +1,5 @@
 ﻿using System.Collections.Generic;
 using GameFrame;
-
-
 using UnityEngine;
 
 namespace GXGame
@@ -25,6 +23,12 @@ namespace GXGame
 
         public void OnUpdate(float elapseSeconds, float realElapseSeconds)
         {
+            Move();
+            Jump();
+        }
+
+        private void Move()
+        {
             bool set = false;
             if (inputPos != Vector3.zero)
             {
@@ -47,6 +51,7 @@ namespace GXGame
                         inputPos.z = variable.Value;
                     }
                 }
+
                 index++;
             }
 
@@ -58,7 +63,18 @@ namespace GXGame
                 entity.SetMoveDirection(inputPos);
             }
         }
-        
+
+        public void Jump()
+        {
+            if (Input.GetKey(KeyCode.Space))
+            {
+                foreach (var entity in group)
+                {
+                    entity.SetYAxisAcceleration(true);
+                }
+            }
+        }
+
         public void Dispose()
         {
         }

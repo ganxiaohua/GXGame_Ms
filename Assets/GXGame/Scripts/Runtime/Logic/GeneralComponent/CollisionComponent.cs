@@ -20,7 +20,7 @@ namespace GXGame
             value.gameObject.layer = layerMask;
             var collider = value.gameObject.AddComponent<UnityEngine.CapsuleCollider>();
             value.gameObject.AddComponent<CollisionEntity>().Entity = ecsEntity;
-            collider.radius = 0.16f;
+            collider.radius = 0.31f;
             collider.height = 1.79f;
             collider.center = new Vector3(0, 0.92f, 0);
             value.position = ecsEntity.GetWorldPos().Value;
@@ -38,11 +38,17 @@ namespace GXGame
         }
     }
 
+    public class YAxisAcceleration:ECSComponent
+    {
+        public bool Value;
+    }
+
     public class RaycastHitMsg : ECSComponent
     {
         public List<RaycastHit> Value;
         
     }
+    
 
 
     /// <summary>
