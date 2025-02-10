@@ -28,12 +28,14 @@ namespace GXGame.Logic
 
         private void CreateCamera()
         {
-            var palyer = AddChild();
-            palyer.Name = $"摄像机";
-            palyer.AddViewType(typeof(CameraView));
-            palyer.AddAssetPath("Camera/Prefabs/Camera");
-            palyer.AddWorldPos(new Vector3(0,3,-5.6f));
-            palyer.AddLocalScale(Vector3.one);
+            var camera = AddChild();
+            camera.Name = $"摄像机";
+            camera.AddViewType(typeof(CameraView));
+            camera.AddAssetPath("Camera/Prefabs/Camera");
+            camera.AddWorldPos(Vector3.zero);
+            camera.AddWorldRotate(Quaternion.identity);
+            camera.AddLocalScale(Vector3.one);
+            camera.AddBehaviorTreeComponent("BTO/CameraBto");
         }
 
         
