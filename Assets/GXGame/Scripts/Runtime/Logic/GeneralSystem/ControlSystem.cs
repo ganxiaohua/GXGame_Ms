@@ -7,13 +7,16 @@ namespace GXGame
     /// <summary>
     /// 碰撞系统
     /// </summary>
-    public partial class CollisionSystem : IInitializeSystem<World>, IFixedUpdateSystem
+    public partial class ControlSystem : IInitializeSystem<World>, IFixedUpdateSystem
     {
-        private RaycastHit[] raycastHit = new RaycastHit[4];
-        private RaycastHit[] tempRaycastHit = new RaycastHit[4];
+        private RaycastHit[] raycastHit = new RaycastHit[5];
         private List<RaycastHit> collisionWithObjectLayer;
         private Group group;
         private World world;
+        private ECSEntity entity;
+        private CapsuleCollider capsuleCollider;
+        private UnityEngine.CapsuleCollider unityCapsuleCollider;
+        private (bool onGround, float groundAngle, RaycastHit hit) groundMsg;
 
         public void OnInitialize(World entity)
         {
@@ -26,16 +29,22 @@ namespace GXGame
         {
             foreach (var entity in group)
             {
+                this.entity = entity;
                 var capsuleCollider = entity.GetCapsuleCollider();
-                SetWolrdPos2(entity, capsuleCollider);
-                SetWorldRotate(entity, capsuleCollider);
+                this.capsuleCollider = capsuleCollider;
+                unityCapsuleCollider = capsuleCollider.Value.gameObject.GetComponent<UnityEngine.CapsuleCollider>();
+                groundMsg = CheckGrounded();
+                SetWolrdPos();
+                SetWorldRotate();
                 entity.SetCapsuleCollider(capsuleCollider.Value);
             }
         }
 
 
-        private void SetWorldRotate(ECSEntity entity, CapsuleCollider capsuleCollider)
+        private void SetWorldRotate()
         {
+            if (!groundMsg.onGround)
+                return;
             var dir = entity.GetFaceDirection().Value;
             float speed = entity.GetDirectionSpeed().Value;
             Vector3 nowDir = capsuleCollider.Value.rotation * Vector3.forward;
@@ -98,6 +107,7 @@ namespace GXGame
 
         public void Dispose()
         {
+            Clear();
             collisionWithObjectLayer.Clear();
         }
     }

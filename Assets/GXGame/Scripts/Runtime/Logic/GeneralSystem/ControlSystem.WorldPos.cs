@@ -5,11 +5,8 @@ using UnityEngine;
 
 namespace GXGame
 {
-    public partial class CollisionSystem
+    public partial class ControlSystem
     {
-        private CapsuleCollider capsuleCollider;
-        private ECSEntity entity;
-        private UnityEngine.CapsuleCollider unityCapsuleCollider;
         private float groundDist = 0.01f;
         private float epsilon = 0.001f;
         private float anglePower = 0.5f;
@@ -19,18 +16,17 @@ namespace GXGame
         public const float MaxAngleShoveDegrees = 180.0f - BufferAngleShove;
         public const float BufferAngleShove = 120.0f;
         private Vector3 velocity;
+        private Vector3 jumpInputDir;
 
-        private void SetWolrdPos2(ECSEntity entity, CapsuleCollider capsuleCollider)
+        private void SetWolrdPos()
         {
-            this.entity = entity;
-            this.capsuleCollider = capsuleCollider;
-            unityCapsuleCollider = capsuleCollider.Value.gameObject.GetComponent<UnityEngine.CapsuleCollider>();
             var dir = entity.GetMoveDirection().Value;
             var pos = entity.GetWorldPos().Value;
             var moveSpeed = entity.GetMoveSpeed().Value;
             dir = dir.normalized * moveSpeed * Time.deltaTime;
             GravityJump(ref dir);
-            pos = MovePlayer(dir + velocity * Time.deltaTime);
+            pos = MovePlayer(dir + velocity * Time.deltaTime + jumpInputDir);
+            SnapPlayerDown(pos);
             capsuleCollider.Value.position = pos;
             entity.SetWorldPos(pos);
         }
@@ -40,24 +36,26 @@ namespace GXGame
             var gravity = entity.GetGravity().Value;
             var jumpSpeed = entity.GetYAxisASpeed().Value;
             var yAxis = entity.GetYAxisAcceleration().Value;
-            (bool onGround, float groundAngle) = CheckGrounded(out RaycastHit groundHit);
-            bool falling = !(onGround && groundAngle <= maxWalkingAngle);
+            bool falling = !(groundMsg.onGround && groundMsg.groundAngle <= maxWalkingAngle);
             if (falling)
             {
                 velocity.y += -gravity * Time.deltaTime;
             }
             else
             {
+                jumpInputDir = Vector3.zero;
                 velocity = Vector3.zero;
             }
 
-            bool canJump = (onGround) && groundAngle <= maxJumpAngle && !falling;
+            bool canJump = (groundMsg.onGround) && groundMsg.groundAngle <= maxJumpAngle && !falling;
             if (canJump && yAxis)
             {
-                velocity = (Vector3.Lerp(Vector3.up, (groundHit.normal).normalized, jumpAngleWeightFactor) + movement.normalized).normalized * jumpSpeed;
+                velocity = Vector3.Lerp(Vector3.up, (groundMsg.hit.normal).normalized, jumpAngleWeightFactor).normalized * jumpSpeed;
+                jumpInputDir = movement;
+                movement = Vector3.zero;
             }
 
-            movement = !falling ? Vector3.ProjectOnPlane(movement, groundHit.normal) : Vector3.zero;
+            movement = !falling ? Vector3.ProjectOnPlane(movement, groundMsg.hit.normal) : Vector3.zero;
             entity.SetYAxisAcceleration(false);
         }
 
@@ -90,23 +88,22 @@ namespace GXGame
         }
 
 
-        private (bool, float) CheckGrounded(out RaycastHit groundHit)
+        private (bool, float, RaycastHit) CheckGrounded()
         {
-            var dir = entity.GetMoveDirection().Value;
             var pos = entity.GetWorldPos().Value;
             var rot = entity.GetWorldRotate().Value;
-            bool onGround = CastSelf(pos, rot, Vector3.down, groundDist, out groundHit);
+            bool onGround = CastSelf(pos, rot, Vector3.down, groundDist, out RaycastHit groundHit);
             float angle = Vector3.Angle(groundHit.normal, Vector3.up);
-            return (onGround, angle);
+            return (onGround, angle, groundHit);
         }
 
         public Vector3 MovePlayer(Vector3 movement)
         {
             var position = entity.GetWorldPos().Value;
             var rotation = entity.GetWorldRotate().Value;
-
+            if (movement == Vector3.zero)
+                return position;
             Vector3 remaining = movement;
-
             int bounces = 0;
             //弹跳次数小于最大弹跳次数  &&  移动位置比最小可移动位置大.
             while (bounces < 5 && remaining.magnitude > epsilon)
@@ -157,6 +154,32 @@ namespace GXGame
             }
 
             return position;
+        }
+
+        public Vector3 SnapPlayerDown(Vector3 position)
+        {
+            var rotation = entity.GetWorldRotate().Value;
+            bool closeToGround = CastSelf(
+                position,
+                rotation,
+                Vector3.down,
+                0.01f,
+                out RaycastHit groundHit);
+
+            // If within the threshold distance of the ground
+            if (closeToGround && groundHit.distance > 0)
+            {
+                // Snap the player down the distance they are from the ground
+                position += Vector3.down * (groundHit.distance - epsilon * 2);
+            }
+
+            return position;
+        }
+
+        private void Clear()
+        {
+            velocity = Vector3.zero;
+            jumpInputDir = Vector3.zero;
         }
     }
 }

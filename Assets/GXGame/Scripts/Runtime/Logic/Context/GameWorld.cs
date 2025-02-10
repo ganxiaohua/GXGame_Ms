@@ -14,7 +14,7 @@ namespace GXGame.Logic
             EstimateChildsCount(monsterCount + otherCount);
             this.AddSystem<ViewBaseSystem>();
             this.AddSystem<ViewUpdateSystem>();
-            this.AddSystem<CollisionSystem>();
+            this.AddSystem<ControlSystem>();
             this.AddSystem<CollisionBehaviorSystem>();
             this.AddSystem<WorldPosChangeSystem>();
             this.AddSystem<WorldDirChangeBaseSystem>();
@@ -47,11 +47,11 @@ namespace GXGame.Logic
             palyer.AddLocalScale(Vector3.one);
             palyer.AddMoveDirection();
             palyer.AddWorldRotate(Quaternion.identity);
-            palyer.AddMoveSpeed(2);
+            palyer.AddMoveSpeed(1.6f);
             palyer.AddFaceDirection();
             palyer.AddDirectionSpeed(360);
-            palyer.AddGravity(9.8f);
-            palyer.AddYAxisASpeed(4);
+            palyer.AddGravity(16f);
+            palyer.AddYAxisASpeed(5);
             palyer.AddYAxisAcceleration(false);
             palyer.AddCapsuleCollider(CapsuleCollider.Create(palyer, LayerMask.NameToLayer($"Object")));
             palyer.AddCollisionGroundType(CollisionGroundType.Slide);
