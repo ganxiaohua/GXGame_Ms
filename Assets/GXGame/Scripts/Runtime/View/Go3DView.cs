@@ -9,6 +9,7 @@ namespace GXGame
         private AnimatorView animator;
 
         private int walkId = Animator.StringToHash("Walk");
+        private int RunId = Animator.StringToHash("Run");
         private int idleId = Animator.StringToHash("Idle");
 
         public override void Link(ECSEntity ecsEntity)
@@ -37,7 +38,7 @@ namespace GXGame
                 return;
             if (dir.Value != Vector3.zero)
             {
-                animator.Play(walkId);
+                animator.Play(RunId);
             }
             else
             {

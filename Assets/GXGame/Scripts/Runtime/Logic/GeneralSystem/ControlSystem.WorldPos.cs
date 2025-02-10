@@ -9,7 +9,7 @@ namespace GXGame
     {
         private float groundDist = 0.01f;
         private float epsilon = 0.001f;
-        private float anglePower = 0.5f;
+        private float anglePower = 2.0f;
         private float maxWalkingAngle = 60f;
         private float maxJumpAngle = 80f;
         private float jumpAngleWeightFactor = 0.1f;
@@ -23,6 +23,8 @@ namespace GXGame
             var dir = entity.GetMoveDirection().Value;
             var pos = entity.GetWorldPos().Value;
             var moveSpeed = entity.GetMoveSpeed().Value;
+            bool falling = !(groundMsg.onGround && groundMsg.groundAngle <= maxWalkingAngle);
+            dir = !falling ? Vector3.ProjectOnPlane(dir, groundMsg.hit.normal) : Vector3.zero;
             dir = dir.normalized * moveSpeed * Time.deltaTime;
             GravityJump(ref dir);
             pos = MovePlayer(dir + velocity * Time.deltaTime + jumpInputDir);
@@ -54,8 +56,6 @@ namespace GXGame
                 jumpInputDir = movement;
                 movement = Vector3.zero;
             }
-
-            movement = !falling ? Vector3.ProjectOnPlane(movement, groundMsg.hit.normal) : Vector3.zero;
             entity.SetYAxisAcceleration(false);
         }
 
@@ -109,35 +109,35 @@ namespace GXGame
             while (bounces < 5 && remaining.magnitude > epsilon)
             {
                 float distance = remaining.magnitude;
+                Vector3 initPosition = position;
                 if (!CastSelf(position, rotation, remaining.normalized, distance, out RaycastHit hit))
                 {
                     position += remaining;
-
                     break;
                 }
 
-                if (hit.distance == 0)
+                if (Vector3.Dot((position-initPosition), movement) < 0)
                 {
                     break;
                 }
 
                 float fraction = hit.distance / distance;
+                Vector3 deltaBounce = remaining * fraction;
+                deltaBounce = deltaBounce.normalized * Mathf.Max(0, deltaBounce.magnitude - epsilon);
                 //这里是计算刚好碰到撞击点的距离
-                position += remaining * (fraction);
+                position += deltaBounce;
                 //向外轻轻推出一个皮肤的宽度. 防止卡在墙里
                 position += hit.normal * epsilon * 2;
                 //撞击点朝着移动方向延伸出去的一段距离.
-                remaining *= (1 - fraction);
+                remaining *= (1 - Mathf.Max(0, deltaBounce.magnitude / distance));
                 Vector3 planeNormal = hit.normal;
                 //计算出碰撞曲面与操作方向的夹角
-                float angleBetween = Vector3.Angle(hit.normal, remaining) - 90.0f;
+                float angleBetween = Vector3.Angle(hit.normal, remaining);
                 //操作方向的夹角如果大于KCCUtils.MaxAngleShoveDegrees,则使用KCCUtils.MaxAngleShoveDegrees
-                angleBetween = Mathf.Min(MaxAngleShoveDegrees, Mathf.Abs(angleBetween));
+                float normalizedAngle  = Mathf.Max(angleBetween - BufferAngleShove, 0) / MaxAngleShoveDegrees;
+                
 
-                //有几分之几个KCCUtils.MaxAngleShoveDegrees;
-                float normalizedAngle = angleBetween / MaxAngleShoveDegrees;
-
-                remaining *= Mathf.Pow(1 - normalizedAngle, anglePower) * 0.9f + 0.1f;
+                remaining *= Mathf.Pow(Mathf.Abs(1 - normalizedAngle), anglePower);
 
                 Vector3 projected = Vector3.ProjectOnPlane(remaining, planeNormal).normalized * remaining.magnitude;
 

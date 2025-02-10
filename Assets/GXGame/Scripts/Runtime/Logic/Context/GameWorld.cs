@@ -49,10 +49,10 @@ namespace GXGame.Logic
             palyer.AddLocalScale(Vector3.one);
             palyer.AddMoveDirection();
             palyer.AddWorldRotate(Quaternion.identity);
-            palyer.AddMoveSpeed(1.6f);
+            palyer.AddMoveSpeed(3.2f);
             palyer.AddFaceDirection();
             palyer.AddDirectionSpeed(360);
-            palyer.AddGravity(16f);
+            palyer.AddGravity(12f);
             palyer.AddYAxisASpeed(5);
             palyer.AddYAxisAcceleration(false);
             palyer.AddCapsuleCollider(CapsuleCollider.Create(palyer, LayerMask.NameToLayer($"Object")));
