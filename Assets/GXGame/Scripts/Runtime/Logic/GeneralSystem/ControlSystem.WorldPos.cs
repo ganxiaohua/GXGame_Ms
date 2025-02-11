@@ -16,7 +16,6 @@ namespace GXGame
         public const float MaxAngleShoveDegrees = 180.0f - BufferAngleShove;
         public const float BufferAngleShove = 120.0f;
         private Vector3 velocity;
-        private Vector3 jumpInputDir;
 
         private void SetWolrdPos()
         {
@@ -24,10 +23,11 @@ namespace GXGame
             var pos = entity.GetWorldPos().Value;
             var moveSpeed = entity.GetMoveSpeed().Value;
             bool falling = !(groundMsg.onGround && groundMsg.groundAngle <= maxWalkingAngle);
-            dir = !falling ? Vector3.ProjectOnPlane(dir, groundMsg.hit.normal) : Vector3.zero;
+            dir = !falling ? Vector3.ProjectOnPlane(dir, groundMsg.hit.normal) : dir;
             dir = dir.normalized * moveSpeed * Time.deltaTime;
             GravityJump(ref dir);
-            pos = MovePlayer(dir + velocity * Time.deltaTime + jumpInputDir);
+            pos = MovePlayer(pos, dir);
+            pos = MovePlayer(pos, velocity * Time.deltaTime);
             SnapPlayerDown(pos);
             capsuleCollider.Value.position = pos;
             entity.SetWorldPos(pos);
@@ -45,7 +45,6 @@ namespace GXGame
             }
             else
             {
-                jumpInputDir = Vector3.zero;
                 velocity = Vector3.zero;
             }
 
@@ -53,9 +52,9 @@ namespace GXGame
             if (canJump && yAxis)
             {
                 velocity = Vector3.Lerp(Vector3.up, (groundMsg.hit.normal).normalized, jumpAngleWeightFactor).normalized * jumpSpeed;
-                jumpInputDir = movement;
                 movement = Vector3.zero;
             }
+
             entity.SetYAxisAcceleration(false);
         }
 
@@ -97,9 +96,8 @@ namespace GXGame
             return (onGround, angle, groundHit);
         }
 
-        public Vector3 MovePlayer(Vector3 movement)
+        public Vector3 MovePlayer(Vector3 position, Vector3 movement)
         {
-            var position = entity.GetWorldPos().Value;
             var rotation = entity.GetWorldRotate().Value;
             if (movement == Vector3.zero)
                 return position;
@@ -109,14 +107,13 @@ namespace GXGame
             while (bounces < 5 && remaining.magnitude > epsilon)
             {
                 float distance = remaining.magnitude;
-                Vector3 initPosition = position;
                 if (!CastSelf(position, rotation, remaining.normalized, distance, out RaycastHit hit))
                 {
                     position += remaining;
                     break;
                 }
 
-                if (Vector3.Dot((position-initPosition), movement) < 0)
+                if (Vector3.Dot(remaining, movement) < 0)
                 {
                     break;
                 }
@@ -134,8 +131,8 @@ namespace GXGame
                 //计算出碰撞曲面与操作方向的夹角
                 float angleBetween = Vector3.Angle(hit.normal, remaining);
                 //操作方向的夹角如果大于KCCUtils.MaxAngleShoveDegrees,则使用KCCUtils.MaxAngleShoveDegrees
-                float normalizedAngle  = Mathf.Max(angleBetween - BufferAngleShove, 0) / MaxAngleShoveDegrees;
-                
+                float normalizedAngle = Mathf.Max(angleBetween - BufferAngleShove, 0) / MaxAngleShoveDegrees;
+
 
                 remaining *= Mathf.Pow(Mathf.Abs(1 - normalizedAngle), anglePower);
 
@@ -179,7 +176,6 @@ namespace GXGame
         private void Clear()
         {
             velocity = Vector3.zero;
-            jumpInputDir = Vector3.zero;
         }
     }
 }
