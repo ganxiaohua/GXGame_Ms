@@ -98,10 +98,7 @@ namespace GXGame
                 Vector3 push = direction.normalized * (distance);
                 pushed += push;
                 position += push;
-                Debug.Log(direction+"xxx"+distance);
-                
             }
-
             return Vector3.ClampMagnitude(pushed, maxDistance);
         }
 
