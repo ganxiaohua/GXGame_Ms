@@ -35,25 +35,10 @@ namespace GXGame
                 unityCapsuleCollider = capsuleCollider.Value.gameObject.GetComponent<UnityEngine.CapsuleCollider>();
                 groundMsg = CheckGrounded();
                 SetWolrdPos();
-                SetWorldRotate();
                 entity.SetCapsuleCollider(capsuleCollider.Value);
             }
         }
-
-
-        private void SetWorldRotate()
-        {
-            if (!groundMsg.onGround)
-                return;
-            var dir = entity.GetFaceDirection().Value;
-            float speed = entity.GetDirectionSpeed().Value;
-            Vector3 nowDir = capsuleCollider.Value.rotation * Vector3.forward;
-            float angle = speed * Time.deltaTime * world.Multiple;
-            var curDir = Vector3.RotateTowards(nowDir, dir, Mathf.Deg2Rad * angle, 0);
-            var drot = Quaternion.LookRotation(curDir);
-            capsuleCollider.Value.rotation = drot;
-            entity.SetWorldRotate(drot);
-        }
+        
 
 
         // /// <summary>

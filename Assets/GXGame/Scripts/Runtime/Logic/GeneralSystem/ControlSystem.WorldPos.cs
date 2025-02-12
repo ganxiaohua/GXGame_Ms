@@ -9,6 +9,7 @@ namespace GXGame
     {
         private float groundDist = 0.01f;
         private float epsilon = 0.001f;
+        private float skinWidth = 0.01f;
         private float anglePower = 2.0f;
         private float maxWalkingAngle = 60f;
         private float maxJumpAngle = 80f;
@@ -16,30 +17,54 @@ namespace GXGame
         public const float MaxAngleShoveDegrees = 180.0f - BufferAngleShove;
         public const float BufferAngleShove = 120.0f;
         private Vector3 velocity;
+        protected static Collider[] OverlapCache = new Collider[20];
+
 
         private void SetWolrdPos()
         {
             var dir = entity.GetMoveDirection().Value;
             var pos = entity.GetWorldPos().Value;
+            var rot = entity.GetWorldRotate().Value;
+            FollowGround(ref pos, ref rot);
+            var initPos = pos;
+            var xx = PushOutOverlapping(pos, rot, 100 * Time.deltaTime, skinWidth / 2);
+            pos += xx;
             var moveSpeed = entity.GetMoveSpeed().Value;
-            bool falling = !(groundMsg.onGround && groundMsg.groundAngle <= maxWalkingAngle);
-            dir = !falling ? Vector3.ProjectOnPlane(dir, groundMsg.hit.normal) : dir;
+            bool fg = IsFallingOrglide();
+            dir = !fg ? Vector3.ProjectOnPlane(dir, groundMsg.hit.normal) : dir;
             dir = dir.normalized * moveSpeed * Time.deltaTime;
-            GravityJump(ref dir);
+            GravityJump();
             pos = MovePlayer(pos, dir);
             pos = MovePlayer(pos, velocity * Time.deltaTime);
-            SnapPlayerDown(pos);
+            // pos = SnapPlayerDown(pos);
+            rot = SetWorldRotate(rot);
             capsuleCollider.Value.position = pos;
+            capsuleCollider.Value.rotation = rot;
             entity.SetWorldPos(pos);
+            entity.SetWorldRotate(rot);
+            UpdateMovingGround(initPos, rot, pos - initPos);
         }
 
-        private void GravityJump(ref Vector3 movement)
+        private Quaternion SetWorldRotate(Quaternion rot)
+        {
+            var dir = entity.GetFaceDirection().Value;
+            float speed = entity.GetDirectionSpeed().Value;
+            if (!groundMsg.onGround)
+                speed /= 2;
+            Vector3 nowDir = rot * Vector3.forward;
+            float angle = speed * Time.deltaTime * world.Multiple;
+            var curDir = Vector3.RotateTowards(nowDir, dir, Mathf.Deg2Rad * angle, 0);
+            var drot = Quaternion.LookRotation(curDir);
+            return drot;
+        }
+
+        private void GravityJump()
         {
             var gravity = entity.GetGravity().Value;
             var jumpSpeed = entity.GetYAxisASpeed().Value;
             var yAxis = entity.GetYAxisAcceleration().Value;
-            bool falling = !(groundMsg.onGround && groundMsg.groundAngle <= maxWalkingAngle);
-            if (falling)
+            bool fg = IsFallingOrglide();
+            if (fg)
             {
                 velocity.y += -gravity * Time.deltaTime;
             }
@@ -48,42 +73,36 @@ namespace GXGame
                 velocity = Vector3.zero;
             }
 
-            bool canJump = (groundMsg.onGround) && groundMsg.groundAngle <= maxJumpAngle && !falling;
+            bool canJump = (groundMsg.onGround) && groundMsg.groundAngle <= maxJumpAngle && !fg;
             if (canJump && yAxis)
             {
                 velocity = Vector3.Lerp(Vector3.up, (groundMsg.hit.normal).normalized, jumpAngleWeightFactor).normalized * jumpSpeed;
-                movement = Vector3.zero;
             }
 
             entity.SetYAxisAcceleration(false);
         }
 
-        public bool CastSelf(Vector3 pos, Quaternion rot, Vector3 dir, float dist, out RaycastHit hit)
+
+        public virtual Vector3 PushOutOverlapping(Vector3 position, Quaternion rotation, float maxDistance, float skinWidth = 0.0f)
         {
-            Vector3 center = rot * unityCapsuleCollider.center + pos;
-            float radius = unityCapsuleCollider.radius;
-            float height = unityCapsuleCollider.height;
-
-            Vector3 bottom = center + rot * Vector3.down * (height / 2 - radius);
-            Vector3 top = center + rot * Vector3.up * (height / 2 - radius);
-
-            int count = Physics.CapsuleCastNonAlloc(top, bottom, radius, dir, raycastHit, dist, ~0, QueryTriggerInteraction.Ignore);
-            float directDist = float.MaxValue;
-            bool didHit = false;
-            hit = default;
+            Vector3 pushed = Vector3.zero;
+            var count = GetOverlapping(position, rotation, ~0, QueryTriggerInteraction.Collide, skinWidth);
             for (int i = 0; i < count; i++)
             {
-                var tempHit = raycastHit[i];
-                //过滤自己 选出距离最近的
-                if (tempHit.transform != capsuleCollider.Value.transform && directDist > tempHit.distance)
-                {
-                    hit = tempHit;
-                    directDist = tempHit.distance;
-                    didHit = true;
-                }
+                var overlap = OverlapCache[i];
+                Physics.ComputePenetration(
+                    unityCapsuleCollider, position, rotation,
+                    overlap, overlap.gameObject.transform.position, overlap.gameObject.transform.rotation,
+                    out Vector3 direction, out float distance
+                );
+                Vector3 push = direction.normalized * (distance);
+                pushed += push;
+                position += push;
+                Debug.Log(direction+"xxx"+distance);
+                
             }
 
-            return didHit;
+            return Vector3.ClampMagnitude(pushed, maxDistance);
         }
 
 
@@ -91,23 +110,26 @@ namespace GXGame
         {
             var pos = entity.GetWorldPos().Value;
             var rot = entity.GetWorldRotate().Value;
-            bool onGround = CastSelf(pos, rot, Vector3.down, groundDist, out RaycastHit groundHit);
+            bool onGround = CastSelf(pos, rot, Vector3.down, groundDist, out RaycastHit groundHit, skinWidth);
             float angle = Vector3.Angle(groundHit.normal, Vector3.up);
             return (onGround, angle, groundHit);
+        }
+
+        private bool IsFallingOrglide()
+        {
+            return !(groundMsg.onGround && groundMsg.groundAngle <= maxWalkingAngle);
         }
 
         public Vector3 MovePlayer(Vector3 position, Vector3 movement)
         {
             var rotation = entity.GetWorldRotate().Value;
-            if (movement == Vector3.zero)
-                return position;
             Vector3 remaining = movement;
             int bounces = 0;
             //弹跳次数小于最大弹跳次数  &&  移动位置比最小可移动位置大.
             while (bounces < 5 && remaining.magnitude > epsilon)
             {
                 float distance = remaining.magnitude;
-                if (!CastSelf(position, rotation, remaining.normalized, distance, out RaycastHit hit))
+                if (!CastSelf(position, rotation, remaining.normalized, distance, out RaycastHit hit, skinWidth))
                 {
                     position += remaining;
                     break;
@@ -123,8 +145,6 @@ namespace GXGame
                 deltaBounce = deltaBounce.normalized * Mathf.Max(0, deltaBounce.magnitude - epsilon);
                 //这里是计算刚好碰到撞击点的距离
                 position += deltaBounce;
-                //向外轻轻推出一个皮肤的宽度. 防止卡在墙里
-                position += hit.normal * epsilon * 2;
                 //撞击点朝着移动方向延伸出去的一段距离.
                 remaining *= (1 - Mathf.Max(0, deltaBounce.magnitude / distance));
                 Vector3 planeNormal = hit.normal;
@@ -132,8 +152,7 @@ namespace GXGame
                 float angleBetween = Vector3.Angle(hit.normal, remaining);
                 //操作方向的夹角如果大于KCCUtils.MaxAngleShoveDegrees,则使用KCCUtils.MaxAngleShoveDegrees
                 float normalizedAngle = Mathf.Max(angleBetween - BufferAngleShove, 0) / MaxAngleShoveDegrees;
-
-
+                
                 remaining *= Mathf.Pow(Mathf.Abs(1 - normalizedAngle), anglePower);
 
                 Vector3 projected = Vector3.ProjectOnPlane(remaining, planeNormal).normalized * remaining.magnitude;
@@ -162,11 +181,8 @@ namespace GXGame
                 Vector3.down,
                 0.01f,
                 out RaycastHit groundHit);
-
-            // If within the threshold distance of the ground
             if (closeToGround && groundHit.distance > 0)
             {
-                // Snap the player down the distance they are from the ground
                 position += Vector3.down * (groundHit.distance - epsilon * 2);
             }
 
