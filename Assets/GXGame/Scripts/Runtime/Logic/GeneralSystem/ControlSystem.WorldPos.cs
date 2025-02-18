@@ -14,21 +14,21 @@ namespace GXGame
         private float maxWalkingAngle = 60f;
         private float maxJumpAngle = 80f;
         private float jumpAngleWeightFactor = 0.1f;
+        private float stepUpDepth = 5f; 
         public const float MaxAngleShoveDegrees = 180.0f - BufferAngleShove;
         public const float BufferAngleShove = 120.0f;
         private Vector3 velocity;
         protected static Collider[] OverlapCache = new Collider[20];
 
 
-        private void SetWolrdPos()
+        private void SetInput()
         {
             var dir = entity.GetMoveDirection().Value;
             var pos = entity.GetWorldPos().Value;
             var rot = entity.GetWorldRotate().Value;
             FollowGround(ref pos, ref rot);
             var initPos = pos;
-            var xx = PushOutOverlapping(pos, rot, 100 * Time.deltaTime, skinWidth / 2);
-            pos += xx;
+            pos += PushOutOverlapping(pos, rot, 100 * Time.deltaTime, skinWidth / 2);
             var moveSpeed = entity.GetMoveSpeed().Value;
             bool fg = IsFallingOrglide();
             dir = !fg ? Vector3.ProjectOnPlane(dir, groundMsg.hit.normal) : dir;
@@ -99,6 +99,7 @@ namespace GXGame
                 pushed += push;
                 position += push;
             }
+
             return Vector3.ClampMagnitude(pushed, maxDistance);
         }
 
@@ -145,13 +146,21 @@ namespace GXGame
                 //撞击点朝着移动方向延伸出去的一段距离.
                 remaining *= (1 - Mathf.Max(0, deltaBounce.magnitude / distance));
                 Vector3 planeNormal = hit.normal;
+                //上楼梯计算
+                bool perpendicularBounce = CheckPerpendicularBounce(hit, remaining);
+                Vector3 snappedMomentum = remaining;
+                Vector3 snappedPosition = position;
+                if (perpendicularBounce && AttemptSnapUp(hit, ref snappedMomentum, ref snappedPosition, rotation))
+                {
+                    position = snappedPosition;
+                    continue;
+                }
+                
                 //计算出碰撞曲面与操作方向的夹角
                 float angleBetween = Vector3.Angle(hit.normal, remaining);
                 //操作方向的夹角如果大于KCCUtils.MaxAngleShoveDegrees,则使用KCCUtils.MaxAngleShoveDegrees
                 float normalizedAngle = Mathf.Max(angleBetween - BufferAngleShove, 0) / MaxAngleShoveDegrees;
-                
                 remaining *= Mathf.Pow(Mathf.Abs(1 - normalizedAngle), anglePower);
-
                 Vector3 projected = Vector3.ProjectOnPlane(remaining, planeNormal).normalized * remaining.magnitude;
 
                 if (projected.magnitude + epsilon < remaining.magnitude)
@@ -162,13 +171,16 @@ namespace GXGame
                 {
                     remaining = projected;
                 }
-
                 bounces++;
             }
-
             return position;
         }
 
+        /// <summary>
+        /// 下楼梯的时候速度要加快
+        /// </summary>
+        /// <param name="position"></param>
+        /// <returns></returns>
         public Vector3 SnapPlayerDown(Vector3 position)
         {
             var rotation = entity.GetWorldRotate().Value;
@@ -176,11 +188,12 @@ namespace GXGame
                 position,
                 rotation,
                 Vector3.down,
-                0.01f,
+                skinWidth,
                 out RaycastHit groundHit);
             if (closeToGround && groundHit.distance > 0)
             {
-                position += Vector3.down * (groundHit.distance - epsilon * 2);
+                var offset = Vector3.ClampMagnitude( Vector3.down * groundHit.distance, 3 * Time.deltaTime);
+                position += offset;
             }
 
             return position;

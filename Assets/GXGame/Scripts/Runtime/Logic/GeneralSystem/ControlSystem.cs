@@ -34,7 +34,7 @@ namespace GXGame
                 this.capsuleCollider = capsuleCollider;
                 unityCapsuleCollider = capsuleCollider.Value.gameObject.GetComponent<UnityEngine.CapsuleCollider>();
                 groundMsg = CheckGrounded();
-                SetWolrdPos();
+                SetInput();
                 entity.SetCapsuleCollider(capsuleCollider.Value);
             }
         }
