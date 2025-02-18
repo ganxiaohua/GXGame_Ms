@@ -4,7 +4,7 @@ namespace GXGame
 {
     public partial class ControlSystem
     {
-        public (Vector3 center, float radius, float height, Vector3 bottom, Vector3 top) CalculateCapsuleCollider(Vector3 position, Quaternion rotation,
+        private (Vector3 center, float radius, float height, Vector3 bottom, Vector3 top) CalculateCapsuleCollider(Vector3 position, Quaternion rotation,
             float flared)
         {
             Vector3 center = rotation * unityCapsuleCollider.center + position;
@@ -15,7 +15,7 @@ namespace GXGame
             return (center, radius, height, bottom, top);
         }
 
-        public int GetOverlapping(
+        private int GetOverlapping(
             Vector3 position,
             Quaternion rotation,
             int layerMask = ~0,
@@ -40,7 +40,7 @@ namespace GXGame
             return overlap;
         }
 
-        public bool CastSelf(Vector3 pos, Quaternion rot, Vector3 dir, float dist, out RaycastHit hit, float skinWidth = 0.01f)
+        private bool CastSelf(Vector3 pos, Quaternion rot, Vector3 dir, float dist, out RaycastHit hit, float skinWidth = 0.01f)
         {
             var ccc = CalculateCapsuleCollider(pos, rot, -skinWidth);
             int count = Physics.CapsuleCastNonAlloc(ccc.top, ccc.bottom, ccc.radius, dir, raycastHit, dist + skinWidth, ~0, QueryTriggerInteraction.Ignore);
@@ -62,14 +62,14 @@ namespace GXGame
             return didHit;
         }
 
-        public bool DoRaycastInDirection(Vector3 source, Vector3 direction, float distance, out RaycastHit stepHit, int layerMask = ~0,
+        private bool DoRaycastInDirection(Vector3 source, Vector3 direction, float distance, out RaycastHit stepHit, int layerMask = ~0,
             QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.Ignore)
         {
             bool didHit = Physics.Raycast(new Ray(source, direction), out stepHit, distance, layerMask, queryTriggerInteraction);
             return didHit;
         }
 
-        public bool CheckPerpendicularBounce(
+        private bool CheckPerpendicularBounce(
             RaycastHit hit,
             Vector3 momentum)
         {
@@ -89,8 +89,8 @@ namespace GXGame
             var ccc = CalculateCapsuleCollider(position, rotation, 0);
             return ccc.bottom + ccc.radius * (rotation * -Vector3.up);
         }
-        
-        public  bool AttemptSnapUp(
+
+        private bool AttemptSnapUp(
             float distanceToSnap,
             ref Vector3 momentum,
             ref Vector3 position,
@@ -110,20 +110,19 @@ namespace GXGame
                 position += distanceMove * Vector3.up;
                 return true;
             }
-            
+
             return false;
         }
-        
-        
-        public  bool AttemptSnapUp(
+
+
+        private bool AttemptSnapUp(
             RaycastHit hit,
             ref Vector3 momentum,
             ref Vector3 position,
             Quaternion rotation)
         {
-
             Vector3 bottom = GetBottom(position, rotation);
-            Vector3 footVector = Vector3.Project(hit.point,Vector3.up) - Vector3.Project(bottom, Vector3.up);
+            Vector3 footVector = Vector3.Project(hit.point, Vector3.up) - Vector3.Project(bottom, Vector3.up);
             bool isAbove = Vector3.Dot(footVector, Vector3.up) > 0;
             float distanceToFeet = footVector.magnitude * (isAbove ? 1 : -1);
             bool snappedUp = false;
@@ -134,8 +133,8 @@ namespace GXGame
                     ref momentum,
                     ref position,
                     rotation);
-                
             }
+
             return snappedUp;
         }
     }

@@ -32,12 +32,12 @@ namespace GXGame
             var moveSpeed = entity.GetMoveSpeed().Value;
             bool fg = IsFallingOrglide();
             dir = !fg ? Vector3.ProjectOnPlane(dir, groundMsg.hit.normal) : dir;
-            dir = dir.normalized * moveSpeed * Time.deltaTime;
+            dir = dir.normalized * (moveSpeed * Time.deltaTime);
             GravityJump();
             pos = MovePlayer(pos, dir);
             pos = MovePlayer(pos, velocity * Time.deltaTime);
             // pos = SnapPlayerDown(pos);
-            rot = SetWorldRotate(rot);
+            rot = CalculateWorldRotate(rot);
             capsuleCollider.Value.position = pos;
             capsuleCollider.Value.rotation = rot;
             entity.SetWorldPos(pos);
@@ -45,7 +45,7 @@ namespace GXGame
             UpdateMovingGround(initPos, rot, pos - initPos);
         }
 
-        private Quaternion SetWorldRotate(Quaternion rot)
+        private Quaternion CalculateWorldRotate(Quaternion rot)
         {
             var dir = entity.GetFaceDirection().Value;
             float speed = entity.GetDirectionSpeed().Value;
@@ -83,7 +83,7 @@ namespace GXGame
         }
 
 
-        public virtual Vector3 PushOutOverlapping(Vector3 position, Quaternion rotation, float maxDistance, float skinWidth = 0.0f)
+        private  Vector3 PushOutOverlapping(Vector3 position, Quaternion rotation, float maxDistance, float skinWidth = 0.0f)
         {
             Vector3 pushed = Vector3.zero;
             var count = GetOverlapping(position, rotation, ~0, QueryTriggerInteraction.Collide, skinWidth);
@@ -118,7 +118,7 @@ namespace GXGame
             return !(groundMsg.onGround && groundMsg.groundAngle <= maxWalkingAngle);
         }
 
-        public Vector3 MovePlayer(Vector3 position, Vector3 movement)
+        private Vector3 MovePlayer(Vector3 position, Vector3 movement)
         {
             var rotation = entity.GetWorldRotate().Value;
             Vector3 remaining = movement;
