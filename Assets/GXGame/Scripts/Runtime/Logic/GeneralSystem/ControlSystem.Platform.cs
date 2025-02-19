@@ -5,7 +5,7 @@ namespace GXGame
     public partial class ControlSystem
     {
 
-        private void UpdateMovingGround(Vector3 position, Quaternion rotation, Vector3 delta)
+        private void UpdateMovingGround(Vector3 position, Quaternion rotation)
         {
             var value = entity.GetGroundMsgComponent().Value;
             if (!groundMsg.onGround)
@@ -17,17 +17,12 @@ namespace GXGame
             }
 
             var parent = groundMsg.hit.transform;
-            value.RelativeRotation = rotation * Quaternion.Inverse(parent.rotation);
-            if (parent != value.PreviousParent)
-            {
-                value.RelativePos = position + delta - parent.position;
-                value.RelativePos = Quaternion.Inverse(parent.rotation) * value.RelativePos;
-            }
-            else
-            {
-                value.RelativePos += Quaternion.Inverse(parent.rotation) * delta;
-            }
-
+            var parentInverse = Quaternion.Inverse(parent.rotation);
+            //得到我在父物体中的本地旋转
+            value.RelativeRotation = rotation * parentInverse;
+            value.RelativePos = position  - parent.position;
+            //得到我在父物体中的本地坐标.
+            value.RelativePos = parentInverse * value.RelativePos;
             value.PreviousParent = parent;
         }
 

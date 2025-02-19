@@ -24,7 +24,6 @@ namespace GXGame
             var pos = entity.GetWorldPos().Value;
             var rot = entity.GetWorldRotate().Value;
             FollowGround(ref pos, ref rot);
-            var initPos = pos;
             pos += PushOutOverlapping(pos, rot, 100 * Time.deltaTime, skinWidth / 2);
             var moveSpeed = entity.GetMoveSpeed().Value;
             bool fg = IsFallingOrglide();
@@ -39,7 +38,7 @@ namespace GXGame
             capsuleCollider.Value.rotation = rot;
             entity.SetWorldPos(pos);
             entity.SetWorldRotate(rot);
-            UpdateMovingGround(initPos, rot, pos - initPos);
+            UpdateMovingGround(pos, rot);
         }
 
         private Quaternion CalculateWorldRotate(Quaternion rot)
