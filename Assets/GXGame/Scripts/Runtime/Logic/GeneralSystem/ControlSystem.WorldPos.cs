@@ -1,7 +1,4 @@
-﻿using System.Collections.Generic;
-using System.Linq;
-using GameFrame;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace GXGame
 {
@@ -14,13 +11,13 @@ namespace GXGame
         private float maxWalkingAngle = 60f;
         private float maxJumpAngle = 80f;
         private float jumpAngleWeightFactor = 0.1f;
-        private float stepUpDepth = 5f; 
+        private float stepUpDepth = 1.0f; 
         public const float MaxAngleShoveDegrees = 180.0f - BufferAngleShove;
         public const float BufferAngleShove = 120.0f;
         private Vector3 velocity;
         protected static Collider[] OverlapCache = new Collider[20];
-
-
+        
+        
         private void SetInput()
         {
             var dir = entity.GetMoveDirection().Value;

@@ -4,52 +4,57 @@ namespace GXGame
 {
     public partial class ControlSystem
     {
-        private Vector3 relativePos;
-        private Quaternion relativeRotation;
-        private Transform previousParent;
 
         private void UpdateMovingGround(Vector3 position, Quaternion rotation, Vector3 delta)
         {
+            var value = entity.GetGroundMsgComponent().Value;
             if (!groundMsg.onGround)
             {
-                Reset();
+                value.RelativePos = Vector3.zero;
+                value.RelativeRotation = Quaternion.identity;
+                value.PreviousParent = null;
                 return;
             }
 
             var parent = groundMsg.hit.transform;
-            relativeRotation = rotation * Quaternion.Inverse(parent.rotation);
-            if (parent != previousParent)
+            value.RelativeRotation = rotation * Quaternion.Inverse(parent.rotation);
+            if (parent != value.PreviousParent)
             {
-                relativePos = position + delta - parent.position;
-                relativePos = Quaternion.Inverse(parent.rotation) * relativePos;
+                value.RelativePos = position + delta - parent.position;
+                value.RelativePos = Quaternion.Inverse(parent.rotation) * value.RelativePos;
             }
             else
             {
-                relativePos += Quaternion.Inverse(parent.rotation) * delta;
+                value.RelativePos += Quaternion.Inverse(parent.rotation) * delta;
             }
 
-            previousParent = parent;
+            value.PreviousParent = parent;
         }
 
 
         private Quaternion DeltaRotation(Quaternion a)
         {
-            if (!groundMsg.onGround || previousParent == null)
+            var value = entity.GetGroundMsgComponent().Value;
+            if (!groundMsg.onGround || value.PreviousParent == null)
             {
                 return a;
             }
 
-            return previousParent.rotation * relativeRotation;
+            var x = value.PreviousParent.rotation * value.RelativeRotation;
+            x.x = 0;
+            x.z = 0;
+            return x;
         }
 
         private Vector3 DeltaPosition(Vector3 position)
         {
-            if (!groundMsg.onGround || previousParent == null)
+            var value = entity.GetGroundMsgComponent().Value;
+            if (!groundMsg.onGround || value.PreviousParent == null)
             {
                 return Vector3.zero;
             }
 
-            return (previousParent.position + previousParent.rotation * relativePos) - position;
+            return (value.PreviousParent.position + value.PreviousParent.rotation * value.RelativePos) - position;
         }
 
         private void FollowGround(ref Vector3 position, ref Quaternion rotation)
@@ -57,13 +62,6 @@ namespace GXGame
             position += DeltaPosition(position);
             rotation = DeltaRotation(rotation);
         }
-
-
-        private void Reset()
-        {
-            relativePos = Vector3.zero;
-            relativeRotation = Quaternion.identity;
-            previousParent = null;
-        }
+        
     }
 }

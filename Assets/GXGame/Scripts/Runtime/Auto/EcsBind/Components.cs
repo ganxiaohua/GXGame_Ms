@@ -41,8 +41,9 @@ public static class Components {
     public const int YAxisAcceleration= 34;
     public const int RaycastHitMsg= 35;
     public const int CollisionGroundType= 36;
+    public const int GroundMsgComponent= 37;
     
-    public const int TotalComponents = 37;
+    public const int TotalComponents = 38;
     
     
     public static readonly System.Type[] ComponentTypes = {
@@ -84,6 +85,7 @@ public static class Components {
         typeof(GXGame.YAxisAcceleration),
         typeof(GXGame.RaycastHitMsg),
         typeof(GXGame.CollisionGroundType),
+        typeof(GXGame.GroundMsgComponent),
     };
 
     

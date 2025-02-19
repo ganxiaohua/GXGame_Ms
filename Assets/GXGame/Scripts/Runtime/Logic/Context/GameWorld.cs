@@ -55,6 +55,7 @@ namespace GXGame.Logic
             palyer.AddGravity(12f);
             palyer.AddYAxisASpeed(5);
             palyer.AddYAxisAcceleration(false);
+            palyer.AddGroundMsgComponent(new GroudMsg());
             palyer.AddCapsuleCollider(CapsuleCollider.Create(palyer, LayerMask.NameToLayer($"Object")));
             palyer.AddCollisionGroundType(CollisionGroundType.Slide);
             palyer.AddCampComponent(GXGame.Camp.SELF);
