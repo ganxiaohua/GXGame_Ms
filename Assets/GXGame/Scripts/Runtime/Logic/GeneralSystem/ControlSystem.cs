@@ -14,15 +14,18 @@ namespace GXGame
         private Group group;
         private World world;
         private ECSEntity entity;
+        private Group cameraGroup;
         private CapsuleCollider capsuleCollider;
         private UnityEngine.CapsuleCollider unityCapsuleCollider;
         private (bool onGround, float groundAngle, RaycastHit hit) groundMsg;
 
-        public void OnInitialize(World entity)
+        public void OnInitialize(World world)
         {
-            world = entity;
+            this.world = world;
             Matcher matcher = Matcher.SetAll(Components.MoveDirection, Components.FaceDirection, Components.FaceDirection, Components.CapsuleCollider);
-            group = entity.GetGroup(matcher);
+            group = world.GetGroup(matcher);
+            matcher = Matcher.SetAll(Components.CameraComponent);
+            cameraGroup = world.GetGroup(matcher);
         }
 
         public void FixedUpdate(float elapseSeconds, float realElapseSeconds)
@@ -38,7 +41,6 @@ namespace GXGame
                 entity.SetCapsuleCollider(capsuleCollider.Value);
             }
         }
-        
 
 
         // /// <summary>

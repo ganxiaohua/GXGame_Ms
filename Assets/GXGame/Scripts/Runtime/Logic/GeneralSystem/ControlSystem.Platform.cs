@@ -35,10 +35,10 @@ namespace GXGame
                 return a;
             }
 
-            var x = value.PreviousParent.rotation * value.RelativeRotation;
-            x.x = 0;
-            x.z = 0;
-            return x;
+            var rotation = value.PreviousParent.rotation * value.RelativeRotation;
+            rotation.x = 0;
+            rotation.z = 0;
+            return rotation;
         }
 
         private Vector3 DeltaPosition(Vector3 position)

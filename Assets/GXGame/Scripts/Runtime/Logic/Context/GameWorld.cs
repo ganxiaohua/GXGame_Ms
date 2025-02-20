@@ -30,12 +30,14 @@ namespace GXGame.Logic
         {
             var camera = AddChild();
             camera.Name = $"摄像机";
+            camera.AddCameraComponent();
             camera.AddViewType(typeof(CameraView));
             camera.AddAssetPath("Camera/Prefabs/Camera");
-            camera.AddWorldPos(Vector3.zero);
+            camera.AddWorldPos(new Vector3(0,3,-4));
             camera.AddWorldRotate(Quaternion.identity);
             camera.AddLocalScale(Vector3.one);
             camera.AddBehaviorTreeComponent("BTO/CameraBto");
+            camera.AddMoveDirection(Vector3.zero);
         }
 
         
@@ -45,7 +47,7 @@ namespace GXGame.Logic
             palyer.Name = $"主角";
             palyer.AddViewType(typeof(Go3DView));
             palyer.AddAssetPath("Player/Prefabs/Player");
-            palyer.AddWorldPos(new Vector3(0,1,0));
+            palyer.AddWorldPos(new Vector3(0,0,0));
             palyer.AddLocalScale(Vector3.one);
             palyer.AddMoveDirection();
             palyer.AddWorldRotate(Quaternion.identity);

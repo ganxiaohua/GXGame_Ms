@@ -9,6 +9,11 @@ namespace GXGame
         
     }
     
+    public class CameraComponent : ECSComponent
+    {
+        
+    }
+    
     public class HP : ECSComponent
     {
         public int Value;

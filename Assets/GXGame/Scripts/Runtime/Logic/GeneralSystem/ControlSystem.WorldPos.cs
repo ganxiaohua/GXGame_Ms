@@ -11,18 +11,25 @@ namespace GXGame
         private float maxWalkingAngle = 60f;
         private float maxJumpAngle = 80f;
         private float jumpAngleWeightFactor = 0.1f;
-        private float stepUpDepth = 1.0f; 
+        private float stepUpDepth = 1.0f;
         public const float MaxAngleShoveDegrees = 180.0f - BufferAngleShove;
         public const float BufferAngleShove = 120.0f;
         private Vector3 velocity;
         protected static Collider[] OverlapCache = new Collider[20];
-        
-        
+
+
         private void SetInput()
         {
             var dir = entity.GetMoveDirection().Value;
             var pos = entity.GetWorldPos().Value;
             var rot = entity.GetWorldRotate().Value;
+            foreach (var camera in cameraGroup)
+            {
+                var camerRotValue = camera.GetWorldRotate().Value;
+                dir = camerRotValue * dir;
+                dir.y = 0;
+            }
+
             FollowGround(ref pos, ref rot);
             pos += PushOutOverlapping(pos, rot, 100 * Time.deltaTime, skinWidth / 2);
             var moveSpeed = entity.GetMoveSpeed().Value;
@@ -38,6 +45,7 @@ namespace GXGame
             capsuleCollider.Value.rotation = rot;
             entity.SetWorldPos(pos);
             entity.SetWorldRotate(rot);
+            entity.SetFaceDirection(new Vector3(dir.x, 0, dir.z));
             UpdateMovingGround(pos, rot);
         }
 
@@ -79,7 +87,7 @@ namespace GXGame
         }
 
 
-        private  Vector3 PushOutOverlapping(Vector3 position, Quaternion rotation, float maxDistance, float skinWidth = 0.0f)
+        private Vector3 PushOutOverlapping(Vector3 position, Quaternion rotation, float maxDistance, float skinWidth = 0.0f)
         {
             Vector3 pushed = Vector3.zero;
             var count = GetOverlapping(position, rotation, ~0, QueryTriggerInteraction.Collide, skinWidth);
@@ -146,12 +154,12 @@ namespace GXGame
                 bool perpendicularBounce = CheckPerpendicularBounce(hit, remaining);
                 Vector3 snappedMomentum = remaining;
                 Vector3 snappedPosition = position;
-                if (perpendicularBounce && AttemptSnapUp(hit, ref snappedMomentum, ref snappedPosition, rotation))
+                if (groundMsg.onGround && perpendicularBounce && AttemptSnapUp(hit, ref snappedMomentum, ref snappedPosition, rotation))
                 {
                     position = snappedPosition;
                     continue;
                 }
-                
+
                 //计算出碰撞曲面与操作方向的夹角
                 float angleBetween = Vector3.Angle(hit.normal, remaining);
                 //操作方向的夹角如果大于KCCUtils.MaxAngleShoveDegrees,则使用KCCUtils.MaxAngleShoveDegrees
@@ -167,8 +175,10 @@ namespace GXGame
                 {
                     remaining = projected;
                 }
+
                 bounces++;
             }
+
             return position;
         }
 
@@ -188,7 +198,7 @@ namespace GXGame
                 out RaycastHit groundHit);
             if (closeToGround && groundHit.distance > 0)
             {
-                var offset = Vector3.ClampMagnitude( Vector3.down * groundHit.distance, 3 * Time.deltaTime);
+                var offset = Vector3.ClampMagnitude(Vector3.down * groundHit.distance, 3 * Time.deltaTime);
                 position += offset;
             }
 

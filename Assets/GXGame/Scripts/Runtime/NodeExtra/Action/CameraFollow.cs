@@ -1,9 +1,7 @@
 using GameFrame;
 using NodeCanvas.Framework;
-using NodeCanvas.Tasks.Actions;
 using ParadoxNotion.Design;
 using UnityEngine;
-
 
 namespace GXGame
 {
@@ -13,8 +11,8 @@ namespace GXGame
     {
         private ECSEntity owner;
         private World world;
-
         private Group playerGroup;
+        private Vector3 player2Camera;
 
         //Use for initialization. This is called only once in the lifetime of the task.
         //Return null if init was successfull. Return an error string otherwise
@@ -34,11 +32,22 @@ namespace GXGame
         {
             foreach (var player in playerGroup)
             {
-                Vector3 playerWolrdPos = player.GetWorldPos().Value;
-                Vector3 cameraWolrdPos = playerWolrdPos + new Vector3(0, 3, -3);
-                owner.SetWorldPos(cameraWolrdPos);
-                var angle = Vector3.Angle((playerWolrdPos - cameraWolrdPos), Vector3.forward);
-                owner.SetWorldRotate(Quaternion.Euler(new Vector3(angle, 0, 0)));
+                Vector3 pos = owner.GetWorldPos().Value;
+                Quaternion rot = owner.GetWorldRotate().Value;
+                var dir = owner.GetMoveDirection().Value;
+                Vector3 playerPos = player.GetWorldPos().Value;
+                // Vector3 initPos = pos;
+                if (player2Camera != Vector3.zero)
+                {
+                    pos = player2Camera.normalized * 5 + playerPos;
+                }
+                RotateAround(ref pos, playerPos, Vector3.up, dir.x);
+                RotateAround(ref pos, playerPos, rot * Vector3.right, dir.y);
+                // pos = Vector3.Slerp(initPos, pos, 10 * Time.deltaTime);
+                owner.SetWorldPos(pos);
+                player2Camera = pos - playerPos;
+                rot = Quaternion.LookRotation(playerPos - pos);
+                owner.SetWorldRotate(rot);
             }
 
             EndAction(true);
@@ -57,6 +66,17 @@ namespace GXGame
         //Called when the task is paused.
         protected override void OnPause()
         {
+        }
+
+        public static void RotateAround(ref Vector3 pos, Vector3 point, Vector3 axis, float angle)
+        {
+            Vector3 offset = pos - point;
+
+            Quaternion rotation = Quaternion.AngleAxis(angle, axis);
+
+            offset = rotation * offset;
+
+            pos = point + offset;
         }
     }
 }
