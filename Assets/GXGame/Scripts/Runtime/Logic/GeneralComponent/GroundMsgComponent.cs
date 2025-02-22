@@ -27,6 +27,7 @@ namespace GXGame
         public float jumpAngleWeightFactor = 0.1f;
         public float stepUpDepth = 1.0f;
         public float Gravity = 12;
+        public int MaskLayer;
     }
 
     public class CollisionMsgComponent : ECSComponent

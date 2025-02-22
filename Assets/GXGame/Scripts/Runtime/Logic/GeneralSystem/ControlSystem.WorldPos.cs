@@ -83,7 +83,7 @@ namespace GXGame
         private Vector3 PushOutOverlapping(Vector3 position, Quaternion rotation, float maxDistance, float skinWidth = 0.0f)
         {
             Vector3 pushed = Vector3.zero;
-            var count = GetOverlapping(position, rotation, ~0, QueryTriggerInteraction.Collide, skinWidth);
+            var count = GetOverlapping(position, rotation, collisionMsg.MaskLayer, QueryTriggerInteraction.Collide, skinWidth);
             for (int i = 0; i < count; i++)
             {
                 var overlap = OverlapCache[i];
@@ -105,7 +105,8 @@ namespace GXGame
         {
             var pos = entity.GetWorldPos().Value;
             var rot = entity.GetWorldRotate().Value;
-            bool onGround = CastSelf(pos, rot, Vector3.down, collisionMsg.groundDist, out RaycastHit groundHit, collisionMsg.skinWidth);
+            int x = collisionMsg.MaskLayer;
+            bool onGround = CastSelf(pos, rot, Vector3.down, collisionMsg.groundDist, out RaycastHit groundHit,collisionMsg.MaskLayer, collisionMsg.skinWidth);
             float angle = Vector3.Angle(groundHit.normal, Vector3.up);
             return (onGround, angle, groundHit);
         }
@@ -124,7 +125,7 @@ namespace GXGame
             while (bounces < 5 && remaining.magnitude > collisionMsg.epsilon)
             {
                 float distance = remaining.magnitude;
-                if (!CastSelf(position, rotation, remaining.normalized, distance, out RaycastHit hit, collisionMsg.skinWidth))
+                if (!CastSelf(position, rotation, remaining.normalized, distance, out RaycastHit hit, collisionMsg.MaskLayer,collisionMsg.skinWidth))
                 {
                     position += remaining;
                     break;
@@ -188,7 +189,8 @@ namespace GXGame
                 rotation,
                 Vector3.down,
                 collisionMsg.skinWidth,
-                out RaycastHit groundHit);
+                out RaycastHit groundHit,
+                collisionMsg.MaskLayer);
             if (closeToGround && groundHit.distance > 0)
             {
                 var offset = Vector3.ClampMagnitude(Vector3.down * groundHit.distance, 3 * Time.deltaTime);

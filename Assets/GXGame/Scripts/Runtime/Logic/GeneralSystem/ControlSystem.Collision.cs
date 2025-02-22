@@ -18,7 +18,7 @@ namespace GXGame
         private int GetOverlapping(
             Vector3 position,
             Quaternion rotation,
-            int layerMask = ~0,
+            int layerMask,
             QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.Ignore,
             float skinWidth = 0.0f)
         {
@@ -40,10 +40,10 @@ namespace GXGame
             return overlap;
         }
 
-        private bool CastSelf(Vector3 pos, Quaternion rot, Vector3 dir, float dist, out RaycastHit hit, float skinWidth = 0.01f)
+        private bool CastSelf(Vector3 pos, Quaternion rot, Vector3 dir, float dist, out RaycastHit hit, int layerMask, float skinWidth = 0.01f)
         {
             var ccc = CalculateCapsuleCollider(pos, rot, -skinWidth);
-            int count = Physics.CapsuleCastNonAlloc(ccc.top, ccc.bottom, ccc.radius, dir, raycastHit, dist + skinWidth, ~0, QueryTriggerInteraction.Ignore);
+            int count = Physics.CapsuleCastNonAlloc(ccc.top, ccc.bottom, ccc.radius, dir, raycastHit, dist + skinWidth, layerMask, QueryTriggerInteraction.Ignore);
             float directDist = float.MaxValue;
             bool didHit = false;
             hit = default;
@@ -78,7 +78,7 @@ namespace GXGame
                 momentum.normalized,
                 momentum.magnitude,
                 out RaycastHit stepHit,
-                ~0,
+                collisionMsg.MaskLayer,
                 QueryTriggerInteraction.Ignore);
             return hitStep &&
                    Vector3.Dot(stepHit.normal, Vector3.up) <= collisionMsg.epsilon;
@@ -103,6 +103,7 @@ namespace GXGame
                 momentum.normalized,
                 momentum.magnitude,
                 out RaycastHit snapHit,
+                collisionMsg.MaskLayer,
                 collisionMsg.skinWidth);
             if (!didSnapHit)
             {

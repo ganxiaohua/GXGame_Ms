@@ -52,7 +52,7 @@ namespace GXGame.Logic
                 Potato.AddWorldPos(new Vector3(i % 5, 0, -5 + i / 5));
                 Potato.AddWorldRotate(Quaternion.identity);
                 Potato.AddLocalScale(new Vector3(0.5f, 0.5f, 0.5f));
-                Potato.AddBoxCollider(BoxCollider.Create(Potato, LayerMask.NameToLayer($"Object")));
+                Potato.AddBoxCollider(BoxCollider.Create(Potato, LayerMask.NameToLayer($"Crop")));
             }
         }
 
@@ -73,7 +73,7 @@ namespace GXGame.Logic
             palyer.AddYAxisASpeed(5);
             palyer.AddYAxisAcceleration(false);
             palyer.AddGroundMsgComponent(new GroudMsg());
-            palyer.AddCollisionMsgComponent(new CollisionMsg());
+            palyer.AddCollisionMsgComponent(new CollisionMsg() {MaskLayer = ~(1 << LayerMask.NameToLayer("Crop"))});
             palyer.AddCapsuleCollider(CapsuleCollider.Create(palyer, LayerMask.NameToLayer($"Object")));
             palyer.AddCollisionGroundType(CollisionGroundType.Slide);
             palyer.AddCampComponent(GXGame.Camp.SELF);
