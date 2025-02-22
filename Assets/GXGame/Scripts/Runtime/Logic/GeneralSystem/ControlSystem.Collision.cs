@@ -74,14 +74,14 @@ namespace GXGame
             Vector3 momentum)
         {
             bool hitStep = DoRaycastInDirection(
-                hit.point - Vector3.up * epsilon + hit.normal * epsilon,
+                hit.point - Vector3.up * collisionMsg.epsilon + hit.normal * collisionMsg.epsilon,
                 momentum.normalized,
                 momentum.magnitude,
                 out RaycastHit stepHit,
                 ~0,
                 QueryTriggerInteraction.Ignore);
             return hitStep &&
-                   Vector3.Dot(stepHit.normal, Vector3.up) <= epsilon;
+                   Vector3.Dot(stepHit.normal, Vector3.up) <= collisionMsg.epsilon;
         }
 
         Vector3 GetBottom(Vector3 position, Quaternion rotation)
@@ -103,7 +103,7 @@ namespace GXGame
                 momentum.normalized,
                 momentum.magnitude,
                 out RaycastHit snapHit,
-                skinWidth);
+                collisionMsg.skinWidth);
             if (!didSnapHit)
             {
                 float distanceMove = Mathf.Min(momentum.magnitude, distanceToSnap);
@@ -126,7 +126,7 @@ namespace GXGame
             bool isAbove = Vector3.Dot(footVector, Vector3.up) > 0;
             float distanceToFeet = footVector.magnitude * (isAbove ? 1 : -1);
             bool snappedUp = false;
-            if (distanceToFeet < stepUpDepth)
+            if (distanceToFeet < collisionMsg.stepUpDepth)
             {
                 snappedUp = AttemptSnapUp(
                     distanceToFeet,

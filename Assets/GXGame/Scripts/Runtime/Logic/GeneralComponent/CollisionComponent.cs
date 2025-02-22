@@ -12,7 +12,7 @@ namespace GXGame
     {
         public GXGameObject Value;
 
-        public static GXGameObject Create(ECSEntity ecsEntity,LayerMask layerMask)
+        public static GXGameObject Create(ECSEntity ecsEntity, LayerMask layerMask)
         {
             var value = new GXGameObject();
             value.BindFromEmpty(Main.CollisionLayer);
@@ -38,7 +38,37 @@ namespace GXGame
         }
     }
 
-    public class YAxisAcceleration:ECSComponent
+    public class BoxCollider : ECSComponent
+    {
+        public GXGameObject Value;
+
+        public static GXGameObject Create(ECSEntity ecsEntity, LayerMask layerMask)
+        {
+            var value = new GXGameObject();
+            value.BindFromEmpty(Main.CollisionLayer);
+            value.gameObject.name = ecsEntity.Name;
+            value.gameObject.layer = layerMask;
+            var collider = value.gameObject.AddComponent<UnityEngine.BoxCollider>();
+            value.gameObject.AddComponent<CollisionEntity>().Entity = ecsEntity;
+            var scale = ecsEntity.GetLocalScale().Value;
+            collider.center = new Vector3(0, scale.y / 2, 0);
+            collider.size = scale;
+            value.position = ecsEntity.GetWorldPos().Value;
+            return value;
+        }
+
+        public override void Dispose()
+        {
+            var box = Value.gameObject.GetComponent<UnityEngine.CapsuleCollider>();
+            Object.Destroy(box);
+            var entity = Value.gameObject.GetComponent<CollisionEntity>();
+            Object.Destroy(entity);
+            Value.Unbind();
+            Value = null;
+        }
+    }
+
+    public class YAxisAcceleration : ECSComponent
     {
         public bool Value;
     }
@@ -46,9 +76,7 @@ namespace GXGame
     public class RaycastHitMsg : ECSComponent
     {
         public List<RaycastHit> Value;
-        
     }
-    
 
 
     /// <summary>
@@ -56,8 +84,8 @@ namespace GXGame
     /// </summary>
     public class CollisionGroundType : ECSComponent
     {
-        
         public int Type = 0;
+
         /// <summary>
         /// 滑行
         /// </summary>

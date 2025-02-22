@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace GXGame
 {
-    public class Go3DView : GameObjectView
+    public class AnimationView : GameObjectView
     {
         private AnimatorView animator;
 

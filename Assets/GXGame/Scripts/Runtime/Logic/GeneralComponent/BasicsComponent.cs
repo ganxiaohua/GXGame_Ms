@@ -48,11 +48,7 @@ namespace GXGame
     {
         public Vector3 Value;
     }
-
-    public class Gravity : ECSComponent
-    {
-        public float Value;
-    }
+    
 
     public class ViewCull : ECSComponent
     {

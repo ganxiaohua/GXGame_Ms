@@ -20,8 +20,8 @@ namespace GXGame
             var parentInverse = Quaternion.Inverse(parent.rotation);
             //得到我在父物体中的本地旋转
             value.RelativeRotation = rotation * parentInverse;
-            value.RelativePos = position  - parent.position;
             //得到我在父物体中的本地坐标.
+            value.RelativePos = position  - parent.position;
             value.RelativePos = parentInverse * value.RelativePos;
             value.PreviousParent = parent;
         }

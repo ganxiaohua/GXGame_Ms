@@ -10,9 +10,27 @@ namespace GXGame
         public Transform PreviousParent;
     }
 
-    
-    public class GroundMsgComponent: ECSComponent
+
+    public class GroundMsgComponent : ECSComponent
     {
         public GroudMsg Value;
+    }
+
+    public class CollisionMsg
+    {
+        public float groundDist = 0.01f;
+        public float epsilon = 0.001f;
+        public float skinWidth = 0.01f;
+        public float anglePower = 2.0f;
+        public float maxWalkingAngle = 60f;
+        public float maxJumpAngle = 70f;
+        public float jumpAngleWeightFactor = 0.1f;
+        public float stepUpDepth = 1.0f;
+        public float Gravity = 12;
+    }
+
+    public class CollisionMsgComponent : ECSComponent
+    {
+        public CollisionMsg Value;
     }
 }

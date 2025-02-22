@@ -4,17 +4,11 @@ namespace GXGame
 {
     public partial class ControlSystem
     {
-        private float groundDist = 0.01f;
-        private float epsilon = 0.001f;
-        private float skinWidth = 0.01f;
-        private float anglePower = 2.0f;
-        private float maxWalkingAngle = 60f;
-        private float maxJumpAngle = 80f;
-        private float jumpAngleWeightFactor = 0.1f;
-        private float stepUpDepth = 1.0f;
+        
         public const float MaxAngleShoveDegrees = 180.0f - BufferAngleShove;
         public const float BufferAngleShove = 120.0f;
         private Vector3 velocity;
+        private CollisionMsg collisionMsg;
         protected static Collider[] OverlapCache = new Collider[20];
 
 
@@ -31,10 +25,9 @@ namespace GXGame
             }
 
             FollowGround(ref pos, ref rot);
-            pos += PushOutOverlapping(pos, rot, 100 * Time.deltaTime, skinWidth / 2);
+            pos += PushOutOverlapping(pos, rot, 100 * Time.deltaTime, collisionMsg.skinWidth / 2);
             var moveSpeed = entity.GetMoveSpeed().Value;
-            bool fg = IsFallingOrglide();
-            dir = !fg ? Vector3.ProjectOnPlane(dir, groundMsg.hit.normal) : dir;
+            dir = (groundMsg.onGround && groundMsg.groundAngle < 20) ? Vector3.ProjectOnPlane(dir, groundMsg.hit.normal) : dir;
             dir = dir.normalized * (moveSpeed * Time.deltaTime);
             GravityJump();
             pos = MovePlayer(pos, dir);
@@ -64,7 +57,7 @@ namespace GXGame
 
         private void GravityJump()
         {
-            var gravity = entity.GetGravity().Value;
+            var gravity =collisionMsg.Gravity;
             var jumpSpeed = entity.GetYAxisASpeed().Value;
             var yAxis = entity.GetYAxisAcceleration().Value;
             bool fg = IsFallingOrglide();
@@ -77,10 +70,10 @@ namespace GXGame
                 velocity = Vector3.zero;
             }
 
-            bool canJump = (groundMsg.onGround) && groundMsg.groundAngle <= maxJumpAngle && !fg;
+            bool canJump = (groundMsg.onGround) && groundMsg.groundAngle <= collisionMsg.maxJumpAngle && !fg;
             if (canJump && yAxis)
             {
-                velocity = Vector3.Lerp(Vector3.up, (groundMsg.hit.normal).normalized, jumpAngleWeightFactor).normalized * jumpSpeed;
+                velocity = Vector3.Lerp(Vector3.up, (groundMsg.hit.normal).normalized, collisionMsg.jumpAngleWeightFactor).normalized * jumpSpeed;
             }
 
             entity.SetYAxisAcceleration(false);
@@ -112,26 +105,26 @@ namespace GXGame
         {
             var pos = entity.GetWorldPos().Value;
             var rot = entity.GetWorldRotate().Value;
-            bool onGround = CastSelf(pos, rot, Vector3.down, groundDist, out RaycastHit groundHit, skinWidth);
+            bool onGround = CastSelf(pos, rot, Vector3.down, collisionMsg.groundDist, out RaycastHit groundHit, collisionMsg.skinWidth);
             float angle = Vector3.Angle(groundHit.normal, Vector3.up);
             return (onGround, angle, groundHit);
         }
 
         private bool IsFallingOrglide()
         {
-            return !(groundMsg.onGround && groundMsg.groundAngle <= maxWalkingAngle);
+            return !(groundMsg.onGround && groundMsg.groundAngle <= collisionMsg.maxWalkingAngle);
         }
-
+        
         private Vector3 MovePlayer(Vector3 position, Vector3 movement)
         {
             var rotation = entity.GetWorldRotate().Value;
             Vector3 remaining = movement;
             int bounces = 0;
             //弹跳次数小于最大弹跳次数  &&  移动位置比最小可移动位置大.
-            while (bounces < 5 && remaining.magnitude > epsilon)
+            while (bounces < 5 && remaining.magnitude > collisionMsg.epsilon)
             {
                 float distance = remaining.magnitude;
-                if (!CastSelf(position, rotation, remaining.normalized, distance, out RaycastHit hit, skinWidth))
+                if (!CastSelf(position, rotation, remaining.normalized, distance, out RaycastHit hit, collisionMsg.skinWidth))
                 {
                     position += remaining;
                     break;
@@ -144,7 +137,7 @@ namespace GXGame
 
                 float fraction = hit.distance / distance;
                 Vector3 deltaBounce = remaining * fraction;
-                deltaBounce = deltaBounce.normalized * Mathf.Max(0, deltaBounce.magnitude - epsilon);
+                deltaBounce = deltaBounce.normalized * Mathf.Max(0, deltaBounce.magnitude - collisionMsg.epsilon);
                 //这里是计算刚好碰到撞击点的距离
                 position += deltaBounce;
                 //撞击点朝着移动方向延伸出去的一段距离.
@@ -164,10 +157,10 @@ namespace GXGame
                 float angleBetween = Vector3.Angle(hit.normal, remaining);
                 //操作方向的夹角如果大于KCCUtils.MaxAngleShoveDegrees,则使用KCCUtils.MaxAngleShoveDegrees
                 float normalizedAngle = Mathf.Max(angleBetween - BufferAngleShove, 0) / MaxAngleShoveDegrees;
-                remaining *= Mathf.Pow(Mathf.Abs(1 - normalizedAngle), anglePower);
+                remaining *= Mathf.Pow(Mathf.Abs(1 - normalizedAngle), collisionMsg.anglePower);
                 Vector3 projected = Vector3.ProjectOnPlane(remaining, planeNormal).normalized * remaining.magnitude;
 
-                if (projected.magnitude + epsilon < remaining.magnitude)
+                if (projected.magnitude + collisionMsg.epsilon < remaining.magnitude)
                 {
                     remaining = Vector3.ProjectOnPlane(remaining, Vector3.up).normalized * remaining.magnitude;
                 }
@@ -194,7 +187,7 @@ namespace GXGame
                 position,
                 rotation,
                 Vector3.down,
-                skinWidth,
+                collisionMsg.skinWidth,
                 out RaycastHit groundHit);
             if (closeToGround && groundHit.distance > 0)
             {
