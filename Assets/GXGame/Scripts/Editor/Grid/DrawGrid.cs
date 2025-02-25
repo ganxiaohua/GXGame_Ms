@@ -1,0 +1,134 @@
+using UnityEditor;
+using UnityEngine;
+
+namespace GXGame.Editor
+{
+ public class DrawGrid
+{
+    private static readonly int sGap = Shader.PropertyToID("_Gap");
+    private static readonly int sStride = Shader.PropertyToID("_Stride");
+
+    public static void DrawGridGizmo(GridData gridLayout, Color color, ref Mesh gridMesh, ref Material gridMaterial)
+    {
+        if (Event.current.type != EventType.Repaint)
+            return;
+
+        if (gridMesh == null)
+            gridMesh = GenerateCachedGridMesh(gridLayout, color);
+
+        if (gridMaterial == null)
+        {
+            gridMaterial = (Material) EditorGUIUtility.LoadRequired("SceneView/GridGap.mat");
+        }
+
+        gridMaterial.SetVector(sGap, gridLayout.CellSize);
+        gridMaterial.SetVector(sStride, gridLayout.CellSize);
+        gridMaterial.SetPass(0);
+        GL.PushMatrix();
+        if (gridMesh.GetTopology(0) == MeshTopology.Lines)
+            GL.Begin(GL.LINES);
+        else
+            GL.Begin(GL.QUADS);
+
+        Graphics.DrawMeshNow(gridMesh, gridLayout.Pos, Quaternion.identity);
+        GL.End();
+        GL.PopMatrix();
+    }
+
+
+    public static Mesh GenerateCachedGridMesh(GridData gridLayout, Color color)
+    {
+        int rows = gridLayout.GirdArea.height;
+        int columns = gridLayout.GirdArea.width;
+        int horizontalVertices = (rows + 1) * 2;
+        int verticalVertices = (columns + 1) * 2;
+        Vector3[] vertices = new Vector3[horizontalVertices + verticalVertices];
+        int[] indices = new int[vertices.Length];
+        Vector2[] uvs = new Vector2[vertices.Length];
+        var colors = new Color[vertices.Length];
+        int idx = 0;
+        var uv0 = new Vector2(50, 0f);
+        for (int z = 0; z <= rows; z++)
+        {
+            vertices[idx++] = new Vector3(0, 0, z * gridLayout.CellSize.y);
+            vertices[idx++] = new Vector3(columns * gridLayout.CellSize.x, 0, z * gridLayout.CellSize.y);
+        }
+
+        // 生成垂直线顶点
+        for (int x = 0; x <= columns; x++)
+        {
+            vertices[idx++] = new Vector3(x * gridLayout.CellSize.x, 0, 0);
+            vertices[idx++] = new Vector3(x * gridLayout.CellSize.x, 0, rows * gridLayout.CellSize.y);
+        }
+
+        for (int i = 0; i < vertices.Length; i++)
+        {
+            indices[i] = i;
+            colors[i] = color;
+            uvs[i] = uv0;
+        }
+
+        var mesh = new Mesh();
+        mesh.hideFlags = HideFlags.HideAndDontSave;
+        mesh.vertices = vertices;
+        mesh.uv = uvs;
+        mesh.colors = colors;
+        mesh.SetIndices(indices, MeshTopology.Lines, 0);
+        return mesh;
+    }
+
+
+    public static void DrawQuadGizmos(GridData gridLayout, RectInt pos, ref Mesh quadMesh, ref Material quadMaterial, Color color)
+    {
+        if (Event.current.type != EventType.Repaint)
+            return;
+        CreateGridMesh(gridLayout, pos, ref quadMesh, ref quadMaterial, color);
+    }
+
+    public static void CreateGridMesh(GridData gridLayout, RectInt rect, ref Mesh quadMesh, ref Material quadMaterial, Color color)
+    {
+        if (quadMesh == null)
+            quadMesh = GenerateQuadMesh(gridLayout, rect);
+
+        if (quadMaterial == null)
+        {
+            quadMaterial = new Material(Shader.Find("Unlit/Color"));
+            quadMaterial.color = color;
+        }
+        quadMaterial.SetPass(0);
+        GL.PushMatrix();
+        GL.Begin(GL.QUADS);
+
+        Graphics.DrawMeshNow(quadMesh, gridLayout.Pos, Quaternion.identity);
+
+        GL.End();
+        GL.PopMatrix();
+    }
+
+    private static Mesh GenerateQuadMesh(GridData gridLayout, RectInt rect)
+    {
+        Mesh mesh = new Mesh();
+        mesh.hideFlags = HideFlags.HideAndDontSave;
+
+        Vector3[] vertices = new Vector3[4];
+        var worldPos = gridLayout.CellToLocal(new Vector3Int(rect.position.x, 0, rect.position.y));
+        vertices[0] = worldPos; //0 0
+        vertices[1] = worldPos + new Vector3(rect.width*gridLayout.CellSize.x, 0, rect.height*gridLayout.CellSize.y); // 1 1
+        vertices[2] = worldPos + new Vector3(0, 0, rect.height*gridLayout.CellSize.y); // 0 1
+        vertices[3] = worldPos + new Vector3(rect.width*gridLayout.CellSize.x, 0, 0); //1 0
+
+        int[] triangles = new int[6];
+        triangles[0] = 0;
+        triangles[1] = 2;
+        triangles[2] = 1;
+        triangles[3] = 0;
+        triangles[4] = 1;
+        triangles[5] = 3;
+
+        mesh.vertices = vertices;
+        mesh.triangles = triangles;
+
+        return mesh;
+    }
+}   
+}
