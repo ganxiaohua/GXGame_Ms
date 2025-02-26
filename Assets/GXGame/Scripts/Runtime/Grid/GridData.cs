@@ -5,14 +5,20 @@ using UnityEngine;
 namespace GXGame
 {
     [RequireComponent(typeof(Transform))]
-    [ExecuteInEditMode]
     public partial class GridData : MonoBehaviour
     {
         public Vector2 CellSize;
-        public RectInt GirdArea;
+        public Vector2Int GirdArea;
         public Vector3 Pos;
 
         [ReadOnly] public List<Vector2Int> ObstacleCell;
+
+
+        public RectInt GetArea()
+        {
+            RectInt area = new RectInt(0, 0, GirdArea.x, GirdArea.y);
+            return area;
+        }
 
         public Vector3 CellToLocal(Vector3Int pos)
         {
@@ -35,12 +41,18 @@ namespace GXGame
 
         public bool InArea(Vector3Int pos)
         {
-            return GirdArea.Contains(new Vector2Int(pos.x, pos.z));
+            RectInt area = GetArea();
+            return area.Contains(new Vector2Int(pos.x, pos.z));
         }
 
         public bool InArea(RectInt rect)
         {
-            return GirdArea.Overlaps(rect);
+            RectInt area = new RectInt(0, 0, GirdArea.x, GirdArea.y);
+            if (rect.xMin >= area.xMin && rect.yMin >= area.yMin && rect.xMax <= area.xMax && rect.yMax <= area.yMax)
+            {
+                return true;
+            }
+            return false;
         }
 
         public Vector3 CellToLocalInterpolated(Vector3 pos)
@@ -98,7 +110,29 @@ namespace GXGame
                         ObstacleCell.Add(v);
                 }
             }
+
             return true;
+        }
+
+        public void RemoveObstacle(RectInt rect)
+        {
+            if(ObstacleCell == null)
+                return;
+            for (int x = 0; x < rect.width; x++)
+            {
+                for (int y = 0; y < rect.height; y++)
+                {
+                    int posX = rect.x + x;
+                    int posY = rect.y + y;
+                    var v = new Vector2Int(posX, posY);
+                    ObstacleCell.Remove(v);
+                }
+            }
+        }
+
+        public void ClearObstacle()
+        {
+            ObstacleCell.Clear();
         }
     }
 }

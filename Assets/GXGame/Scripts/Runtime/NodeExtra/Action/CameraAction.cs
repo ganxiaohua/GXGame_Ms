@@ -7,7 +7,7 @@ namespace GXGame
 {
     [Category("摄像机行为")]
     [Description("摄像机追踪")]
-    public class CameraFollow : ActionTask
+    public class CameraAction : ActionTask
     {
         private ECSEntity owner;
         private World world;

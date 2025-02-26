@@ -83,7 +83,7 @@ namespace GXGame.Editor
                     fontSize = 12,
                 };
                 GetCursorPosWithEditorScene(sceneView);
-                BuildObstacle(GridData);
+                BuildPromptMesh(GridData);
                 DrawGrid.DrawGridGizmo(GridData, GridData.GridColor, ref sMesh, ref sMaterial);
                 Handles.Label(GridData.Pos, $"Grid Info\nCellSize:{GridData.CellSize}\n area:{GridData.GirdArea}", guiStyle);
                 Vector3 viewportPoint = new Vector3(50, sceneView.camera.pixelHeight, sceneView.camera.nearClipPlane);
@@ -102,7 +102,7 @@ namespace GXGame.Editor
             int hash = 0x7ed55d16;
             hash ^= layout.CellSize.GetHashCode();
             hash ^= layout.GirdArea.GetHashCode() << 23;
-            hash ^= GridData.GridColor.GetHashCode() << 4 + 0x165667b1;
+            hash ^= layout.GridColor.GetHashCode() << 4 + 0x165667b1;
             return hash;
         }
     }

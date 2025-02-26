@@ -30,7 +30,7 @@ public static class Components {
     public const int GXInput= 23;
     public const int MoveDirection= 24;
     public const int MoveSpeed= 25;
-    public const int TargetPos= 26;
+    public const int PathFindingTargetPos= 26;
     public const int ViewType= 27;
     public const int YAxisASpeed= 28;
     public const int Monster= 29;
@@ -42,10 +42,12 @@ public static class Components {
     public const int YAxisAcceleration= 35;
     public const int RaycastHitMsg= 36;
     public const int CollisionGroundType= 37;
-    public const int GroundMsgComponent= 38;
-    public const int CollisionMsgComponent= 39;
+    public const int GridDataComponent= 38;
+    public const int FindPathComponent= 39;
+    public const int GroundMsgComponent= 40;
+    public const int CollisionMsgComponent= 41;
     
-    public const int TotalComponents = 40;
+    public const int TotalComponents = 42;
     
     
     public static readonly System.Type[] ComponentTypes = {
@@ -76,7 +78,7 @@ public static class Components {
         typeof(GXGame.GXInput),
         typeof(GXGame.MoveDirection),
         typeof(GXGame.MoveSpeed),
-        typeof(GXGame.TargetPos),
+        typeof(GXGame.PathFindingTargetPos),
         typeof(GXGame.ViewType),
         typeof(GXGame.YAxisASpeed),
         typeof(GXGame.Monster),
@@ -88,6 +90,8 @@ public static class Components {
         typeof(GXGame.YAxisAcceleration),
         typeof(GXGame.RaycastHitMsg),
         typeof(GXGame.CollisionGroundType),
+        typeof(GXGame.GridDataComponent),
+        typeof(GXGame.FindPathComponent),
         typeof(GXGame.GroundMsgComponent),
         typeof(GXGame.CollisionMsgComponent),
     };

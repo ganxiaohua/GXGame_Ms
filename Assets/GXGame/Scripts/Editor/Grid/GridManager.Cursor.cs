@@ -11,6 +11,7 @@ namespace GXGame.Editor
         private Vector3Int curCursorPos;
         private Vector3Int lastCursorPos;
         private bool buttonDown;
+
         public void GetCursorPosWithEditorScene(SceneView sceneView)
         {
             if (!GridData.DrawObstacleZrea)
@@ -27,7 +28,8 @@ namespace GXGame.Editor
             {
                 Vector3 worldPos = ray.GetPoint(enter);
                 curCursorPos = GridData.WorldToCell(worldPos);
-                Handles.Label(worldPos, $"Cell Position: {curCursorPos}");
+                worldPos.y += 0.5f;
+                Handles.Label(worldPos, $"Cell Position: {curCursorPos}",guiStyle);
                 MouseArea();
                 InputArea();
             }
@@ -35,16 +37,12 @@ namespace GXGame.Editor
 
         private void MouseArea()
         {
-            // if (curCursorPos == lastCursorPos)
-            //     return;
             ClearCursor();
             RectInt rect = new RectInt(curCursorPos.x, curCursorPos.z, GridData.brushSize.x, GridData.brushSize.y);
             if (GridData.InArea(rect))
             {
-                DrawGrid.CreateGridMesh(GridData, rect, ref cursor, ref cursorMaterial, Color.green);
+                DrawGrid.CreateGridMesh(GridData, new Vector3(0,0.1f,0),rect, ref cursor, ref cursorMaterial, Color.green);
             }
-            // if (Event.current.type == EventType.Repaint)
-            // lastCursorPos = curCursorPos;
         }
 
         private void InputArea()
@@ -54,7 +52,8 @@ namespace GXGame.Editor
             {
                 buttonDown = true;
                 cz();
-            }else if (e.OnMouseUp(0))
+            }
+            else if (e.OnMouseUp(0))
             {
                 buttonDown = false;
             }
@@ -68,7 +67,10 @@ namespace GXGame.Editor
             {
                 int controlID = GUIUtility.GetControlID(FocusType.Passive);
                 RectInt rect = new RectInt(curCursorPos.x, curCursorPos.z, GridData.brushSize.x, GridData.brushSize.y);
-                GridData.AddObstacle(rect);
+                if (!GridData.IsClear)
+                    GridData.AddObstacle(rect);
+                else
+                    GridData.RemoveObstacle(rect);
                 Event.current.Use();
                 GUIUtility.hotControl = controlID;
             }

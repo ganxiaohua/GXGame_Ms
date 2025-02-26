@@ -5,12 +5,13 @@ namespace GXGame.Logic
 {
     public class GameWorld : World
     {
-        private int otherCount = 10;
+        private int otherCount = 30;
         private int monsterCount = 0;
-
+        private GridData gridData;
         public override void OnInitialize()
         {
             base.OnInitialize();
+            gridData = GameObject.Find("Map").GetComponent<GridData>();
             EstimateChildsCount(monsterCount + otherCount);
             this.AddSystem<ViewBaseSystem>();
             this.AddSystem<ViewUpdateSystem>();
@@ -19,12 +20,14 @@ namespace GXGame.Logic
             this.AddSystem<WorldPosChangeSystem>();
             this.AddSystem<WorldDirChangeBaseSystem>();
             this.AddSystem<CountDowntSystem>();
+            this.AddSystem<FindPathSystem>(gridData);
             this.AddSystem<InputSystem>();
             //最后执行
             this.AddSystem<DestroyBaseSystem>();
             CreateCamera();
             CreatePlayer();
             CreatePotato();
+            CreateMonster();
         }
 
         private void CreateCamera()
@@ -80,6 +83,25 @@ namespace GXGame.Logic
             palyer.AddGXInput();
             palyer.AddPlayer();
             palyer.AddHP(10);
+        }
+
+        private void CreateMonster()
+        {
+            var monster = AddChild();
+            monster.Name = $"怪兽";
+            monster.AddViewType(typeof(GoBaseView));
+            monster.AddAssetPath("Monster/Monster01/Monster01");
+            monster.AddWorldPos(new Vector3(0, 0, -5));
+            monster.AddWorldRotate(Quaternion.identity);
+            monster.AddMoveSpeed(1.0f);
+            monster.AddDirectionSpeed(180);
+            monster.AddFaceDirection();
+            monster.AddLocalScale(Vector3.one);
+            monster.AddPathFindingTargetPos(new Vector3(0,0,0));
+            monster.AddMoveDirection();
+            monster.AddFindPathComponent();
+            monster.AddGridDataComponent(gridData);
+            monster.AddBehaviorTreeComponent("BTO/Monster01Bto");
         }
     }
 }

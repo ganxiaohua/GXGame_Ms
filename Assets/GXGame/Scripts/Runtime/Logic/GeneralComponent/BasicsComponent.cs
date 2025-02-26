@@ -102,9 +102,9 @@ namespace GXGame
         public float Value;
     }
 
-    public class TargetPos : ECSComponent
+    public class PathFindingTargetPos : ECSComponent
     {
-        public Vector2 Value;
+        public Vector3 Value;
     }
     
     public class ViewType : ECSComponent
