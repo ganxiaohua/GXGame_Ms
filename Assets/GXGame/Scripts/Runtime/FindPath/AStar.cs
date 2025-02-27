@@ -41,11 +41,6 @@ public class AStarGrid
         Y = y;
         Data = new AStarData(g, h);
     }
-
-    public override string ToString()
-    {
-        return string.Format("X={0}  Y={1}", X, Y);
-    }
 }
 
 public class Astar : IVersions, IDisposable
@@ -70,17 +65,11 @@ public class Astar : IVersions, IDisposable
     /// <summary>
     /// 全格子列表
     /// </summary>
-    static List<AStarGrid> Maps = new List<AStarGrid>();
+    public List<AStarGrid> Maps = new List<AStarGrid>();
 
     private int[] MapWithHeight = new int[2];
 
     private List<Vector2Int> finalPath;
-
-    public void Clear()
-    {
-        Maps.Clear();
-        Barrierlist.Clear();
-    }
 
     /// <summary>
     /// 设置地图
@@ -245,6 +234,8 @@ public class Astar : IVersions, IDisposable
     {
         if (!InMap(start.X, start.Y) || !InMap(end.X, end.Y))
         {
+            Debug.LogWarning("寻路位置不在地图内.");
+            return null;
         }
 
         CurFrameMaxFind = 0;
@@ -268,7 +259,7 @@ public class Astar : IVersions, IDisposable
                 CurFrameMaxFind = 0;
             }
         }
-        
+
         AStarGrid endgrid = end;
 
         while (endgrid.Parent != null)
@@ -282,11 +273,12 @@ public class Astar : IVersions, IDisposable
             finalPath.RemoveAt(finalPath.Count - 1);
             finalPath.Reverse();
         }
+
         return finalPath;
     }
 
 
-    public async UniTask<List<Vector2Int>> Find(Vector2Int startpos, Vector2Int endpos,List<Vector2Int> finalPath)
+    public async UniTask<List<Vector2Int>> Find(Vector2Int startpos, Vector2Int endpos, List<Vector2Int> finalPath)
     {
         finalPath ??= new();
         this.finalPath = finalPath;
@@ -308,5 +300,7 @@ public class Astar : IVersions, IDisposable
     public void Dispose()
     {
         Versions++;
+        Maps.Clear();
+        Barrierlist.Clear();
     }
 }
