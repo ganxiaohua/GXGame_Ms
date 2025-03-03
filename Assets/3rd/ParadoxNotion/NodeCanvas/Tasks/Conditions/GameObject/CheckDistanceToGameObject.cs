@@ -3,7 +3,6 @@ using ParadoxNotion;
 using ParadoxNotion.Design;
 using UnityEngine;
 
-
 namespace NodeCanvas.Tasks.Conditions
 {
 
@@ -11,7 +10,6 @@ namespace NodeCanvas.Tasks.Conditions
     [Category("GameObject")]
     public class CheckDistanceToGameObject : ConditionTask<Transform>
     {
-
         [RequiredField]
         public BBParameter<GameObject> checkTarget;
         public CompareMethod checkType = CompareMethod.LessThan;

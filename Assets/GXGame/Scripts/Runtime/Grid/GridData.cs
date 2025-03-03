@@ -1,19 +1,22 @@
+using System;
 using System.Collections.Generic;
-using Sirenix.OdinInspector;
+using GameFrame;
 using UnityEngine;
 
 namespace GXGame
 {
     [RequireComponent(typeof(Transform))]
+    [Serializable]
     public partial class GridData : MonoBehaviour
     {
         public Vector2 CellSize;
         public Vector2Int GirdArea;
         public Vector3 Pos;
-
-        [ReadOnly] public List<Vector2Int> ObstacleCell;
-
-
+        [HideInInspector]
+        public List<Vector2Int> ObstacleCells;
+        [HideInInspector]
+        public List<Vector2Int> NoObstacleCells;
+        
         public RectInt GetArea()
         {
             RectInt area = new RectInt(0, 0, GirdArea.x, GirdArea.y);
@@ -52,6 +55,7 @@ namespace GXGame
             {
                 return true;
             }
+
             return false;
         }
 
@@ -94,9 +98,14 @@ namespace GXGame
                 return false;
             }
 
-            if (ObstacleCell == null)
+            if (ObstacleCells == null)
             {
-                ObstacleCell = new();
+                ObstacleCells = new();
+            }
+
+            if (NoObstacleCells == null)
+            {
+                InitNoObstacleCells();
             }
 
             for (int x = 0; x < rect.width; x++)
@@ -106,8 +115,11 @@ namespace GXGame
                     int posX = rect.x + x;
                     int posY = rect.y + y;
                     var v = new Vector2Int(posX, posY);
-                    if (!ObstacleCell.Contains(v))
-                        ObstacleCell.Add(v);
+                    if (!ObstacleCells.Contains(v))
+                    {
+                        ObstacleCells.Add(v);
+                        NoObstacleCells.RemoveSwapBack(v);
+                    }
                 }
             }
 
@@ -116,7 +128,7 @@ namespace GXGame
 
         public void RemoveObstacle(RectInt rect)
         {
-            if(ObstacleCell == null)
+            if (ObstacleCells == null)
                 return;
             for (int x = 0; x < rect.width; x++)
             {
@@ -125,14 +137,30 @@ namespace GXGame
                     int posX = rect.x + x;
                     int posY = rect.y + y;
                     var v = new Vector2Int(posX, posY);
-                    ObstacleCell.Remove(v);
+                    ObstacleCells.Remove(v);
+                    NoObstacleCells.Add(v);
                 }
             }
         }
 
+
         public void ClearObstacle()
         {
-            ObstacleCell.Clear();
+            ObstacleCells?.Clear();
+            InitNoObstacleCells();
+        }
+
+        public void InitNoObstacleCells()
+        {
+            NoObstacleCells ??= new();
+            NoObstacleCells.Clear();
+            for (int i = 0; i < GirdArea.x; i++)
+            {
+                for (int j = 0; j < GirdArea.y; j++)
+                {
+                    NoObstacleCells.Add(new Vector2Int(i, j));
+                }
+            }
         }
     }
 }

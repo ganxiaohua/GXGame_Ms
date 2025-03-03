@@ -1,39 +1,31 @@
 using GameFrame;
 using NodeCanvas.Framework;
 using ParadoxNotion.Design;
+using UnityEngine;
 
 namespace GXGame {
 
 	[Category("怪物AI")]
-	[Description("跟踪self")]
-	public class Trace : ActionTask {
-
+	[Description("随机获取可行走地图上的一点,获取结束之后返回true")]
+	public class FindPatrolPos : ActionTask {
 		private ECSEntity owner;
 		private World world;
-		private Group playerGroup;
-		private int tagertId;
-		//Use for initialization. This is called only once in the lifetime of the task.
-		//Return null if init was successfull. Return an error string otherwise
 		protected override string OnInit() {
 			owner = (ECSEntity) blackboard.parent.GetVariable("Entity").value;
 			world = ((World) owner.Parent);
-			Matcher matcher = Matcher.SetAll(Components.Player);
-			playerGroup = world.GetGroup(matcher);
 			return null;
 		}
 
 		//This is called once each time the task is enabled.
 		//Call EndAction() to mark the action as finished, either in success or failure.
 		//EndAction can be called from anywhere.
-		protected override void OnExecute()
-		{
-			foreach (var player in playerGroup)
-			{
-				var dir = (player.GetWorldPos().Value - owner.GetWorldPos().Value).normalized;
-				owner.SetMoveDirection(dir);
-				owner.SetFaceDirection(dir);
-				break;
-			}
+		protected override void OnExecute() {
+			
+			var gridData = owner.GetGridDataComponent().Value;
+			int index = UnityEngine.Random.Range(0, gridData.NoObstacleCells.Count);
+			var pos = gridData.NoObstacleCells[index];
+			var worldPos = gridData.CellToWolrd(new Vector3Int(pos.x,0,pos.y));
+			owner.SetPathFindingTargetPos(worldPos);
 			EndAction(true);
 		}
 

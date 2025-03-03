@@ -17,10 +17,10 @@ namespace GXGame.Editor
 
         private void BuildObstacle(GridData gridridData)
         {
-            if (gridridData.ObstacleCell == null)
+            if (gridridData.ObstacleCells == null)
                 return;
             int index = 0;
-            foreach (var item in gridridData.ObstacleCell)
+            foreach (var item in gridridData.ObstacleCells)
             {
                 if (barrierMeshList.Count <= index)
                 {
@@ -28,7 +28,7 @@ namespace GXGame.Editor
                 }
 
                 Mesh mesh = barrierMeshList[index];
-                DrawGrid.DrawQuadGizmos(GridData, new RectInt(item.x, item.y, 1, 1), ref mesh, ref buildMaterial, Color.gray);
+                DrawGrid.DrawQuadGizmos(GridData,offset, new RectInt(item.x, item.y, 1, 1), ref mesh, ref buildMaterial, Color.gray);
                 barrierMeshList[index] = mesh;
                 index++;
             }
@@ -47,7 +47,7 @@ namespace GXGame.Editor
                 }
 
                 Mesh mesh = findPathMeshList[index];
-                DrawGrid.DrawQuadGizmos(GridData, new RectInt(item.x, item.y, 1, 1), ref mesh, ref buildMaterial2, gridridData.FindPathColor);
+                DrawGrid.DrawQuadGizmos(GridData, offset,new RectInt(item.x, item.y, 1, 1), ref mesh, ref buildMaterial2, gridridData.FindPathColor);
                 findPathMeshList[index] = mesh;
                 index++;
             }

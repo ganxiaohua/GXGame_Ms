@@ -23,8 +23,7 @@ namespace GXGame
 
         protected override Collector GetTrigger(World world)
         {
-            return Collector.CreateCollector(world, EcsChangeEventState.ChangeEventState.AddRemoveUpdate, Components.PathFindingTargetPos,
-                Components.FindPathComponent);
+            return Collector.CreateCollector(world, EcsChangeEventState.ChangeEventState.AddRemoveUpdate, Components.PathFindingTargetPos);
         }
 
         protected override bool Filter(ECSEntity entity)

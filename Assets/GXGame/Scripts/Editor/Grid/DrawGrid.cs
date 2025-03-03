@@ -8,7 +8,7 @@ namespace GXGame.Editor
         private static readonly int sGap = Shader.PropertyToID("_Gap");
         private static readonly int sStride = Shader.PropertyToID("_Stride");
 
-        public static void DrawGridGizmo(GridData gridLayout, Color color, ref Mesh gridMesh, ref Material gridMaterial)
+        public static void DrawGridGizmo(GridData gridLayout,Vector3 offset, Color color, ref Mesh gridMesh, ref Material gridMaterial)
         {
             if (Event.current.type != EventType.Repaint)
                 return;
@@ -30,7 +30,7 @@ namespace GXGame.Editor
             else
                 GL.Begin(GL.QUADS);
 
-            Graphics.DrawMeshNow(gridMesh, gridLayout.Pos, Quaternion.identity);
+            Graphics.DrawMeshNow(gridMesh, gridLayout.Pos+offset, Quaternion.identity);
             GL.End();
             GL.PopMatrix();
         }
@@ -78,11 +78,11 @@ namespace GXGame.Editor
         }
 
 
-        public static void DrawQuadGizmos(GridData gridLayout, RectInt pos, ref Mesh quadMesh, ref Material quadMaterial, Color color)
+        public static void DrawQuadGizmos(GridData gridLayout,Vector3 offset, RectInt pos, ref Mesh quadMesh, ref Material quadMaterial, Color color)
         {
             if (Event.current.type != EventType.Repaint)
                 return;
-            CreateGridMesh(gridLayout, Vector3.zero, pos, ref quadMesh, ref quadMaterial, color);
+            CreateGridMesh(gridLayout, offset, pos, ref quadMesh, ref quadMaterial, color);
         }
 
         public static void CreateGridMesh(GridData gridLayout, Vector3 offset, RectInt rect, ref Mesh quadMesh, ref Material quadMaterial, Color color)

@@ -28,10 +28,12 @@ namespace GXGame.Editor
             {
                 Vector3 worldPos = ray.GetPoint(enter);
                 curCursorPos = GridData.WorldToCell(worldPos);
-                worldPos.y += 0.5f;
+                worldPos.y += 1.0f;
+                guiStyle.normal.textColor = Color.magenta;
                 Handles.Label(worldPos, $"Cell Position: {curCursorPos}",guiStyle);
                 MouseArea();
                 InputArea();
+                guiStyle.normal.textColor = Color.white;
             }
         }
 
@@ -41,7 +43,7 @@ namespace GXGame.Editor
             RectInt rect = new RectInt(curCursorPos.x, curCursorPos.z, GridData.brushSize.x, GridData.brushSize.y);
             if (GridData.InArea(rect))
             {
-                DrawGrid.CreateGridMesh(GridData, new Vector3(0,0.1f,0),rect, ref cursor, ref cursorMaterial, Color.green);
+                DrawGrid.CreateGridMesh(GridData, new Vector3(0,0.1f,0)+offset,rect, ref cursor, ref cursorMaterial, Color.green);
             }
         }
 

@@ -89,7 +89,7 @@ public class Astar : IVersions, IDisposable
             }
         }
 
-        SetBarrier(gridData.ObstacleCell);
+        SetBarrier(gridData.ObstacleCells);
     }
 
     public void SetBarrier(List<Vector2Int> barrier)
@@ -281,6 +281,7 @@ public class Astar : IVersions, IDisposable
     public async UniTask<List<Vector2Int>> Find(Vector2Int startpos, Vector2Int endpos, List<Vector2Int> finalPath)
     {
         finalPath ??= new();
+        finalPath.Clear();
         this.finalPath = finalPath;
         Versions++;
         mOpenlist.Clear();

@@ -3,7 +3,6 @@ using NodeCanvas.Framework;
 using ParadoxNotion.Design;
 using UnityEngine;
 
-
 namespace GXGame
 {
     [Category("怪物AI")]
@@ -13,12 +12,10 @@ namespace GXGame
         private ECSEntity owner;
         private World world;
 
-        public float maxDistance;
+        public float MaxDistance;
 
         private Group playerGroup;
 
-        //Use for initialization. This is called only once in the lifetime of the task.
-        //Return null if init was successfull. Return an error string otherwise
         protected override string OnInit()
         {
             owner = (ECSEntity) blackboard.parent.GetVariable("Entity").value;
@@ -28,7 +25,7 @@ namespace GXGame
             return null;
         }
 
-        //Called whenever the condition gets enabled.
+     
         protected override void OnEnable()
         {
         }
@@ -45,9 +42,13 @@ namespace GXGame
             foreach (var player in playerGroup)
             {
                 var curPos = owner.GetWorldPos().Value;
-                return Vector3.Distance(curPos, player.GetWorldPos().Value) <= maxDistance;
+                return Vector3.Distance(curPos, player.GetWorldPos().Value) <= MaxDistance;
             }
             return false;
+        }
+        
+        protected override string info {
+            get { return "Distance" + "<=" + MaxDistance + " to player"; }
         }
     }
 }

@@ -11,6 +11,7 @@ namespace GXGame.Editor
         private static Material sMaterial;
         private static Mesh sMesh;
         private static int sLastGridProxyHash;
+        private static Vector3 offset = new Vector3(0, 0.01f, 0);
         public bool active => GridData != null;
 
         private bool registeredEventHandler;
@@ -84,7 +85,7 @@ namespace GXGame.Editor
                 };
                 GetCursorPosWithEditorScene(sceneView);
                 BuildPromptMesh(GridData);
-                DrawGrid.DrawGridGizmo(GridData, GridData.GridColor, ref sMesh, ref sMaterial);
+                DrawGrid.DrawGridGizmo(GridData,offset, GridData.GridColor, ref sMesh, ref sMaterial);
                 Handles.Label(GridData.Pos, $"Grid Info\nCellSize:{GridData.CellSize}\n area:{GridData.GirdArea}", guiStyle);
                 Vector3 viewportPoint = new Vector3(50, sceneView.camera.pixelHeight, sceneView.camera.nearClipPlane);
                 var pos = sceneView.camera.ScreenToWorldPoint(viewportPoint);
