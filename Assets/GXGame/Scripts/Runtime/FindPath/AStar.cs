@@ -69,7 +69,7 @@ public class Astar : IVersions, IDisposable
 
     private int[] MapWithHeight = new int[2];
 
-    private List<Vector2Int> finalPath;
+    private List<Vector2Int> finalPath = new List<Vector2Int>();
 
     /// <summary>
     /// 设置地图
@@ -238,6 +238,7 @@ public class Astar : IVersions, IDisposable
             return null;
         }
 
+        int ver = Versions;
         CurFrameMaxFind = 0;
         while (mOpenlist.Count > 0)
         {
@@ -260,17 +261,17 @@ public class Astar : IVersions, IDisposable
             }
         }
 
-        AStarGrid endgrid = end;
-
-        while (endgrid.Parent != null)
+        if (ver != Versions)
+            return null;
+        AStarGrid sendGrid = end;
+        while (sendGrid.Parent != null)
         {
-            finalPath.Add(new Vector2Int(endgrid.X, endgrid.Y));
-            endgrid = endgrid.Parent;
+            finalPath.Add(new Vector2Int(sendGrid.X, sendGrid.Y));
+            sendGrid = sendGrid.Parent;
         }
 
         if (finalPath.Count > 0)
         {
-            finalPath.RemoveAt(finalPath.Count - 1);
             finalPath.Reverse();
         }
 
@@ -278,11 +279,9 @@ public class Astar : IVersions, IDisposable
     }
 
 
-    public async UniTask<List<Vector2Int>> Find(Vector2Int startpos, Vector2Int endpos, List<Vector2Int> finalPath)
+    public async UniTask<List<Vector2Int>> Find(Vector2Int startpos, Vector2Int endpos)
     {
-        finalPath ??= new();
         finalPath.Clear();
-        this.finalPath = finalPath;
         Versions++;
         mOpenlist.Clear();
         mCloselist.Clear();
@@ -290,7 +289,7 @@ public class Astar : IVersions, IDisposable
         var end = CreatEnd(endpos[0], endpos[1]);
         int versions = Versions;
         var x = await StartAStarArithmetic(start, end);
-        if (versions != Versions)
+        if (versions != Versions || x == null)
         {
             return null;
         }

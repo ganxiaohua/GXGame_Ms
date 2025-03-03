@@ -4,10 +4,12 @@ using UnityEngine;
 
 namespace GXGame
 {
-    public struct FindPathData
+    public class FindPathData : IVersions
     {
         public List<Vector2Int> Path;
         public ushort NextIndex;
+        public bool IsFindPath;
+        public int Versions { get; set; }
     }
     
     public class GridDataComponent : ECSComponent

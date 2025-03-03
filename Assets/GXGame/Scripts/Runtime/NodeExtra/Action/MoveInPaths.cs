@@ -19,39 +19,45 @@ namespace GXGame
             return null;
         }
 
+        
         protected override void OnExecute()
         {
-        }
-        
-        protected override void OnUpdate()
-        {
+            bool action = false;
             var ownerWorldPos = owner.GetWorldPos().Value;
             var pathData = owner.GetFindPathComponent().Value;
             var gridData = owner.GetGridDataComponent().Value;
+
             var moveSpeed = owner.GetMoveSpeed().Value;
             if (pathData.Path != null && pathData.Path.Count != 0)
             {
+                action = true;
                 var nextPos = pathData.Path[Mathf.Min(pathData.NextIndex, pathData.Path.Count)];
-                var nextPosWorld = gridData.CellToWolrd(new Vector3Int(nextPos.x, 0, nextPos.y));
+                var nextPosWorld = gridData.CellToWolrd(nextPos);
                 var dir = (nextPosWorld - ownerWorldPos);
                 float distance = dir.magnitude;
                 dir = dir.normalized;
                 var faceDir = dir;
-                if (distance <= moveSpeed * world.DeltaTime)
+                if (distance <= Mathf.Min(moveSpeed * world.DeltaTime, 0.05f))
                 {
                     pathData.NextIndex++;
                     if (pathData.NextIndex >= pathData.Path.Count)
                     {
                         pathData.Path.Clear();
                         pathData.NextIndex = 0;
-                        EndAction(true);
                         dir = Vector3.zero;
+                        action = false;
                     }
                     owner.SetFindPathComponent(pathData);
                 }
+
                 owner.SetMoveDirection(dir);
                 owner.SetFaceDirection(faceDir);
             }
+            EndAction(action);
+        }
+
+        protected override void OnUpdate()
+        {
         }
 
         //Called when the task is disabled.

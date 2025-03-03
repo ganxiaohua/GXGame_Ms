@@ -99,7 +99,7 @@ namespace GXGame.Logic
             monster.AddLocalScale(Vector3.one);
             monster.AddPathFindingTargetPos(new Vector3(0,0,0));
             monster.AddMoveDirection();
-            monster.AddFindPathComponent();
+            monster.AddFindPathComponent(new FindPathData());
             monster.AddGridDataComponent(gridData);
             monster.AddBehaviorTreeComponent("BTO/Monster01Bto");
         }

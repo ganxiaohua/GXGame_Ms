@@ -3,6 +3,7 @@ using System.Diagnostics;
 using Cysharp.Threading.Tasks;
 using GameFrame;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace GXGame
 {
@@ -41,13 +42,18 @@ namespace GXGame
 
         private async UniTaskVoid Find(ECSEntity ecsEntity)
         {
+            Debug.LogWarning("开始进行寻路");
             var worldPos = ecsEntity.GetWorldPos().Value;
             var targetPos = ecsEntity.GetPathFindingTargetPos().Value;
             var findPathComponent = ecsEntity.GetFindPathComponent().Value;
             var start = gridData.WorldToCell(worldPos);
             var target = gridData.WorldToCell(targetPos);
-            var pathData = await aStarManager.Find(new Vector2Int(start.x, start.z), new Vector2Int(target.x, target.z),findPathComponent.Path);
-            if (pathData == null)
+            findPathComponent.IsFindPath = true;
+            findPathComponent.Versions++;
+            var ver = findPathComponent.Versions;
+            var pathData = await aStarManager.Find(new Vector2Int(start.x, start.z), new Vector2Int(target.x, target.z));
+            findPathComponent.IsFindPath = false;
+            if (pathData == null || ver!= findPathComponent.Versions)
                 return;
             findPathComponent.Path = pathData;
             findPathComponent.NextIndex = 0;

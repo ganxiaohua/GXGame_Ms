@@ -23,21 +23,21 @@ namespace GXGame
             return area;
         }
 
-        public Vector3 CellToLocal(Vector3Int pos)
+        public Vector3 CellToLocal(Vector2Int pos)
         {
             var vector = new Vector3();
-            vector.x = pos.x * CellSize.x;
+            vector.x = pos.x * CellSize.x+CellSize.x/2;
             vector.y = Pos.y;
-            vector.z = pos.z * CellSize.y;
+            vector.z = pos.y * CellSize.y+CellSize.y/2;
             return vector;
         }
 
-        public Vector3 CellToWolrd(Vector3Int pos)
+        public Vector3 CellToWolrd(Vector2Int pos)
         {
             var vector = new Vector3();
-            vector.x = pos.x * CellSize.x + Pos.x;
+            vector.x = pos.x * CellSize.x + Pos.x+CellSize.x/2;
             vector.y = Pos.y;
-            vector.z = pos.z * CellSize.y + Pos.z;
+            vector.z = pos.y * CellSize.y + Pos.z+CellSize.y/2;
             return vector;
         }
 

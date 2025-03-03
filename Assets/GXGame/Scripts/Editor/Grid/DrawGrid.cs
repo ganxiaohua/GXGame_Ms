@@ -100,12 +100,14 @@ namespace GXGame.Editor
             GL.PushMatrix();
             GL.Begin(GL.QUADS);
             
-            var worldPos = gridLayout.CellToWolrd(new Vector3Int(rect.x, 0, rect.y));
+            var worldPos = gridLayout.CellToWolrd(rect.position);
+            worldPos -= new Vector3(gridLayout.CellSize.x / 2, 0, gridLayout.CellSize.y / 2);
             Graphics.DrawMeshNow(quadMesh, worldPos + offset, Quaternion.identity);
             GL.End();
             GL.PopMatrix();
         }
 
+        
         private static Mesh GenerateQuadMesh(GridData gridLayout, RectInt rect)
         {
             Mesh mesh = new Mesh();
