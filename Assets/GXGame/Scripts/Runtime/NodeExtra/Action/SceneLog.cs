@@ -24,6 +24,7 @@ namespace GXGame {
 		protected override void OnExecute() {
 			Debugger.Log(log);
 			OpenGuid(true);
+			EndAction(true);
 		}
 		protected override void OnUpdate() {
 			if ( elapsedTime >= secondsToRun ) {

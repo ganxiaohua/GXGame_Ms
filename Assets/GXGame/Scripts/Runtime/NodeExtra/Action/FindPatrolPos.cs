@@ -42,11 +42,10 @@ namespace GXGame
             }
             else if (pathData.Path != null && pathData.Path.Count == 0 && !pathData.IsFindPath)
             {
-                int index = UnityEngine.Random.Range(0, gridData.NoObstacleCells.Count);
+                int index = Random.Range(0, gridData.NoObstacleCells.Count);
                 var pos = gridData.NoObstacleCells[index];
                 var worldPos = gridData.CellToWolrd(pos);
                 owner.SetPathFindingTargetPos(worldPos);
-                Debug.Log($"{index}进行一次寻路");
             }
             EndAction(true);
         }

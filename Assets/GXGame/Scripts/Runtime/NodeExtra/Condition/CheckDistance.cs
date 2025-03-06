@@ -42,7 +42,6 @@ namespace GXGame
             foreach (var player in playerGroup)
             {
                 var curPos = owner.GetWorldPos().Value;
-                Debug.LogError(Vector3.Distance(curPos, player.GetWorldPos().Value));
                 return Vector3.Distance(curPos, player.GetWorldPos().Value) <= MaxDistance;
             }
             return false;
