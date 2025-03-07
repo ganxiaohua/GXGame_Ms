@@ -1,3 +1,4 @@
+using System;
 using GameFrame;
 using NodeCanvas.Framework;
 using ParadoxNotion.Design;
@@ -15,12 +16,15 @@ namespace GXGame
         public float MaxDistance;
 
         private Group playerGroup;
+        
+        public BBParameter<Int32> PlayerComponents;
 
         protected override string OnInit()
         {
             owner = (ECSEntity) blackboard.parent.GetVariable("Entity").value;
             world = ((World) owner.Parent);
-            Matcher matcher = Matcher.SetAll(Components.Player);
+            Matcher matcher = Matcher.SetAll(PlayerComponents.value);
+            Debug.Log(PlayerComponents.value);
             playerGroup = world.GetGroup(matcher);
             return null;
         }
