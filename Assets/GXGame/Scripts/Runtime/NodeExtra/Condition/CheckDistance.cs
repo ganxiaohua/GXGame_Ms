@@ -24,7 +24,6 @@ namespace GXGame
             owner = (ECSEntity) blackboard.parent.GetVariable("Entity").value;
             world = ((World) owner.Parent);
             Matcher matcher = Matcher.SetAll(PlayerComponents.value);
-            Debug.Log(PlayerComponents.value);
             playerGroup = world.GetGroup(matcher);
             return null;
         }

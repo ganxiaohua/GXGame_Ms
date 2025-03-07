@@ -1,3 +1,4 @@
+using System;
 using GameFrame;
 using NodeCanvas.Framework;
 using ParadoxNotion.Design;
@@ -13,12 +14,13 @@ namespace GXGame {
 		private World world;
 		private Group playerGroup;
 		private int tagertId;
+		public BBParameter<Int32> PlayerComponents;
 		//Use for initialization. This is called only once in the lifetime of the task.
 		//Return null if init was successfull. Return an error string otherwise
 		protected override string OnInit() {
 			owner = (ECSEntity) blackboard.parent.GetVariable("Entity").value;
 			world = ((World) owner.Parent);
-			Matcher matcher = Matcher.SetAll(Components.Player);
+			Matcher matcher = Matcher.SetAll(PlayerComponents.value);
 			playerGroup = world.GetGroup(matcher);
 			return null;
 		}
@@ -30,7 +32,9 @@ namespace GXGame {
 		{
 			foreach (var player in playerGroup)
 			{
-				var dir = (player.GetWorldPos().Value - owner.GetWorldPos().Value).normalized;
+				var dir = player.GetWorldPos().Value - owner.GetWorldPos().Value;
+				dir.y = 0;
+				dir = dir.normalized;
 				owner.SetMoveDirection(Vector3.zero);
 				owner.SetFaceDirection(dir);
 				break;

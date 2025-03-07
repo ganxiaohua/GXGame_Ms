@@ -13,21 +13,21 @@ namespace GXGame {
 
 		private ECSEntity owner;
 		private World world;
-		public float secondsToRun = 1f;
+		public float SecondsToRun = 1f;
 		[RequiredField]
-		public BBParameter<string> log = "Hello World";
+		public BBParameter<string> LOG = "Hello World";
 		protected override string OnInit() {
 			owner = (ECSEntity) blackboard.parent.GetVariable("Entity").value;
 			world = ((World) owner.Parent);
 			return null;
 		}
 		protected override void OnExecute() {
-			Debugger.Log(log);
+			Debugger.Log(LOG);
 			OpenGuid(true);
 			EndAction(true);
 		}
 		protected override void OnUpdate() {
-			if ( elapsedTime >= secondsToRun ) {
+			if ( elapsedTime >= SecondsToRun ) {
 				EndAction(true);
 			}
 		}
@@ -54,7 +54,7 @@ namespace GXGame {
 		}
 		
 		protected override string info {
-			get { return log.value; }
+			get { return LOG.value; }
 		}
 	}
 }
