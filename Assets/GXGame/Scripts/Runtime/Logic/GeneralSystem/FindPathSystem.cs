@@ -42,7 +42,6 @@ namespace GXGame
 
         private async UniTaskVoid Find(ECSEntity ecsEntity)
         {
-            Debug.LogWarning("开始进行寻路");
             var worldPos = ecsEntity.GetWorldPos().Value;
             var targetPos = ecsEntity.GetPathFindingTargetPos().Value;
             var findPathComponent = ecsEntity.GetFindPathComponent().Value;

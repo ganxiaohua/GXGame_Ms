@@ -55,7 +55,7 @@ public class Astar : IVersions, IDisposable
     /// </summary>
     static int[,] Aroundpos = new int[8, 3] {{-1, -1, 14}, {0, -1, 10}, {1, -1, 14}, {1, 0, 10}, {1, 1, 14}, {0, 1, 10}, {-1, 1, 14}, {-1, 0, 10}};
 
-    private const int FrameMaxFind = 15;
+    private const int FrameMaxFind = 30;
 
     List<AStarGrid> Barrierlist = new List<AStarGrid>();
 
@@ -257,8 +257,8 @@ public class Astar : IVersions, IDisposable
             if (CurFrameMaxFind >= FrameMaxFind)
             {
                 await UniTask.Yield();
-                CurFrameMaxFind = 0;
             }
+            CurFrameMaxFind = 0;
         }
 
         if (ver != Versions)
