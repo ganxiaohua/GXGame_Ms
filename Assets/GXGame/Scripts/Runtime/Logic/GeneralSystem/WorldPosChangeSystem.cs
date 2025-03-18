@@ -10,7 +10,7 @@ namespace GXGame
         public void OnInitialize(World world)
         {
             this.world = world;
-            Matcher matcher = Matcher.SetAll(Components.MoveDirection,Components.MoveSpeed).NoneOf(Components.CapsuleCollider);
+            Matcher matcher = Matcher.SetAll(Components.MoveDirection, Components.MoveSpeed).NoneOf(Components.CapsuleCollider, Components.RovAgent);
             group = world.GetGroup(matcher);
         }
 

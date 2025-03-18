@@ -195,7 +195,6 @@ namespace RVO
             agent.timeHorizonObst_ = timeHorizonObst;
             agent.velocity_ = velocity;
             agents_.Add(agent);
-
             return agent.id_;
         }
 

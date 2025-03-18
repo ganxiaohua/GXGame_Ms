@@ -12,11 +12,9 @@ namespace GXGame
         public Vector2 CellSize;
         public Vector2Int GirdArea;
         public Vector3 Pos;
-        [HideInInspector]
-        public List<Vector2Int> ObstacleCells;
-        [HideInInspector]
-        public List<Vector2Int> NoObstacleCells;
-        
+        [HideInInspector] public List<Vector2Int> ObstacleCells;
+        [HideInInspector] public List<Vector2Int> NoObstacleCells;
+
         public RectInt GetArea()
         {
             RectInt area = new RectInt(0, 0, GirdArea.x, GirdArea.y);
@@ -26,18 +24,18 @@ namespace GXGame
         public Vector3 CellToLocal(Vector2Int pos)
         {
             var vector = new Vector3();
-            vector.x = pos.x * CellSize.x+CellSize.x/2;
+            vector.x = pos.x * CellSize.x + CellSize.x / 2;
             vector.y = Pos.y;
-            vector.z = pos.y * CellSize.y+CellSize.y/2;
+            vector.z = pos.y * CellSize.y + CellSize.y / 2;
             return vector;
         }
 
         public Vector3 CellToWolrd(Vector2Int pos)
         {
             var vector = new Vector3();
-            vector.x = pos.x * CellSize.x + Pos.x+CellSize.x/2;
+            vector.x = pos.x * CellSize.x + Pos.x + CellSize.x / 2;
             vector.y = Pos.y;
-            vector.z = pos.y * CellSize.y + Pos.z+CellSize.y/2;
+            vector.z = pos.y * CellSize.y + Pos.z + CellSize.y / 2;
             return vector;
         }
 
@@ -137,7 +135,7 @@ namespace GXGame
                     int posX = rect.x + x;
                     int posY = rect.y + y;
                     var v = new Vector2Int(posX, posY);
-                    ObstacleCells.Remove(v);
+                    ObstacleCells.RemoveSwapBack(v);
                     NoObstacleCells.Add(v);
                 }
             }

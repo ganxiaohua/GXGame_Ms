@@ -1,7 +1,7 @@
-﻿using ParadoxNotion;
+﻿#if UNITY_EDITOR
+using ParadoxNotion;
 using UnityEngine;
 
-#if UNITY_EDITOR
 namespace GXGame
 {
     public partial class SceneLog
@@ -12,6 +12,7 @@ namespace GXGame
             {
                 return;
             }
+
             var pos = owner.GetWorldPos().Value;
             var point = Camera.main.WorldToScreenPoint(pos);
             var size = GUI.skin.label.CalcSize(new GUIContent(LOG.value));

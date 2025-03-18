@@ -1,4 +1,5 @@
 ﻿using GameFrame;
+using RVO;
 using UnityEngine;
 
 namespace GXGame.Logic
@@ -8,8 +9,10 @@ namespace GXGame.Logic
         private int otherCount = 30;
         private int monsterCount = 0;
         private GridData gridData;
+
         public override void OnInitialize()
         {
+            Simulator.Instance.setAgentDefaults(15.0f, 10, 5.0f, 5.0f, 0.5f, 10, new Vector2(0.0f, 0.0f));
             base.OnInitialize();
             gridData = GameObject.Find("Map").GetComponent<GridData>();
             EstimateChildsCount(monsterCount + otherCount);
@@ -18,16 +21,20 @@ namespace GXGame.Logic
             this.AddSystem<ControlSystem>();
             this.AddSystem<CollisionBehaviorSystem>();
             this.AddSystem<WorldPosChangeSystem>();
+            this.AddSystem<RovPosSystem>();
             this.AddSystem<WorldDirChangeBaseSystem>();
-            this.AddSystem<CountDowntSystem>();
             this.AddSystem<FindPathSystem>(gridData);
             this.AddSystem<InputSystem>();
             //最后执行
             this.AddSystem<DestroyBaseSystem>();
             CreateCamera();
             CreatePlayer();
-            CreatePotato();
+            // CreatePotato();
             CreateMonster();
+            // foreach (var cells in gridData.ObstacleCells)
+            // {
+            //     Simulator.Instance.addObstacle()
+            // }
         }
 
         private void CreateCamera()
@@ -87,21 +94,29 @@ namespace GXGame.Logic
 
         private void CreateMonster()
         {
-            var monster = AddChild();
-            monster.Name = $"怪兽";
-            monster.AddViewType(typeof(GoBaseView));
-            monster.AddAssetPath("Monster/Monster01/Monster01");
-            monster.AddWorldPos(new Vector3(0, 0, -5));
-            monster.AddWorldRotate(Quaternion.identity);
-            monster.AddMoveSpeed(1.0f);
-            monster.AddDirectionSpeed(180);
-            monster.AddFaceDirection();
-            monster.AddLocalScale(Vector3.one);
-            monster.AddPathFindingTargetPos(new Vector3(0,0,0));
-            monster.AddMoveDirection();
-            monster.AddFindPathComponent(new FindPathData());
-            monster.AddGridDataComponent(gridData);
-            monster.AddBehaviorTreeComponent("BTO/Monster01Bto");
+            for (int i = 0; i < 1; i++)
+            {
+                Vector3 initPos = new Vector3(i, 0, -5);
+                int id = Simulator.Instance.addAgent(new Vector2(initPos.x, initPos.z));
+                Simulator.Instance.setAgentMaxSpeed(id, 1.0f);
+                Simulator.Instance.setAgentRadius(id, 0.5f);
+                var monster = AddChild();
+                monster.Name = $"怪兽";
+                monster.AddViewType(typeof(GoBaseView));
+                monster.AddAssetPath("Monster/Monster01/Monster01");
+                monster.AddRovAgent(id);
+                monster.AddWorldPos(initPos);
+                monster.AddWorldRotate(Quaternion.identity);
+                monster.AddMoveSpeed(1.0f);
+                monster.AddDirectionSpeed(180);
+                monster.AddFaceDirection();
+                monster.AddLocalScale(Vector3.one);
+                monster.AddPathFindingTargetPos();
+                monster.AddMoveDirection();
+                monster.AddFindPathComponent(new FindPathData());
+                monster.AddGridDataComponent(gridData);
+                monster.AddBehaviorTreeComponent("BTO/Monster01Bto");
+            }
         }
     }
 }

@@ -1,5 +1,6 @@
 ﻿using System.Collections.Generic;
 using GameFrame;
+using Sirenix.OdinInspector;
 using UnityEngine;
 
 namespace GXGame
@@ -11,7 +12,7 @@ namespace GXGame
         public bool IsFindPath;
         public int Versions { get; set; }
     }
-    
+
     public class GridDataComponent : ECSComponent
     {
         public GridData Value;
@@ -19,6 +20,6 @@ namespace GXGame
 
     public class FindPathComponent : ECSComponent
     {
-        public FindPathData Value;
+        [ShowInInspector] public FindPathData Value;
     }
 }
