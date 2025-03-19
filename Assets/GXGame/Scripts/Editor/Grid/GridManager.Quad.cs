@@ -9,6 +9,7 @@ namespace GXGame.Editor
         private Material buildMaterial2;
         private List<Mesh> barrierMeshList = new List<Mesh>();
         private List<Mesh> findPathMeshList = new List<Mesh>();
+
         private void BuildPromptMesh(GridData gridridData)
         {
             BuildObstacle(gridridData);
@@ -17,23 +18,26 @@ namespace GXGame.Editor
 
         private void BuildObstacle(GridData gridridData)
         {
-            if (gridridData.ObstacleCells == null)
-                return;
             int index = 0;
-            foreach (var item in gridridData.ObstacleCells)
+            for (int x = 0; x < gridridData.GirdArea.x; x++)
             {
-                if (barrierMeshList.Count <= index)
+                for (int y = 0; y < gridridData.GirdArea.y; y++)
                 {
-                    barrierMeshList.Add(null);
-                }
+                    if (!gridridData.ObstacleCells[y * gridridData.GirdArea.x + x])
+                        continue;
+                    if (barrierMeshList.Count <= index)
+                    {
+                        barrierMeshList.Add(null);
+                    }
 
-                Mesh mesh = barrierMeshList[index];
-                DrawGrid.DrawQuadGizmos(GridData,offset, new RectInt(item.x, item.y, 1, 1), ref mesh, ref buildMaterial, Color.gray);
-                barrierMeshList[index] = mesh;
-                index++;
+                    Mesh mesh = barrierMeshList[index];
+                    DrawGrid.DrawQuadGizmos(GridData, offset, new RectInt(x, y, 1, 1), ref mesh, ref buildMaterial, Color.gray);
+                    barrierMeshList[index] = mesh;
+                    index++;
+                }
             }
         }
-        
+
         private void BuildFindPath(GridData gridridData)
         {
             if (gridridData.FindPath == null)
@@ -47,19 +51,19 @@ namespace GXGame.Editor
                 }
 
                 Mesh mesh = findPathMeshList[index];
-                DrawGrid.DrawQuadGizmos(GridData, offset,new RectInt(item.x, item.y, 1, 1), ref mesh, ref buildMaterial2, gridridData.FindPathColor);
+                DrawGrid.DrawQuadGizmos(GridData, offset, new RectInt(item.x, item.y, 1, 1), ref mesh, ref buildMaterial2, gridridData.FindPathColor);
                 findPathMeshList[index] = mesh;
                 index++;
             }
         }
-        
+
         private void ClearAreaMesh()
         {
             foreach (var item in barrierMeshList)
             {
                 DestroyImmediate(item);
             }
-            
+
             foreach (var item in findPathMeshList)
             {
                 DestroyImmediate(item);

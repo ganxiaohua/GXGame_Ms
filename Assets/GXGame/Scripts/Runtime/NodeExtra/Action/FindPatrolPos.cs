@@ -1,3 +1,4 @@
+using System.Collections.Generic;
 using GameFrame;
 using NodeCanvas.Framework;
 using ParadoxNotion.Design;
@@ -11,11 +12,17 @@ namespace GXGame
     {
         private ECSEntity owner;
         private World world;
+        private List<Vector2Int> patrolPoint;
 
         protected override string OnInit()
         {
             owner = (ECSEntity) blackboard.parent.GetVariable("Entity").value;
             world = ((World) owner.Parent);
+            patrolPoint = new List<Vector2Int>();
+            patrolPoint.Add(new Vector2Int(16, 2));
+            patrolPoint.Add(new Vector2Int(16, 7));
+            patrolPoint.Add(new Vector2Int(3, 3));
+            patrolPoint.Add(new Vector2Int(5, 15));
             return null;
         }
 
@@ -42,11 +49,12 @@ namespace GXGame
             }
             else if (pathData.Path != null && pathData.Path.Count == 0 && !pathData.IsFindPath)
             {
-                int index = Random.Range(0, gridData.NoObstacleCells.Count);
-                var pos = gridData.NoObstacleCells[index];
+                int index = Random.Range(0, patrolPoint.Count);
+                var pos = patrolPoint[index];
                 var worldPos = gridData.CellToWolrd(pos);
                 owner.SetPathFindingTargetPos(worldPos);
             }
+
             EndAction(true);
         }
 

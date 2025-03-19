@@ -85,7 +85,7 @@ namespace GXGame.Editor
                 };
                 GetCursorPosWithEditorScene(sceneView);
                 BuildPromptMesh(GridData);
-                DrawGrid.DrawGridGizmo(GridData,offset, GridData.GridColor, ref sMesh, ref sMaterial);
+                DrawGrid.DrawGridGizmo(GridData, offset, GridData.GridColor, ref sMesh, ref sMaterial);
                 Handles.Label(GridData.Pos, $"Grid Info\nCellSize:{GridData.CellSize}\n area:{GridData.GirdArea}", guiStyle);
                 Vector3 viewportPoint = new Vector3(50, sceneView.camera.pixelHeight, sceneView.camera.nearClipPlane);
                 var pos = sceneView.camera.ScreenToWorldPoint(viewportPoint);
