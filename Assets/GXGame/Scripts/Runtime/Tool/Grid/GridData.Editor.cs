@@ -1,7 +1,9 @@
 ﻿#if UNITY_EDITOR
 using System.Collections.Generic;
+using System.Diagnostics;
 using Sirenix.OdinInspector;
 using UnityEngine;
+using Debug = UnityEngine.Debug;
 
 namespace GXGame
 {
@@ -50,9 +52,13 @@ namespace GXGame
                 aStar.InitFindPath(GirdArea.x, GirdArea.y, obstacleCells);
             }
 
+            Stopwatch sw = new Stopwatch();
+            sw.Start();
             bool e = aStar.Find(StartPos, EndPos, FindPath);
             if (!e)
                 Debug.Log("无法到达路店");
+            sw.Stop();
+            Debug.Log("寻路时间:" + (sw.Elapsed.TotalMilliseconds));
         }
 
         [Button("销毁寻路地图")]

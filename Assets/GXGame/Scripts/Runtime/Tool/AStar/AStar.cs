@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using GameFrame;
 using UnityEngine;
 
@@ -11,10 +12,11 @@ namespace GXGame
         private int[] h;
         private bool[] barrier;
         private int[] parent;
-        private Vector2Int start;
-        private Vector2Int end;
-        private HashSet<Vector2Int> closeList;
-        private MinHeap<Vector2Int> openList;
+        private int start;
+        private int end;
+        private bool[] closeList;
+        private MinHeap<int> openList;
+        private Vector2Int endPos;
         static int[,] sAroundpos = new int[8, 3] {{-1, -1, 14}, {0, -1, 10}, {1, -1, 14}, {1, 0, 10}, {1, 1, 14}, {0, 1, 10}, {-1, 1, 14}, {-1, 0, 10}};
 
         public void InitFindPath(int width, int height, bool[] barrier)
@@ -26,32 +28,33 @@ namespace GXGame
             g = new int[size];
             h = new int[size];
             parent = new int[size];
-            closeList = new HashSet<Vector2Int>();
-            openList = new MinHeap<Vector2Int>(size / 2, CompareTo);
+            closeList = new Boolean[size];
+            openList = new MinHeap<int>(size / 2, CompareTo);
         }
 
         public bool Find(Vector2Int start, Vector2Int end, List<Vector2Int> findPosList)
         {
             Assert.IsTrue(InMap(start) && InMap(end), "发起点不在地图内");
             Assert.IsTrue(start != end, "出发点和起点相同");
-            this.end = end;
-            this.start = start;
+            this.start = Pos2Index(start);
+            this.end = Pos2Index(end);
             findPosList ??= new();
             findPosList.Clear();
-            closeList.Clear();
+            Array.Clear(closeList, 0, closeList.Length);
             openList.Clear();
-            openList.Insert(start);
+            openList.Insert(this.start);
+            endPos = end;
             while (openList.Count != 0)
             {
-                var pos = openList.DeleteMin();
-                if (pos == end)
+                var index = openList.DeleteMin();
+                if (index == this.end)
                 {
                     ReCall(findPosList);
                     return true;
                 }
 
-                closeList.Add(pos);
-                CalculateGhAndAddOpenList(pos);
+                closeList[index] = true;
+                CalculateGhAndAddOpenList(index);
             }
 
             return false;
@@ -59,57 +62,54 @@ namespace GXGame
 
         private void ReCall(List<Vector2Int> list)
         {
-            int endIndex = Pos2Index(end);
-            int startIndex = Pos2Index(start);
-            int cur = endIndex;
+            int cur = end;
             do
             {
-                list.Add(new Vector2Int(cur % mapWidth, cur / mapWidth));
+                list.Add(Index2Pos(cur));
                 cur = parent[cur];
-            } while (cur != startIndex);
+            } while (cur != start);
 
-            list.Add(start);
+            list.Add(Index2Pos(start));
             list.Reverse();
         }
 
 
-        private int GetF(Vector2Int pos)
+        private int GetF(int index)
         {
-            int index = Pos2Index(pos);
             return g[index] + h[index];
         }
 
-        private void CalculateGhAndAddOpenList(Vector2Int pos)
+        private void CalculateGhAndAddOpenList(int curIndex)
         {
-            int curIndex = Pos2Index(pos);
+            var pos = Index2Pos(curIndex);
             for (int i = 0; i < sAroundpos.GetLength(0); i++)
             {
                 Vector2Int nextPos = new Vector2Int(pos.x + sAroundpos[i, 0], pos.y + sAroundpos[i, 1]);
-                if (!InMap(nextPos) || IsBarrier(nextPos) || InCloseList(nextPos))
+                int nextIndex = Pos2Index(nextPos);
+                if (!InMap(nextPos) || IsBarrier(nextIndex) || InCloseList(nextIndex))
                 {
                     continue;
                 }
 
-                int nextIndex = Pos2Index(nextPos);
-                bool inOpenList = IsOpenList(nextPos);
+                bool inOpenList = IsOpenList(nextIndex);
                 var nextG = sAroundpos[i, 2] + g[curIndex];
                 if (inOpenList && g[nextIndex] > nextG)
                 {
                     g[nextIndex] = nextG;
                     parent[nextIndex] = curIndex;
-                    openList.Update(nextPos);
+                    openList.Update(nextIndex);
                 }
                 else if (!inOpenList)
                 {
                     g[nextIndex] = nextG;
-                    h[nextIndex] = (Mathf.Abs(end.x - nextPos.x) + Mathf.Abs(end.y - nextPos.y)) * 10;
+                    h[nextIndex] = (Mathf.Abs(endPos.x - nextPos.x) + Mathf.Abs(endPos.y - nextPos.y)) * 10;
                     parent[nextIndex] = curIndex;
-                    openList.Insert(nextPos);
+                    openList.Insert(nextIndex);
                 }
             }
         }
 
-        private int CompareTo(Vector2Int left, Vector2Int right)
+        private int CompareTo(int left, int right)
         {
             return GetF(left) - GetF(right);
         }
@@ -117,6 +117,11 @@ namespace GXGame
         private int Pos2Index(Vector2Int pos)
         {
             return pos.y * mapWidth + pos.x;
+        }
+
+        private Vector2Int Index2Pos(int index)
+        {
+            return new Vector2Int(index % mapWidth, index / mapWidth);
         }
 
         private bool InMap(Vector2Int pos)
@@ -130,31 +135,22 @@ namespace GXGame
         }
 
 
-        private bool IsBarrier(Vector2Int pos)
+        private bool IsBarrier(int index)
         {
-            int index = Pos2Index(pos);
             return barrier[index];
         }
 
-        private bool InCloseList(Vector2Int pos)
+        private bool InCloseList(int index)
         {
-            foreach (var item in closeList)
-            {
-                if (item == pos)
-                {
-                    return true;
-                }
-            }
-
-            return false;
+            return closeList[index];
         }
 
-        private bool IsOpenList(Vector2Int pos)
+        private bool IsOpenList(int index)
         {
             int count = openList.Count;
             for (int i = count - 1; i >= 0; i--)
             {
-                if (openList[i] == pos)
+                if (openList[i] == index)
                 {
                     return true;
                 }
