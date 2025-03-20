@@ -6,9 +6,9 @@ using UnityEngine;
 
 namespace GXGame
 {
-    [Category("怪物AI")]
+    [Category("AI")]
     [Description("判断和目标的距离")]
-    public class CheckDistance : ConditionTask
+    public class CheckDistanceCondition : ConditionTask
     {
         private ECSEntity owner;
         private World world;
@@ -16,7 +16,7 @@ namespace GXGame
         public float MaxDistance;
 
         private Group playerGroup;
-        
+
         public BBParameter<Int32> PlayerComponents;
 
         protected override string OnInit()
@@ -28,7 +28,7 @@ namespace GXGame
             return null;
         }
 
-     
+
         protected override void OnEnable()
         {
         }
@@ -47,10 +47,12 @@ namespace GXGame
                 var curPos = owner.GetWorldPos().Value;
                 return Vector3.Distance(curPos, player.GetWorldPos().Value) <= MaxDistance;
             }
+
             return false;
         }
-        
-        protected override string info {
+
+        protected override string info
+        {
             get { return "Distance" + "<=" + MaxDistance + " to player"; }
         }
     }

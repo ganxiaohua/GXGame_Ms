@@ -69,7 +69,6 @@ namespace GXGame
                 cur = parent[cur];
             } while (cur != start);
 
-            list.Add(Index2Pos(start));
             list.Reverse();
         }
 

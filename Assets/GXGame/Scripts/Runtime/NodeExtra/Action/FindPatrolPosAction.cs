@@ -6,9 +6,9 @@ using UnityEngine;
 
 namespace GXGame
 {
-    [Category("怪物AI")]
+    [Category("AI")]
     [Description("随机获取可行走地图上的一点,如果本身和获取点的距离相距过近重新获取,一直返回true")]
-    public class FindPatrolPos : ActionTask
+    public class FindPatrolPosAction : ActionTask
     {
         private ECSEntity owner;
         private World world;

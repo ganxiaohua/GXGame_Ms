@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace GXGame
 {
-    public partial class SceneLog
+    public partial class SceneLogAction
     {
         void OnGUI()
         {

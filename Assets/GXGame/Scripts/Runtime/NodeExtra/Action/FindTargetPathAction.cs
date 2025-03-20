@@ -2,17 +2,18 @@ using System;
 using GameFrame;
 using NodeCanvas.Framework;
 using ParadoxNotion.Design;
+using UnityEngine;
 
 namespace GXGame
 {
-    [Category("怪物AI")]
-    [Description("跟踪self")]
-    public class Trace : ActionTask
+    [Category("AI")]
+    [Description("寻找追踪目标路径")]
+    public class FindTargetPathAction : ActionTask
     {
         private ECSEntity owner;
         private World world;
-        private Group playerGroup;
-        private int tagertId;
+        private Group targetGroup;
+        private Vector3Int? targetPos;
 
         public BBParameter<Int32> PlayerComponents;
 
@@ -23,7 +24,7 @@ namespace GXGame
             owner = (ECSEntity) blackboard.parent.GetVariable("Entity").value;
             world = ((World) owner.Parent);
             Matcher matcher = Matcher.SetAll(PlayerComponents.value);
-            playerGroup = world.GetGroup(matcher);
+            targetGroup = world.GetGroup(matcher);
             return null;
         }
 
@@ -32,11 +33,17 @@ namespace GXGame
         //EndAction can be called from anywhere.
         protected override void OnExecute()
         {
-            foreach (var player in playerGroup)
+            foreach (var target in targetGroup)
             {
-                // var dir = (player.GetWorldPos().Value - owner.GetWorldPos().Value).normalized;
-                owner.SetPathFindingTargetPos(player.GetWorldPos().Value);
-                break;
+                var gridData = owner.GetGridDataComponent().Value;
+                var targetWorldPos = target.GetWorldPos().Value;
+                var worldCell = gridData.WorldToCell(targetWorldPos);
+                if (targetPos == null || worldCell != targetPos.Value)
+                {
+                    owner.SetPathFindingTargetPos(targetWorldPos);
+                    targetPos = worldCell;
+                    break;
+                }
             }
 
             EndAction(true);

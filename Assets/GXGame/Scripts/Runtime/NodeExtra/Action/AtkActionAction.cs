@@ -3,12 +3,11 @@ using NodeCanvas.Framework;
 using ParadoxNotion.Design;
 using UnityEngine;
 
-
 namespace GXGame
 {
-    [Category("怪物AI")]
+    [Category("AI")]
     [Description("攻击")]
-    public class Atk : ActionTask
+    public class AtkAction : ActionTask
     {
         private ECSEntity owner;
         private World world;

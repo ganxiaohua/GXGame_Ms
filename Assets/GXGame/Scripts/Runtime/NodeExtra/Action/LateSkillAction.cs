@@ -5,7 +5,7 @@ using ParadoxNotion.Design;
 
 namespace GXGame {
 
-	[Category("怪物AI")]
+	[Category("AI")]
 	[Description("技能后摇")]
 	public class LateSkill : ActionTask {
 		

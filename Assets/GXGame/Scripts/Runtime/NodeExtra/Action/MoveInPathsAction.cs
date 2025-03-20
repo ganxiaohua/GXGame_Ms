@@ -7,10 +7,11 @@ namespace GXGame
 {
     [Category("通用组件")]
     [Description("按照路径移动,达到指定路径的终点就停止.并且返回true")]
-    public class MoveInPaths : ActionTask
+    public class MoveInPathsAction : ActionTask
     {
         private ECSEntity owner;
         private World world;
+        public bool isTowardPath;
 
         protected override string OnInit()
         {
@@ -19,7 +20,7 @@ namespace GXGame
             return null;
         }
 
-        
+
         protected override void OnExecute()
         {
             bool action = false;
@@ -47,12 +48,15 @@ namespace GXGame
                         dir = Vector3.zero;
                         action = false;
                     }
+
                     owner.SetFindPathComponent(pathData);
                 }
 
                 owner.SetMoveDirection(dir);
-                owner.SetFaceDirection(faceDir);
+                if (isTowardPath)
+                    owner.SetFaceDirection(faceDir);
             }
+
             EndAction(action);
         }
 
