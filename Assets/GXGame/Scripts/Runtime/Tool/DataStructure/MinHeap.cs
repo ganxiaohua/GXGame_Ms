@@ -55,8 +55,8 @@ namespace GXGame
         public void Update(T t)
         {
             int index = heap.IndexOf(t);
-            Swap(index, Count - 1);
-            BubbleUp(Count - 1);
+            BubbleUp(index);
+            BubbleDown(index);
         }
 
         private void BubbleUp(int index)

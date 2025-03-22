@@ -13,7 +13,7 @@ namespace GXGame
         private ECSEntity owner;
         private World world;
         private Group targetGroup;
-        private Vector3Int? targetPos;
+        private Vector2Int? targetPos;
 
         public BBParameter<Int32> PlayerComponents;
 

@@ -51,7 +51,16 @@ namespace GXGame
 
             findPathComponent.IsFindPath = true;
             findPathComponent.Versions++;
-            aStarManager.Find(new Vector2Int(start.x, start.z), new Vector2Int(target.x, target.z), path);
+            bool b = aStarManager.Find(start, target, path);
+            if (!b)
+            {
+                return;
+            }
+
+            if (path[0] == start)
+            {
+            }
+
             findPathComponent.IsFindPath = false;
             findPathComponent.Path = path;
             findPathComponent.NextIndex = 0;

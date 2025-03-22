@@ -76,10 +76,10 @@ namespace GXGame
         }
 
 
-        public bool InArea(Vector3Int pos)
+        public bool InArea(Vector2Int pos)
         {
             RectInt area = GetArea();
-            return area.Contains(new Vector2Int(pos.x, pos.z));
+            return area.Contains(pos);
         }
 
         public bool InArea(RectInt rect)
@@ -102,20 +102,20 @@ namespace GXGame
             return vector;
         }
 
-        public Vector3Int LocalToCell(Vector3 pos)
+        public Vector2Int LocalToCell(Vector3 pos)
         {
-            Vector3Int vector2Int = new Vector3Int();
+            Vector2Int vector2Int = new Vector2Int();
             vector2Int.x = Mathf.FloorToInt(pos.x / cellSize.x);
-            vector2Int.z = Mathf.FloorToInt(pos.z / cellSize.y);
+            vector2Int.y = Mathf.FloorToInt(pos.z / cellSize.y);
             return vector2Int;
         }
 
-        public Vector3Int WorldToCell(Vector3 pos)
+        public Vector2Int WorldToCell(Vector3 pos)
         {
-            Vector3Int v = new Vector3Int();
+            Vector2Int v = new Vector2Int();
             pos -= this.pos;
             v.x = Mathf.FloorToInt(pos.x / cellSize.x);
-            v.z = Mathf.FloorToInt(pos.z / cellSize.y);
+            v.y = Mathf.FloorToInt(pos.z / cellSize.y);
             return v;
         }
 

@@ -8,8 +8,8 @@ namespace GXGame.Editor
     {
         private Material cursorMaterial;
         private Mesh cursor;
-        private Vector3Int curCursorPos;
-        private Vector3Int lastCursorPos;
+        private Vector2Int curCursorPos;
+        private Vector2Int lastCursorPos;
         private bool buttonDown;
 
         public void GetCursorPosWithEditorScene(SceneView sceneView)
@@ -30,7 +30,7 @@ namespace GXGame.Editor
                 curCursorPos = GridData.WorldToCell(worldPos);
                 worldPos.y += 1.0f;
                 guiStyle.normal.textColor = Color.magenta;
-                Handles.Label(worldPos, $"Cell Position: {curCursorPos}",guiStyle);
+                Handles.Label(worldPos, $"Cell Position: {curCursorPos}", guiStyle);
                 MouseArea();
                 InputArea();
                 guiStyle.normal.textColor = Color.white;
@@ -40,10 +40,10 @@ namespace GXGame.Editor
         private void MouseArea()
         {
             ClearCursor();
-            RectInt rect = new RectInt(curCursorPos.x, curCursorPos.z, GridData.brushSize.x, GridData.brushSize.y);
+            RectInt rect = new RectInt(curCursorPos.x, curCursorPos.y, GridData.brushSize.x, GridData.brushSize.y);
             if (GridData.InArea(rect))
             {
-                DrawGrid.CreateGridMesh(GridData, new Vector3(0,0.1f,0)+offset,rect, ref cursor, ref cursorMaterial, Color.green);
+                DrawGrid.CreateGridMesh(GridData, new Vector3(0, 0.1f, 0) + offset, rect, ref cursor, ref cursorMaterial, Color.green);
             }
         }
 
@@ -68,7 +68,7 @@ namespace GXGame.Editor
             void cz()
             {
                 int controlID = GUIUtility.GetControlID(FocusType.Passive);
-                RectInt rect = new RectInt(curCursorPos.x, curCursorPos.z, GridData.brushSize.x, GridData.brushSize.y);
+                RectInt rect = new RectInt(curCursorPos.x, curCursorPos.y, GridData.brushSize.x, GridData.brushSize.y);
                 if (!GridData.IsClear)
                     GridData.AddObstacle(rect);
                 else
