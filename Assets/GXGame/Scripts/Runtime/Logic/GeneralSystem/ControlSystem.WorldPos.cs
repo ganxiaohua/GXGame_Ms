@@ -4,7 +4,6 @@ namespace GXGame
 {
     public partial class ControlSystem
     {
-        
         public const float MaxAngleShoveDegrees = 180.0f - BufferAngleShove;
         public const float BufferAngleShove = 120.0f;
         private Vector3 velocity;
@@ -27,12 +26,13 @@ namespace GXGame
             FollowGround(ref pos, ref rot);
             pos += PushOutOverlapping(pos, rot, 100 * Time.deltaTime, collisionMsg.skinWidth / 2);
             var moveSpeed = entity.GetMoveSpeed().Value;
-            dir = (groundMsg.onGround && groundMsg.groundAngle < 20) ? Vector3.ProjectOnPlane(dir, groundMsg.hit.normal) : dir;
+            dir = (groundMsg.onGround && groundMsg.groundAngle <= collisionMsg.maxWalkingAngle) ? Vector3.ProjectOnPlane(dir, groundMsg.hit.normal) : dir;
             dir = dir.normalized * (moveSpeed * Time.deltaTime);
             GravityJump();
             pos = MovePlayer(pos, dir);
             pos = MovePlayer(pos, velocity * Time.deltaTime);
-            // pos = SnapPlayerDown(pos);
+            if (groundMsg.onGround && velocity.y <= 0)
+                pos = SnapPlayerDown(pos);
             rot = CalculateWorldRotate(rot);
             capsuleCollider.Value.position = pos;
             capsuleCollider.Value.rotation = rot;
@@ -57,7 +57,7 @@ namespace GXGame
 
         private void GravityJump()
         {
-            var gravity =collisionMsg.Gravity;
+            var gravity = collisionMsg.Gravity;
             var jumpSpeed = entity.GetYAxisASpeed().Value;
             var yAxis = entity.GetYAxisAcceleration().Value;
             bool fg = IsFallingOrglide();
@@ -76,6 +76,7 @@ namespace GXGame
                 velocity = Vector3.Lerp(Vector3.up, (groundMsg.hit.normal).normalized, collisionMsg.jumpAngleWeightFactor).normalized * jumpSpeed;
             }
 
+            velocity.y = Mathf.Min(velocity.y, gravity * 2);
             entity.SetYAxisAcceleration(false);
         }
 
@@ -105,8 +106,7 @@ namespace GXGame
         {
             var pos = entity.GetWorldPos().Value;
             var rot = entity.GetWorldRotate().Value;
-            int x = collisionMsg.MaskLayer;
-            bool onGround = CastSelf(pos, rot, Vector3.down, collisionMsg.groundDist, out RaycastHit groundHit,collisionMsg.MaskLayer, collisionMsg.skinWidth);
+            bool onGround = CastSelf(pos, rot, Vector3.down, collisionMsg.groundDist, out RaycastHit groundHit, collisionMsg.MaskLayer, collisionMsg.skinWidth);
             float angle = Vector3.Angle(groundHit.normal, Vector3.up);
             return (onGround, angle, groundHit);
         }
@@ -115,17 +115,17 @@ namespace GXGame
         {
             return !(groundMsg.onGround && groundMsg.groundAngle <= collisionMsg.maxWalkingAngle);
         }
-        
+
         private Vector3 MovePlayer(Vector3 position, Vector3 movement)
         {
             var rotation = entity.GetWorldRotate().Value;
             Vector3 remaining = movement;
             int bounces = 0;
             //弹跳次数小于最大弹跳次数  &&  移动位置比最小可移动位置大.
-            while (bounces < 5 && remaining.magnitude > collisionMsg.epsilon)
+            while (bounces < 5 && remaining.magnitude >= collisionMsg.epsilon)
             {
                 float distance = remaining.magnitude;
-                if (!CastSelf(position, rotation, remaining.normalized, distance, out RaycastHit hit, collisionMsg.MaskLayer,collisionMsg.skinWidth))
+                if (!CastSelf(position, rotation, remaining.normalized, distance, out RaycastHit hit, collisionMsg.MaskLayer, collisionMsg.skinWidth))
                 {
                     position += remaining;
                     break;
@@ -150,7 +150,11 @@ namespace GXGame
                 Vector3 snappedPosition = position;
                 if (groundMsg.onGround && perpendicularBounce && AttemptSnapUp(hit, ref snappedMomentum, ref snappedPosition, rotation))
                 {
-                    position = snappedPosition;
+                    if (snappedPosition.magnitude >= collisionMsg.epsilon)
+                    {
+                        position = snappedPosition;
+                    }
+
                     continue;
                 }
 
@@ -177,24 +181,24 @@ namespace GXGame
         }
 
         /// <summary>
-        /// 下楼梯的时候速度要加快
+        ///  上下楼梯贴地
         /// </summary>
         /// <param name="position"></param>
         /// <returns></returns>
-        public Vector3 SnapPlayerDown(Vector3 position)
+        private Vector3 SnapPlayerDown(Vector3 position)
         {
             var rotation = entity.GetWorldRotate().Value;
-            bool closeToGround = CastSelf(
+            bool hit = CastSelf(
                 position,
                 rotation,
                 Vector3.down,
-                collisionMsg.skinWidth,
+                collisionMsg.stepUpDepth,
                 out RaycastHit groundHit,
-                collisionMsg.MaskLayer);
-            if (closeToGround && groundHit.distance > 0)
+                collisionMsg.MaskLayer,
+                collisionMsg.skinWidth);
+            if (hit && groundHit.distance > (collisionMsg.groundDist + collisionMsg.skinWidth))
             {
-                var offset = Vector3.ClampMagnitude(Vector3.down * groundHit.distance, 3 * Time.deltaTime);
-                position += offset;
+                position += Vector3.down * groundHit.distance + new Vector3(0, collisionMsg.groundDist - collisionMsg.epsilon, 0);
             }
 
             return position;

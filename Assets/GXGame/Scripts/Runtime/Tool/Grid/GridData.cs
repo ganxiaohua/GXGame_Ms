@@ -134,6 +134,7 @@ namespace GXGame
 
 
             for (int x = 0; x < rect.width; x++)
+
             {
                 for (int y = 0; y < rect.height; y++)
                 {

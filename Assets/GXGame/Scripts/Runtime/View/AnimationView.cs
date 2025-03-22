@@ -1,5 +1,4 @@
-﻿using Cysharp.Threading.Tasks;
-using GameFrame;
+﻿using GameFrame;
 using UnityEngine;
 
 namespace GXGame
@@ -11,6 +10,7 @@ namespace GXGame
         private int walkId = Animator.StringToHash("Walk");
         private int RunId = Animator.StringToHash("Run");
         private int idleId = Animator.StringToHash("Idle");
+        private int Falling = Animator.StringToHash("Falling");
 
         public override void Link(ECSEntity ecsEntity)
         {
@@ -34,15 +34,23 @@ namespace GXGame
         private void MoveAnimation()
         {
             var dir = BindEntity.GetMoveDirection();
-            if (dir == null)
+            var ground = BindEntity.GetGroundMsgComponent().Value;
+            if (dir == null || ground == null)
                 return;
-            if (dir.Value != Vector3.zero)
+            if (ground.PreviousParent == null)
             {
-                animator.Play(RunId);
+                animator.Play(Falling);
             }
             else
             {
-                animator.Play(idleId);
+                if (dir.Value != Vector3.zero)
+                {
+                    animator.Play(RunId);
+                }
+                else
+                {
+                    animator.Play(idleId);
+                }
             }
         }
     }

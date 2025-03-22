@@ -43,7 +43,8 @@ namespace GXGame
         private bool CastSelf(Vector3 pos, Quaternion rot, Vector3 dir, float dist, out RaycastHit hit, int layerMask, float skinWidth = 0.01f)
         {
             var ccc = CalculateCapsuleCollider(pos, rot, -skinWidth);
-            int count = Physics.CapsuleCastNonAlloc(ccc.top, ccc.bottom, ccc.radius, dir, raycastHit, dist + skinWidth, layerMask, QueryTriggerInteraction.Ignore);
+            int count = Physics.CapsuleCastNonAlloc(ccc.top, ccc.bottom, ccc.radius, dir, raycastHit, dist + skinWidth, layerMask,
+                QueryTriggerInteraction.Ignore);
             float directDist = float.MaxValue;
             bool didHit = false;
             hit = default;
@@ -134,6 +135,15 @@ namespace GXGame
                     ref momentum,
                     ref position,
                     rotation);
+                //操作指令方向爬不上就设置攀爬高度在尝试一下
+                if (!snappedUp)
+                {
+                    snappedUp = AttemptSnapUp(
+                        collisionMsg.stepUpDepth,
+                        ref momentum,
+                        ref position,
+                        rotation);
+                }
             }
 
             return snappedUp;

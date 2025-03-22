@@ -9,7 +9,7 @@ namespace GXGame
         private Animator mAnimator;
 
         private int curId;
-        
+
         public override void Init(ECSEntity ecsEntity, GameObjectView gameObjectView)
         {
             base.Init(ecsEntity, gameObjectView);
@@ -31,16 +31,16 @@ namespace GXGame
             mAnimator = null;
             base.Dispose();
         }
-        
-        
-        public void Play(int id)
+
+
+        public void Play(int id, float normalizedTransitionDuration = 0.15f)
         {
             if (mAnimator == null)
                 return;
-            if(curId == id)
+            if (curId == id)
                 return;
             curId = id;
-            mAnimator.CrossFadeInFixedTime(id,0.25f);
+            mAnimator.CrossFadeInFixedTime(id, normalizedTransitionDuration);
         }
     }
 }

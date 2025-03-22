@@ -22,7 +22,7 @@ namespace GXGame
         public void OnInitialize(World world)
         {
             this.world = world;
-            Matcher matcher = Matcher.SetAll(Components.MoveDirection, Components.FaceDirection, Components.FaceDirection, Components.CapsuleCollider);
+            Matcher matcher = Matcher.SetAll(Components.MoveDirection, Components.FaceDirection, Components.CapsuleCollider);
             group = world.GetGroup(matcher);
             matcher = Matcher.SetAll(Components.CameraComponent);
             cameraGroup = world.GetGroup(matcher);
@@ -44,53 +44,25 @@ namespace GXGame
         }
 
 
-        // /// <summary>
-        // /// 碰触优先级,碰到其他东西的优先级 并且过滤掉同阵营的
-        // /// </summary>
-        // /// <returns></returns>
-        // private void CollisionSeparation(ECSEntity owner, int count)
+        // private void ObjectCollision(ECSEntity entity)
         // {
-        //     var camp = owner.GetCampComponent().Value;
-        //     for (int i = 0; i < count; i++)
+        //     if (collisionWithObjectLayer.Count != 0)
         //     {
-        //         if (raycastHit[i].transform.gameObject.layer == LayerMask.NameToLayer($"Object"))
+        //         var hit = entity.GetRaycastHitMsg();
+        //         if (hit == null)
         //         {
-        //             //过滤掉同阵营
-        //             var rayCamp = raycastHit[i].transform.GetComponent<CollisionEntity>().Entity.GetCampComponent();
-        //             if (rayCamp != null && rayCamp.Value == camp)
-        //             {
-        //                 continue;
-        //             }
+        //             entity.AddRaycastHitMsg(new List<RaycastHit>());
+        //             hit = entity.GetRaycastHitMsg();
+        //         }
         //
-        //             collisionWithObjectLayer.Add(raycastHit[i]);
-        //         }
-        //         else if (raycastHit[i].transform.gameObject.layer == LayerMask.NameToLayer($"Wall"))
+        //         foreach (var t in collisionWithObjectLayer)
         //         {
-        //             collisionWithWallLayer.Add(raycastHit[i]);
+        //             hit.Value.Add(t);
         //         }
+        //
+        //         entity.SetRaycastHitMsg(hit.Value);
         //     }
         // }
-
-
-        private void ObjectCollision(ECSEntity entity)
-        {
-            if (collisionWithObjectLayer.Count != 0)
-            {
-                var hit = entity.GetRaycastHitMsg();
-                if (hit == null)
-                {
-                    entity.AddRaycastHitMsg(new List<RaycastHit>());
-                    hit = entity.GetRaycastHitMsg();
-                }
-
-                foreach (var t in collisionWithObjectLayer)
-                {
-                    hit.Value.Add(t);
-                }
-
-                entity.SetRaycastHitMsg(hit.Value);
-            }
-        }
 
 
         public void Dispose()

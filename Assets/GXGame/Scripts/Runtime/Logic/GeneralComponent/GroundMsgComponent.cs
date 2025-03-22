@@ -25,7 +25,7 @@ namespace GXGame
         public float maxWalkingAngle = 60f;
         public float maxJumpAngle = 70f;
         public float jumpAngleWeightFactor = 0.1f;
-        public float stepUpDepth = 1.0f;
+        public float stepUpDepth = 0.5f;
         public float Gravity = 12;
         public int MaskLayer;
     }
