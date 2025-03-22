@@ -11,7 +11,7 @@ namespace GXGame
         protected static Collider[] OverlapCache = new Collider[20];
 
 
-        private void SetInput()
+        private void InputMove()
         {
             var dir = entity.GetMoveDirection().Value;
             var pos = entity.GetWorldPos().Value;
@@ -160,7 +160,6 @@ namespace GXGame
 
                 //计算出碰撞曲面与操作方向的夹角
                 float angleBetween = Vector3.Angle(hit.normal, remaining);
-                //操作方向的夹角如果大于KCCUtils.MaxAngleShoveDegrees,则使用KCCUtils.MaxAngleShoveDegrees
                 float normalizedAngle = Mathf.Max(angleBetween - BufferAngleShove, 0) / MaxAngleShoveDegrees;
                 remaining *= Mathf.Pow(Mathf.Abs(1 - normalizedAngle), collisionMsg.anglePower);
                 Vector3 projected = Vector3.ProjectOnPlane(remaining, planeNormal).normalized * remaining.magnitude;
@@ -173,10 +172,8 @@ namespace GXGame
                 {
                     remaining = projected;
                 }
-
                 bounces++;
             }
-
             return position;
         }
 

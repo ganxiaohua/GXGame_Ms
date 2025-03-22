@@ -38,32 +38,11 @@ namespace GXGame
                 this.capsuleCollider = capsuleCollider;
                 unityCapsuleCollider = capsuleCollider.Value.gameObject.GetComponent<UnityEngine.CapsuleCollider>();
                 groundMsg = CheckGrounded();
-                SetInput();
+                InputMove();
                 entity.SetCapsuleCollider(capsuleCollider.Value);
             }
         }
-
-
-        // private void ObjectCollision(ECSEntity entity)
-        // {
-        //     if (collisionWithObjectLayer.Count != 0)
-        //     {
-        //         var hit = entity.GetRaycastHitMsg();
-        //         if (hit == null)
-        //         {
-        //             entity.AddRaycastHitMsg(new List<RaycastHit>());
-        //             hit = entity.GetRaycastHitMsg();
-        //         }
-        //
-        //         foreach (var t in collisionWithObjectLayer)
-        //         {
-        //             hit.Value.Add(t);
-        //         }
-        //
-        //         entity.SetRaycastHitMsg(hit.Value);
-        //     }
-        // }
-
+        
 
         public void Dispose()
         {
