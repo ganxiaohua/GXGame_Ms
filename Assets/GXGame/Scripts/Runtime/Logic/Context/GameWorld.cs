@@ -83,7 +83,10 @@ namespace GXGame.Logic
             palyer.AddYAxisASpeed(5);
             palyer.AddYAxisAcceleration(false);
             palyer.AddGroundMsgComponent(new GroudMsg());
-            palyer.AddCollisionMsgComponent(new CollisionMsg() {MaskLayer = ~(1 << LayerMask.NameToLayer("Crop"))});
+            palyer.AddCollisionMsgComponent(new CollisionMsg()
+            {
+                MaskLayer = ~(1 << (LayerMask.NameToLayer("Crop") | LayerMask.NameToLayer("Monster")))
+            });
             palyer.AddCapsuleCollider(CapsuleCollider.Create(palyer, LayerMask.NameToLayer($"Object")));
             palyer.AddCollisionGroundType(CollisionGroundType.Slide);
             palyer.AddCampComponent(GXGame.Camp.SELF);
@@ -116,6 +119,7 @@ namespace GXGame.Logic
                 monster.AddFindPathComponent(new FindPathData());
                 monster.AddGridDataComponent(gridData);
                 monster.AddBehaviorTreeComponent("BTO/Monster01Bto");
+                monster.AddBoxCollider(BoxCollider.Create(monster, LayerMask.NameToLayer($"Monster")));
             }
         }
     }

@@ -11,7 +11,7 @@ namespace GXGame
 
         protected override bool Filter(ECSEntity entity)
         {
-            return !entity.HasComponent(Components.CapsuleCollider) && entity.HasComponent((Components.WorldRotate)) &&
+            return !entity.HasComponent(Components.GXInput) && entity.HasComponent((Components.WorldRotate)) &&
                    entity.HasComponent(Components.FaceDirection) &&
                    entity.HasComponent(Components.DirectionSpeed);
         }
@@ -32,7 +32,12 @@ namespace GXGame
                     Vector3 nowDir = entity.GetWorldRotate().Value * Vector3.forward;
                     float angle = speed * World.DeltaTime;
                     Vector3 curDir = Vector3.RotateTowards(nowDir, dir, Mathf.Deg2Rad * angle, 0);
-                    entity.SetWorldRotate(Quaternion.LookRotation(curDir));
+                    var roa = Quaternion.LookRotation(curDir);
+                    entity.SetWorldRotate(roa);
+                    var box = entity.GetBoxCollider();
+                    if (box == null)
+                        continue;
+                    box.Value.rotation = roa;
                 }
             }
         }

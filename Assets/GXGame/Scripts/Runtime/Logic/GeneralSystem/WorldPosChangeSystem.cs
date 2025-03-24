@@ -10,7 +10,7 @@ namespace GXGame
         public void OnInitialize(World world)
         {
             this.world = world;
-            Matcher matcher = Matcher.SetAll(Components.MoveDirection, Components.MoveSpeed).NoneOf(Components.CapsuleCollider, Components.RovAgent);
+            Matcher matcher = Matcher.SetAll(Components.MoveDirection, Components.MoveSpeed).NoneOf(Components.GXInput, Components.RovAgent);
             group = world.GetGroup(matcher);
         }
 
@@ -28,6 +28,10 @@ namespace GXGame
                 var pos = entity.GetWorldPos().Value;
                 pos += (dir.normalized * distance);
                 entity.SetWorldPos(pos);
+                var box = entity.GetBoxCollider();
+                if (box == null)
+                    continue;
+                box.Value.position = pos;
             }
         }
 

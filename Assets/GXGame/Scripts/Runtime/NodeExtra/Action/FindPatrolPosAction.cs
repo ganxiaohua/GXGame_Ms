@@ -51,6 +51,12 @@ namespace GXGame
             {
                 int index = Random.Range(0, patrolPoint.Count);
                 var pos = patrolPoint[index];
+                if (gridData.WorldToCell(ownerPos) == pos)
+                {
+                    EndAction(true);
+                    return;
+                }
+
                 var worldPos = gridData.CellToWolrd(pos);
                 owner.SetPathFindingTargetPos(worldPos);
             }

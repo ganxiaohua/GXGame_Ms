@@ -32,8 +32,13 @@ namespace GXGame
 
                 Simulator.Instance.setAgentPrefVelocity(rovId, Simulator.Instance.getAgentPrefVelocity(rovId) +
                                                                dist * new Vector2((float) Mathf.Cos(angle), (float) Mathf.Sin(angle)));
-                var pos = Simulator.Instance.getAgentPosition(rovId);
-                entity.SetWorldPos(new Vector3(pos.x, 0, pos.y));
+                Vector2 pos = Simulator.Instance.getAgentPosition(rovId);
+                Vector3 lastPos = new Vector3(pos.x, 0, pos.y);
+                entity.SetWorldPos(lastPos);
+                var box = entity.GetBoxCollider();
+                if (box == null)
+                    continue;
+                box.Value.position = lastPos;
             }
 
             Simulator.Instance.doStep();

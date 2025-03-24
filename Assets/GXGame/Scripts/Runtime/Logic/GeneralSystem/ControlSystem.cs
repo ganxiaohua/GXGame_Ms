@@ -22,7 +22,7 @@ namespace GXGame
         public void OnInitialize(World world)
         {
             this.world = world;
-            Matcher matcher = Matcher.SetAll(Components.MoveDirection, Components.FaceDirection, Components.CapsuleCollider);
+            Matcher matcher = Matcher.SetAll(Components.GXInput);
             group = world.GetGroup(matcher);
             matcher = Matcher.SetAll(Components.CameraComponent);
             cameraGroup = world.GetGroup(matcher);
@@ -42,7 +42,7 @@ namespace GXGame
                 entity.SetCapsuleCollider(capsuleCollider.Value);
             }
         }
-        
+
 
         public void Dispose()
         {
