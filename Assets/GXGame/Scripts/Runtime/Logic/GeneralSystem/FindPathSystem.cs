@@ -57,10 +57,12 @@ namespace GXGame
                 return;
             }
 
-            if (path[0] == start)
+            if (path[^1] == start)
             {
+                path.RemoveAt(path.Count - 1);
             }
 
+            path.Reverse();
             findPathComponent.IsFindPath = false;
             findPathComponent.Path = path;
             findPathComponent.NextIndex = 0;
