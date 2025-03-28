@@ -34,8 +34,9 @@ namespace GXGame
 
         public bool Find(Vector2Int start, Vector2Int end, List<Vector2Int> findPosList)
         {
-            Assert.IsTrue(InMap(start) && InMap(end), "发起点不在地图内");
-            Assert.IsTrue(start != end, "出发点和起点相同");
+            Assert.IsTrue(InMap(start), $"发起点不在地图内{start}");
+            Assert.IsTrue(InMap(end), $"结束点不在地图内{end}");
+            Assert.IsTrue(start != end, "出发点和起点相同" + start);
             this.start = Pos2Index(start);
             this.end = Pos2Index(end);
             findPosList ??= new();

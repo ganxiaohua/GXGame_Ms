@@ -12,7 +12,7 @@ public static class AutoPathFindingTargetPos
         ecsEntity.AddComponent(Components.PathFindingTargetPos);
     }
     
-    public static void AddPathFindingTargetPos(this ECSEntity ecsEntity,UnityEngine.Vector3 param)
+    public static void AddPathFindingTargetPos(this ECSEntity ecsEntity,UnityEngine.Vector2Int param)
     {
         var p  =  (GXGame.PathFindingTargetPos)ecsEntity.AddComponent(Components.PathFindingTargetPos);
         p.Value = param;
@@ -23,7 +23,7 @@ public static class AutoPathFindingTargetPos
         return (GXGame.PathFindingTargetPos)ecsEntity.GetComponent(Components.PathFindingTargetPos);
     }
      
-    public static ECSEntity SetPathFindingTargetPos(this ECSEntity ecsEntity,UnityEngine.Vector3 param)
+    public static ECSEntity SetPathFindingTargetPos(this ECSEntity ecsEntity,UnityEngine.Vector2Int param)
     {
         var p = (GXGame.PathFindingTargetPos)ecsEntity.GetComponent(Components.PathFindingTargetPos);
         p.Value = param;
@@ -31,5 +31,18 @@ public static class AutoPathFindingTargetPos
         
         return ecsEntity;
     }
+    
+    public static ECSEntity AddOrSetPathFindingTargetPos(this ECSEntity ecsEntity,UnityEngine.Vector2Int param)
+    {
+        var p = (GXGame.PathFindingTargetPos)ecsEntity.GetComponent(Components.PathFindingTargetPos);
+        if(p==null)
+        {
+           p = (GXGame.PathFindingTargetPos)(ecsEntity.AddComponent(Components.PathFindingTargetPos));
+        }
+        p.Value = param;
+        ((World)ecsEntity.Parent).Reactive(Components.PathFindingTargetPos, ecsEntity);
+        
+        return ecsEntity;
+    } 
          
 }

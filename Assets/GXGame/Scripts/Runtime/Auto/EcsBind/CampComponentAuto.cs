@@ -31,5 +31,18 @@ public static class AutoCampComponent
         
         return ecsEntity;
     }
+    
+    public static ECSEntity AddOrSetCampComponent(this ECSEntity ecsEntity,GXGame.Camp param)
+    {
+        var p = (GXGame.CampComponent)ecsEntity.GetComponent(Components.CampComponent);
+        if(p==null)
+        {
+           p = (GXGame.CampComponent)(ecsEntity.AddComponent(Components.CampComponent));
+        }
+        p.Value = param;
+        ((World)ecsEntity.Parent).Reactive(Components.CampComponent, ecsEntity);
+        
+        return ecsEntity;
+    } 
          
 }

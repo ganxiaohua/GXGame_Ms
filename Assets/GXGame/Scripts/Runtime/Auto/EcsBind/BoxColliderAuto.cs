@@ -31,5 +31,18 @@ public static class AutoBoxCollider
         
         return ecsEntity;
     }
+    
+    public static ECSEntity AddOrSetBoxCollider(this ECSEntity ecsEntity,Common.Runtime.GXGameObject param)
+    {
+        var p = (GXGame.BoxCollider)ecsEntity.GetComponent(Components.BoxCollider);
+        if(p==null)
+        {
+           p = (GXGame.BoxCollider)(ecsEntity.AddComponent(Components.BoxCollider));
+        }
+        p.Value = param;
+        ((World)ecsEntity.Parent).Reactive(Components.BoxCollider, ecsEntity);
+        
+        return ecsEntity;
+    } 
          
 }

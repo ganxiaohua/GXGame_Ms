@@ -31,5 +31,18 @@ public static class AutoMoveDirection
         
         return ecsEntity;
     }
+    
+    public static ECSEntity AddOrSetMoveDirection(this ECSEntity ecsEntity,UnityEngine.Vector3 param)
+    {
+        var p = (GXGame.MoveDirection)ecsEntity.GetComponent(Components.MoveDirection);
+        if(p==null)
+        {
+           p = (GXGame.MoveDirection)(ecsEntity.AddComponent(Components.MoveDirection));
+        }
+        p.Value = param;
+        ((World)ecsEntity.Parent).Reactive(Components.MoveDirection, ecsEntity);
+        
+        return ecsEntity;
+    } 
          
 }

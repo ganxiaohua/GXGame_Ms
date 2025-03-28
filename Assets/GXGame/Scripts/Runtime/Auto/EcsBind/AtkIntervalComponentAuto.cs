@@ -31,5 +31,18 @@ public static class AutoAtkIntervalComponent
         
         return ecsEntity;
     }
+    
+    public static ECSEntity AddOrSetAtkIntervalComponent(this ECSEntity ecsEntity,System.Single param)
+    {
+        var p = (GXGame.AtkIntervalComponent)ecsEntity.GetComponent(Components.AtkIntervalComponent);
+        if(p==null)
+        {
+           p = (GXGame.AtkIntervalComponent)(ecsEntity.AddComponent(Components.AtkIntervalComponent));
+        }
+        p.Time = param;
+        ((World)ecsEntity.Parent).Reactive(Components.AtkIntervalComponent, ecsEntity);
+        
+        return ecsEntity;
+    } 
          
 }

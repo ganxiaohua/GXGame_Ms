@@ -31,5 +31,18 @@ public static class AutoViewType
         
         return ecsEntity;
     }
+    
+    public static ECSEntity AddOrSetViewType(this ECSEntity ecsEntity,System.Type param)
+    {
+        var p = (GXGame.ViewType)ecsEntity.GetComponent(Components.ViewType);
+        if(p==null)
+        {
+           p = (GXGame.ViewType)(ecsEntity.AddComponent(Components.ViewType));
+        }
+        p.Value = param;
+        ((World)ecsEntity.Parent).Reactive(Components.ViewType, ecsEntity);
+        
+        return ecsEntity;
+    } 
          
 }

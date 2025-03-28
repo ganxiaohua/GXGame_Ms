@@ -33,5 +33,20 @@ public static class AutoLocalScale
         ((GXGame.ILocalScale) (view.Value)).LocalScale(p);
         return ecsEntity;
     }
+    
+    public static ECSEntity AddOrSetLocalScale(this ECSEntity ecsEntity,UnityEngine.Vector3 param)
+    {
+        var p = (GXGame.LocalScale)ecsEntity.GetComponent(Components.LocalScale);
+        if(p==null)
+        {
+           p = (GXGame.LocalScale)(ecsEntity.AddComponent(Components.LocalScale));
+        }
+        p.Value = param;
+        ((World)ecsEntity.Parent).Reactive(Components.LocalScale, ecsEntity);
+        View view = ecsEntity.GetView();
+        if (view == null) return null;
+        ((GXGame.ILocalScale) (view.Value)).LocalScale(p);
+        return ecsEntity;
+    } 
          
 }

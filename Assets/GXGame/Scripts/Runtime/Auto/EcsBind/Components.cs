@@ -42,13 +42,15 @@ public static class Components {
     public const int YAxisAcceleration= 35;
     public const int RaycastHitMsg= 36;
     public const int CollisionGroundType= 37;
-    public const int GridDataComponent= 38;
-    public const int FindPathComponent= 39;
-    public const int GroundMsgComponent= 40;
-    public const int CollisionMsgComponent= 41;
-    public const int RovAgent= 42;
+    public const int FeedBackBoxComponent= 38;
+    public const int GridDataComponent= 39;
+    public const int FindPathComponent= 40;
+    public const int GroundMsgComponent= 41;
+    public const int CollisionMsgComponent= 42;
+    public const int OperationComponent= 43;
+    public const int RovAgent= 44;
     
-    public const int TotalComponents = 43;
+    public const int TotalComponents = 45;
     
     
     public static readonly System.Type[] ComponentTypes = {
@@ -91,10 +93,12 @@ public static class Components {
         typeof(GXGame.YAxisAcceleration),
         typeof(GXGame.RaycastHitMsg),
         typeof(GXGame.CollisionGroundType),
+        typeof(GXGame.FeedBackBoxComponent),
         typeof(GXGame.GridDataComponent),
         typeof(GXGame.FindPathComponent),
         typeof(GXGame.GroundMsgComponent),
         typeof(GXGame.CollisionMsgComponent),
+        typeof(GXGame.OperationComponent),
         typeof(GXGame.Scripts.Runtime.RovAgent),
     };
 

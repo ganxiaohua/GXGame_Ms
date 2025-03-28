@@ -31,5 +31,18 @@ public static class AutoMoveSpeed
         
         return ecsEntity;
     }
+    
+    public static ECSEntity AddOrSetMoveSpeed(this ECSEntity ecsEntity,System.Single param)
+    {
+        var p = (GXGame.MoveSpeed)ecsEntity.GetComponent(Components.MoveSpeed);
+        if(p==null)
+        {
+           p = (GXGame.MoveSpeed)(ecsEntity.AddComponent(Components.MoveSpeed));
+        }
+        p.Value = param;
+        ((World)ecsEntity.Parent).Reactive(Components.MoveSpeed, ecsEntity);
+        
+        return ecsEntity;
+    } 
          
 }

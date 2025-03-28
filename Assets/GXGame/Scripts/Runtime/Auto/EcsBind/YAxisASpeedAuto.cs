@@ -31,5 +31,18 @@ public static class AutoYAxisASpeed
         
         return ecsEntity;
     }
+    
+    public static ECSEntity AddOrSetYAxisASpeed(this ECSEntity ecsEntity,System.Single param)
+    {
+        var p = (GXGame.YAxisASpeed)ecsEntity.GetComponent(Components.YAxisASpeed);
+        if(p==null)
+        {
+           p = (GXGame.YAxisASpeed)(ecsEntity.AddComponent(Components.YAxisASpeed));
+        }
+        p.Value = param;
+        ((World)ecsEntity.Parent).Reactive(Components.YAxisASpeed, ecsEntity);
+        
+        return ecsEntity;
+    } 
          
 }

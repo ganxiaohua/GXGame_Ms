@@ -31,5 +31,18 @@ public static class AutoView
         
         return ecsEntity;
     }
+    
+    public static ECSEntity AddOrSetView(this ECSEntity ecsEntity,GameFrame.IEceView param)
+    {
+        var p = (GameFrame.View)ecsEntity.GetComponent(Components.View);
+        if(p==null)
+        {
+           p = (GameFrame.View)(ecsEntity.AddComponent(Components.View));
+        }
+        p.Value = param;
+        ((World)ecsEntity.Parent).Reactive(Components.View, ecsEntity);
+        
+        return ecsEntity;
+    } 
          
 }

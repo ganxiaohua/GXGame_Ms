@@ -31,5 +31,18 @@ public static class AutoRovAgent
         
         return ecsEntity;
     }
+    
+    public static ECSEntity AddOrSetRovAgent(this ECSEntity ecsEntity,System.Int32 param)
+    {
+        var p = (GXGame.Scripts.Runtime.RovAgent)ecsEntity.GetComponent(Components.RovAgent);
+        if(p==null)
+        {
+           p = (GXGame.Scripts.Runtime.RovAgent)(ecsEntity.AddComponent(Components.RovAgent));
+        }
+        p.Value = param;
+        ((World)ecsEntity.Parent).Reactive(Components.RovAgent, ecsEntity);
+        
+        return ecsEntity;
+    } 
          
 }

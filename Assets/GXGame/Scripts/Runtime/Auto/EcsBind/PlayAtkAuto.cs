@@ -33,5 +33,20 @@ public static class AutoPlayAtk
         ((GXGame.IAtk) (view.Value)).Atk(p);
         return ecsEntity;
     }
+    
+    public static ECSEntity AddOrSetPlayAtk(this ECSEntity ecsEntity,System.Int32 param)
+    {
+        var p = (GXGame.PlayAtk)ecsEntity.GetComponent(Components.PlayAtk);
+        if(p==null)
+        {
+           p = (GXGame.PlayAtk)(ecsEntity.AddComponent(Components.PlayAtk));
+        }
+        p.Id = param;
+        ((World)ecsEntity.Parent).Reactive(Components.PlayAtk, ecsEntity);
+        View view = ecsEntity.GetView();
+        if (view == null) return null;
+        ((GXGame.IAtk) (view.Value)).Atk(p);
+        return ecsEntity;
+    } 
          
 }

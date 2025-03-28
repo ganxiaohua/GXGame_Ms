@@ -31,5 +31,18 @@ public static class AutoGroundMsgComponent
         
         return ecsEntity;
     }
+    
+    public static ECSEntity AddOrSetGroundMsgComponent(this ECSEntity ecsEntity,GXGame.GroudMsg param)
+    {
+        var p = (GXGame.GroundMsgComponent)ecsEntity.GetComponent(Components.GroundMsgComponent);
+        if(p==null)
+        {
+           p = (GXGame.GroundMsgComponent)(ecsEntity.AddComponent(Components.GroundMsgComponent));
+        }
+        p.Value = param;
+        ((World)ecsEntity.Parent).Reactive(Components.GroundMsgComponent, ecsEntity);
+        
+        return ecsEntity;
+    } 
          
 }

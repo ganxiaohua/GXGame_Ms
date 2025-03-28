@@ -31,5 +31,18 @@ public static class AutoLateSkillComponent
         
         return ecsEntity;
     }
+    
+    public static ECSEntity AddOrSetLateSkillComponent(this ECSEntity ecsEntity,System.Single param)
+    {
+        var p = (GXGame.LateSkillComponent)ecsEntity.GetComponent(Components.LateSkillComponent);
+        if(p==null)
+        {
+           p = (GXGame.LateSkillComponent)(ecsEntity.AddComponent(Components.LateSkillComponent));
+        }
+        p.Time = param;
+        ((World)ecsEntity.Parent).Reactive(Components.LateSkillComponent, ecsEntity);
+        
+        return ecsEntity;
+    } 
          
 }

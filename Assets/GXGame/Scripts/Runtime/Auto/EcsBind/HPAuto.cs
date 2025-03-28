@@ -31,5 +31,18 @@ public static class AutoHP
         
         return ecsEntity;
     }
+    
+    public static ECSEntity AddOrSetHP(this ECSEntity ecsEntity,System.Int32 param)
+    {
+        var p = (GXGame.HP)ecsEntity.GetComponent(Components.HP);
+        if(p==null)
+        {
+           p = (GXGame.HP)(ecsEntity.AddComponent(Components.HP));
+        }
+        p.Value = param;
+        ((World)ecsEntity.Parent).Reactive(Components.HP, ecsEntity);
+        
+        return ecsEntity;
+    } 
          
 }

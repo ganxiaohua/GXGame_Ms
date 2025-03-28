@@ -31,5 +31,18 @@ public static class AutoFindPathComponent
         
         return ecsEntity;
     }
+    
+    public static ECSEntity AddOrSetFindPathComponent(this ECSEntity ecsEntity,GXGame.FindPathData param)
+    {
+        var p = (GXGame.FindPathComponent)ecsEntity.GetComponent(Components.FindPathComponent);
+        if(p==null)
+        {
+           p = (GXGame.FindPathComponent)(ecsEntity.AddComponent(Components.FindPathComponent));
+        }
+        p.Value = param;
+        ((World)ecsEntity.Parent).Reactive(Components.FindPathComponent, ecsEntity);
+        
+        return ecsEntity;
+    } 
          
 }

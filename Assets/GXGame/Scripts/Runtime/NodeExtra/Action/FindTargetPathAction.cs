@@ -40,7 +40,7 @@ namespace GXGame
                 var worldCell = gridData.WorldToCell(targetWorldPos);
                 if (targetPos == null || worldCell != targetPos.Value)
                 {
-                    owner.SetPathFindingTargetPos(targetWorldPos);
+                    owner.SetPathFindingTargetPos(worldCell);
                     targetPos = worldCell;
                     break;
                 }

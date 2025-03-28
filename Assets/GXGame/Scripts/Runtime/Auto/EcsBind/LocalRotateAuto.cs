@@ -33,5 +33,20 @@ public static class AutoLocalRotate
         ((GXGame.ILocalRotate) (view.Value)).LocalRotate(p);
         return ecsEntity;
     }
+    
+    public static ECSEntity AddOrSetLocalRotate(this ECSEntity ecsEntity,UnityEngine.Quaternion param)
+    {
+        var p = (GXGame.LocalRotate)ecsEntity.GetComponent(Components.LocalRotate);
+        if(p==null)
+        {
+           p = (GXGame.LocalRotate)(ecsEntity.AddComponent(Components.LocalRotate));
+        }
+        p.Value = param;
+        ((World)ecsEntity.Parent).Reactive(Components.LocalRotate, ecsEntity);
+        View view = ecsEntity.GetView();
+        if (view == null) return null;
+        ((GXGame.ILocalRotate) (view.Value)).LocalRotate(p);
+        return ecsEntity;
+    } 
          
 }

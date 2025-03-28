@@ -31,5 +31,18 @@ public static class AutoCollisionMsgComponent
         
         return ecsEntity;
     }
+    
+    public static ECSEntity AddOrSetCollisionMsgComponent(this ECSEntity ecsEntity,GXGame.CollisionMsg param)
+    {
+        var p = (GXGame.CollisionMsgComponent)ecsEntity.GetComponent(Components.CollisionMsgComponent);
+        if(p==null)
+        {
+           p = (GXGame.CollisionMsgComponent)(ecsEntity.AddComponent(Components.CollisionMsgComponent));
+        }
+        p.Value = param;
+        ((World)ecsEntity.Parent).Reactive(Components.CollisionMsgComponent, ecsEntity);
+        
+        return ecsEntity;
+    } 
          
 }

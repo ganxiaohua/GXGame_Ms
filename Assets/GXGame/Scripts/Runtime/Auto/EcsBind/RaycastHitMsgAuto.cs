@@ -31,5 +31,18 @@ public static class AutoRaycastHitMsg
         
         return ecsEntity;
     }
+    
+    public static ECSEntity AddOrSetRaycastHitMsg(this ECSEntity ecsEntity,System.Collections.Generic.List<UnityEngine.RaycastHit> param)
+    {
+        var p = (GXGame.RaycastHitMsg)ecsEntity.GetComponent(Components.RaycastHitMsg);
+        if(p==null)
+        {
+           p = (GXGame.RaycastHitMsg)(ecsEntity.AddComponent(Components.RaycastHitMsg));
+        }
+        p.Value = param;
+        ((World)ecsEntity.Parent).Reactive(Components.RaycastHitMsg, ecsEntity);
+        
+        return ecsEntity;
+    } 
          
 }

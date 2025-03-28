@@ -31,5 +31,18 @@ public static class AutoUnitTypeComponent
         
         return ecsEntity;
     }
+    
+    public static ECSEntity AddOrSetUnitTypeComponent(this ECSEntity ecsEntity,GXGame.UnitTypeEnum param)
+    {
+        var p = (GXGame.UnitTypeComponent)ecsEntity.GetComponent(Components.UnitTypeComponent);
+        if(p==null)
+        {
+           p = (GXGame.UnitTypeComponent)(ecsEntity.AddComponent(Components.UnitTypeComponent));
+        }
+        p.Value = param;
+        ((World)ecsEntity.Parent).Reactive(Components.UnitTypeComponent, ecsEntity);
+        
+        return ecsEntity;
+    } 
          
 }

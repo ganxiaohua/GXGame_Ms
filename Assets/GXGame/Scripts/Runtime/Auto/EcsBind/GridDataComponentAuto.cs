@@ -31,5 +31,18 @@ public static class AutoGridDataComponent
         
         return ecsEntity;
     }
+    
+    public static ECSEntity AddOrSetGridDataComponent(this ECSEntity ecsEntity,GXGame.GridData param)
+    {
+        var p = (GXGame.GridDataComponent)ecsEntity.GetComponent(Components.GridDataComponent);
+        if(p==null)
+        {
+           p = (GXGame.GridDataComponent)(ecsEntity.AddComponent(Components.GridDataComponent));
+        }
+        p.Value = param;
+        ((World)ecsEntity.Parent).Reactive(Components.GridDataComponent, ecsEntity);
+        
+        return ecsEntity;
+    } 
          
 }

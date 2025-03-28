@@ -1,5 +1,4 @@
-﻿using System.Collections.Generic;
-using GameFrame;
+﻿using GameFrame;
 using UnityEngine;
 
 namespace GXGame
@@ -10,7 +9,6 @@ namespace GXGame
     public partial class ControlSystem : IInitializeSystem<World>, IFixedUpdateSystem
     {
         private RaycastHit[] raycastHit = new RaycastHit[5];
-        private List<RaycastHit> collisionWithObjectLayer;
         private Group group;
         private World world;
         private ECSEntity entity;
@@ -47,7 +45,6 @@ namespace GXGame
         public void Dispose()
         {
             Clear();
-            collisionWithObjectLayer.Clear();
         }
     }
 }

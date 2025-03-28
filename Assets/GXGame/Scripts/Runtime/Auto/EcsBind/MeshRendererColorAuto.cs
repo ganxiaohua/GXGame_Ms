@@ -33,5 +33,20 @@ public static class AutoMeshRendererColor
         ((GXGame.IMeshRendererColor) (view.Value)).MeshRendererColor(p);
         return ecsEntity;
     }
+    
+    public static ECSEntity AddOrSetMeshRendererColor(this ECSEntity ecsEntity,UnityEngine.Color param)
+    {
+        var p = (GXGame.MeshRendererColor)ecsEntity.GetComponent(Components.MeshRendererColor);
+        if(p==null)
+        {
+           p = (GXGame.MeshRendererColor)(ecsEntity.AddComponent(Components.MeshRendererColor));
+        }
+        p.Value = param;
+        ((World)ecsEntity.Parent).Reactive(Components.MeshRendererColor, ecsEntity);
+        View view = ecsEntity.GetView();
+        if (view == null) return null;
+        ((GXGame.IMeshRendererColor) (view.Value)).MeshRendererColor(p);
+        return ecsEntity;
+    } 
          
 }

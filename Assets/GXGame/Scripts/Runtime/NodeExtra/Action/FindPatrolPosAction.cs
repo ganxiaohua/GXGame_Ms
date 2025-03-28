@@ -1,4 +1,3 @@
-using System.Collections.Generic;
 using GameFrame;
 using NodeCanvas.Framework;
 using ParadoxNotion.Design;
@@ -12,17 +11,12 @@ namespace GXGame
     {
         private ECSEntity owner;
         private World world;
-        private List<Vector2Int> patrolPoint;
+        public Vector2Int pos;
 
         protected override string OnInit()
         {
             owner = (ECSEntity) blackboard.parent.GetVariable("Entity").value;
             world = ((World) owner.Parent);
-            patrolPoint = new List<Vector2Int>();
-            patrolPoint.Add(new Vector2Int(16, 2));
-            patrolPoint.Add(new Vector2Int(16, 7));
-            patrolPoint.Add(new Vector2Int(3, 3));
-            patrolPoint.Add(new Vector2Int(5, 15));
             return null;
         }
 
@@ -47,18 +41,21 @@ namespace GXGame
                     EndAction(true);
                 }
             }
-            else if (pathData.Path != null && pathData.Path.Count == 0 && !pathData.IsFindPath)
+            else if ((pathData.Path != null && pathData.Path.Count == 0) || !pathData.IsFindPath)
             {
-                int index = Random.Range(0, patrolPoint.Count);
-                var pos = patrolPoint[index];
+                pos = RandomMapCell(gridData);
                 if (gridData.WorldToCell(ownerPos) == pos)
                 {
                     EndAction(true);
                     return;
                 }
 
-                var worldPos = gridData.CellToWolrd(pos);
-                owner.SetPathFindingTargetPos(worldPos);
+                if (owner.HasComponent(Components.PathFindingTargetPos))
+                    owner.SetPathFindingTargetPos(pos);
+                else
+                {
+                    owner.AddPathFindingTargetPos(pos);
+                }
             }
 
             EndAction(true);
@@ -76,6 +73,26 @@ namespace GXGame
         //Called when the task is paused.
         protected override void OnPause()
         {
+        }
+
+        private Vector2Int RandomMapCell(GridData gridData)
+        {
+            int indexMax = gridData.GirdArea.x * gridData.GirdArea.y;
+            var index = UnityEngine.Random.Range(0, indexMax);
+            int max = 15;
+            int curNum = 0;
+            while (gridData.ObstacleCells[index] && curNum < max)
+            {
+                index = UnityEngine.Random.Range(0, indexMax);
+                curNum++;
+            }
+
+            if (curNum == max)
+            {
+                indexMax = 0;
+            }
+
+            return new Vector2Int(index % gridData.GirdArea.x, index / gridData.GirdArea.x);
         }
     }
 }

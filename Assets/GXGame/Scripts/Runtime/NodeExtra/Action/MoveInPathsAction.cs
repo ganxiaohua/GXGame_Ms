@@ -25,6 +25,12 @@ namespace GXGame
         {
             bool action = false;
             var ownerWorldPos = owner.GetWorldPos().Value;
+            if (!owner.HasComponent(Components.FindPathComponent))
+            {
+                EndAction(false);
+                return;
+            }
+
             var pathData = owner.GetFindPathComponent().Value;
             var gridData = owner.GetGridDataComponent().Value;
 

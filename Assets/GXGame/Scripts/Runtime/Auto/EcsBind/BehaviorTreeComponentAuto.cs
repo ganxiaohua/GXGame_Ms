@@ -31,5 +31,18 @@ public static class AutoBehaviorTreeComponent
         
         return ecsEntity;
     }
+    
+    public static ECSEntity AddOrSetBehaviorTreeComponent(this ECSEntity ecsEntity,System.String param)
+    {
+        var p = (GXGame.BehaviorTreeComponent)ecsEntity.GetComponent(Components.BehaviorTreeComponent);
+        if(p==null)
+        {
+           p = (GXGame.BehaviorTreeComponent)(ecsEntity.AddComponent(Components.BehaviorTreeComponent));
+        }
+        p.Value = param;
+        ((World)ecsEntity.Parent).Reactive(Components.BehaviorTreeComponent, ecsEntity);
+        
+        return ecsEntity;
+    } 
          
 }

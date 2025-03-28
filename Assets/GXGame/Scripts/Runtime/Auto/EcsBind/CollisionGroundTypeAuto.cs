@@ -31,5 +31,18 @@ public static class AutoCollisionGroundType
         
         return ecsEntity;
     }
+    
+    public static ECSEntity AddOrSetCollisionGroundType(this ECSEntity ecsEntity,System.Int32 param)
+    {
+        var p = (GXGame.CollisionGroundType)ecsEntity.GetComponent(Components.CollisionGroundType);
+        if(p==null)
+        {
+           p = (GXGame.CollisionGroundType)(ecsEntity.AddComponent(Components.CollisionGroundType));
+        }
+        p.Type = param;
+        ((World)ecsEntity.Parent).Reactive(Components.CollisionGroundType, ecsEntity);
+        
+        return ecsEntity;
+    } 
          
 }

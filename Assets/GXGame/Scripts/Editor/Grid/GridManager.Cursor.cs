@@ -23,7 +23,7 @@ namespace GXGame.Editor
             Event e = Event.current;
             Vector2 mousePos = e.mousePosition;
             Ray ray = HandleUtility.GUIPointToWorldRay(mousePos);
-            Plane groundPlane = new Plane(Vector3.up, Vector3.zero);
+            Plane groundPlane = new Plane(Vector3.up, GridData.Pos);
             if (groundPlane.Raycast(ray, out float enter))
             {
                 Vector3 worldPos = ray.GetPoint(enter);

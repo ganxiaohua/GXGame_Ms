@@ -33,5 +33,20 @@ public static class AutoLocalPos
         ((GXGame.ILocalPosition) (view.Value)).LocalPosition(p);
         return ecsEntity;
     }
+    
+    public static ECSEntity AddOrSetLocalPos(this ECSEntity ecsEntity,UnityEngine.Vector3 param)
+    {
+        var p = (GXGame.LocalPos)ecsEntity.GetComponent(Components.LocalPos);
+        if(p==null)
+        {
+           p = (GXGame.LocalPos)(ecsEntity.AddComponent(Components.LocalPos));
+        }
+        p.Value = param;
+        ((World)ecsEntity.Parent).Reactive(Components.LocalPos, ecsEntity);
+        View view = ecsEntity.GetView();
+        if (view == null) return null;
+        ((GXGame.ILocalPosition) (view.Value)).LocalPosition(p);
+        return ecsEntity;
+    } 
          
 }

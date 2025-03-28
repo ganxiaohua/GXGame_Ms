@@ -31,5 +31,18 @@ public static class AutoAbilityUnitTypeComponent
         
         return ecsEntity;
     }
+    
+    public static ECSEntity AddOrSetAbilityUnitTypeComponent(this GXGame.SkillEntity ecsEntity,GXGame.UnitTypeEnum param)
+    {
+        var p = (GXGame.AbilityUnitTypeComponent)ecsEntity.GetComponent(Components.AbilityUnitTypeComponent);
+        if(p==null)
+        {
+           p = (GXGame.AbilityUnitTypeComponent)(ecsEntity.AddComponent(Components.AbilityUnitTypeComponent));
+        }
+        p.AbilityUnitTargetTeam = param;
+        ((World)ecsEntity.Parent).Reactive(Components.AbilityUnitTypeComponent, ecsEntity);
+        
+        return ecsEntity;
+    } 
          
 }

@@ -31,5 +31,18 @@ public static class AutoCapsuleCollider
         
         return ecsEntity;
     }
+    
+    public static ECSEntity AddOrSetCapsuleCollider(this ECSEntity ecsEntity,Common.Runtime.GXGameObject param)
+    {
+        var p = (GXGame.CapsuleCollider)ecsEntity.GetComponent(Components.CapsuleCollider);
+        if(p==null)
+        {
+           p = (GXGame.CapsuleCollider)(ecsEntity.AddComponent(Components.CapsuleCollider));
+        }
+        p.Value = param;
+        ((World)ecsEntity.Parent).Reactive(Components.CapsuleCollider, ecsEntity);
+        
+        return ecsEntity;
+    } 
          
 }

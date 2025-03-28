@@ -5,22 +5,13 @@ using UnityEngine;
 
 namespace GXGame
 {
-    public partial class FindPathSystem : UpdateReactiveSystem, ISystemCarryover
+    public partial class FindPathSystem : UpdateReactiveSystem
     {
-        public object Carryover { get; set; }
-
-        private GridData gridData => (GridData) Carryover;
-
-        private AStar aStarManager;
-
-        private List<Vector2Int> path;
+        private Dictionary<GridData, AStar> gridataAstarDic = new();
 
         public override void OnInitialize(World world)
         {
             base.OnInitialize(world);
-            aStarManager = new AStar();
-            aStarManager.InitFindPath(gridData.GirdArea.x, gridData.GirdArea.y, gridData.ObstacleCells);
-            path = new List<Vector2Int>();
         }
 
         protected override Collector GetTrigger(World world)
@@ -46,12 +37,20 @@ namespace GXGame
             var worldPos = ecsEntity.GetWorldPos().Value;
             var targetPos = ecsEntity.GetPathFindingTargetPos().Value;
             var findPathComponent = ecsEntity.GetFindPathComponent().Value;
+            var gridData = ecsEntity.GetGridDataComponent().Value;
             var start = gridData.WorldToCell(worldPos);
-            var target = gridData.WorldToCell(targetPos);
+            if (!gridataAstarDic.TryGetValue(gridData, out var aStar))
+            {
+                aStar = new AStar();
+                aStar.InitFindPath(gridData.GirdArea.x, gridData.GirdArea.y, gridData.ObstacleCells);
+                gridataAstarDic[gridData] = aStar;
+            }
 
             findPathComponent.IsFindPath = true;
             findPathComponent.Versions++;
-            bool b = aStarManager.Find(start, target, path);
+            var path = findPathComponent.Path;
+            path ??= new();
+            bool b = aStar.Find(start, targetPos, path);
             if (!b)
             {
                 return;
@@ -66,12 +65,12 @@ namespace GXGame
             findPathComponent.IsFindPath = false;
             findPathComponent.Path = path;
             findPathComponent.NextIndex = 0;
-            EditorPath(path);
+            EditorPath(gridData, path);
             ecsEntity.SetFindPathComponent(findPathComponent);
         }
 
         [Conditional("UNITY_EDITOR")]
-        private void EditorPath(List<Vector2Int> path)
+        private void EditorPath(GridData gridData, List<Vector2Int> path)
         {
 #if UNITY_EDITOR
             gridData.FindPath = path;
@@ -80,7 +79,7 @@ namespace GXGame
 
         public override void Dispose()
         {
-            aStarManager = null;
+            gridataAstarDic = null;
         }
     }
 }

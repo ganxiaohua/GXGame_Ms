@@ -31,5 +31,18 @@ public static class AutoDestroyCountdown
         
         return ecsEntity;
     }
+    
+    public static ECSEntity AddOrSetDestroyCountdown(this ECSEntity ecsEntity,System.Single param)
+    {
+        var p = (GXGame.DestroyCountdown)ecsEntity.GetComponent(Components.DestroyCountdown);
+        if(p==null)
+        {
+           p = (GXGame.DestroyCountdown)(ecsEntity.AddComponent(Components.DestroyCountdown));
+        }
+        p.Value = param;
+        ((World)ecsEntity.Parent).Reactive(Components.DestroyCountdown, ecsEntity);
+        
+        return ecsEntity;
+    } 
          
 }

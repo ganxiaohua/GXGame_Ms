@@ -31,5 +31,18 @@ public static class AutoPreSkillComponent
         
         return ecsEntity;
     }
+    
+    public static ECSEntity AddOrSetPreSkillComponent(this ECSEntity ecsEntity,System.Single param)
+    {
+        var p = (GXGame.PreSkillComponent)ecsEntity.GetComponent(Components.PreSkillComponent);
+        if(p==null)
+        {
+           p = (GXGame.PreSkillComponent)(ecsEntity.AddComponent(Components.PreSkillComponent));
+        }
+        p.Time = param;
+        ((World)ecsEntity.Parent).Reactive(Components.PreSkillComponent, ecsEntity);
+        
+        return ecsEntity;
+    } 
          
 }

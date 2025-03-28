@@ -6,19 +6,17 @@ namespace GXGame
 {
     public class Player : ECSComponent
     {
-        
     }
-    
+
     public class CameraComponent : ECSComponent
     {
-        
     }
-    
+
     public class HP : ECSComponent
     {
         public int Value;
     }
-    
+
     [ViewBind(typeof(IWolrdPosition))]
     public class WorldPos : ECSComponent
     {
@@ -48,11 +46,10 @@ namespace GXGame
     {
         public Vector3 Value;
     }
-    
+
 
     public class ViewCull : ECSComponent
     {
-        
     }
 
     public class AssetPath : ECSComponent
@@ -70,7 +67,7 @@ namespace GXGame
     {
         public float Value;
     }
-    
+
 
     [ViewBind(typeof(IMeshRendererColor))]
     public class MeshRendererColor : ECSComponent
@@ -89,7 +86,6 @@ namespace GXGame
 
     public class GXInput : ECSComponent
     {
-        
     }
 
     public class MoveDirection : ECSComponent
@@ -104,9 +100,9 @@ namespace GXGame
 
     public class PathFindingTargetPos : ECSComponent
     {
-        public Vector3 Value;
+        public Vector2Int Value;
     }
-    
+
     public class ViewType : ECSComponent
     {
         public Type Value;
@@ -114,12 +110,11 @@ namespace GXGame
 
     public class YAxisASpeed : ECSComponent
     {
-        public float Value; 
+        public float Value;
     }
 
     public class Monster : ECSComponent
     {
-        
     }
 
     public class CampComponent : ECSComponent

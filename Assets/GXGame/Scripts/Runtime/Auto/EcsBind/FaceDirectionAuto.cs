@@ -31,5 +31,18 @@ public static class AutoFaceDirection
         
         return ecsEntity;
     }
+    
+    public static ECSEntity AddOrSetFaceDirection(this ECSEntity ecsEntity,UnityEngine.Vector3 param)
+    {
+        var p = (GXGame.FaceDirection)ecsEntity.GetComponent(Components.FaceDirection);
+        if(p==null)
+        {
+           p = (GXGame.FaceDirection)(ecsEntity.AddComponent(Components.FaceDirection));
+        }
+        p.Value = param;
+        ((World)ecsEntity.Parent).Reactive(Components.FaceDirection, ecsEntity);
+        
+        return ecsEntity;
+    } 
          
 }
