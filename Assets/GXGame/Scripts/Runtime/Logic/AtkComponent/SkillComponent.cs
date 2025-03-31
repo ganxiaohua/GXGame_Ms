@@ -35,13 +35,5 @@ namespace GXGame
     {
         public int ID;
     }
-
-    /// <summary>
-    /// 技能作用的角色类型
-    /// </summary>
-    [AssignBind(typeof(SkillEntity))]
-    public class AbilityUnitTypeComponent : ECSComponent
-    {
-        public UnitTypeEnum AbilityUnitTargetTeam;
-    }
+    
 }

@@ -4,7 +4,7 @@ using UnityEngine;
 
 namespace GXGame
 {
-    public class OprationSystem : UpdateReactiveSystem
+    public partial class OprationSystem : UpdateReactiveSystem
     {
         private Group inputs;
         private Group cameras;

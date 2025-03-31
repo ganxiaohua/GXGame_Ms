@@ -104,6 +104,7 @@ namespace GXGame.Logic
                 egg.AddWorldRotate(Quaternion.identity);
                 egg.AddLocalScale(new Vector3(0.8f, 0.8f, 0.8f));
                 egg.AddBoxCollider(BoxCollider.Create(egg, LayerMask.NameToLayer($"Interaction")));
+                egg.AddUnitTypeComponent(UnitTypeEnum.AnimalProducts);
             }
         }
 
