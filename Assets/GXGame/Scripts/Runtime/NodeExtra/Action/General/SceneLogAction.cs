@@ -26,7 +26,9 @@ namespace GXGame
         protected override void OnExecute()
         {
             Debugger.Log(LOG);
+#if UNITY_EDITOR
             OpenGuid(true);
+#endif
             EndAction(true);
         }
 
@@ -41,10 +43,12 @@ namespace GXGame
         //Called when the task is disabled.
         protected override void OnStop()
         {
+#if UNITY_EDITOR
             OpenGuid(false);
+#endif
         }
 
-        [Conditional("UNITY_EDITOR")]
+#if UNITY_EDITOR
         private void OpenGuid(bool open)
         {
             if (open)
@@ -54,6 +58,7 @@ namespace GXGame
                 MonoManager.current.onGUI -= OnGUI;
             }
         }
+#endif
 
         //Called when the task is paused.
         protected override void OnPause()

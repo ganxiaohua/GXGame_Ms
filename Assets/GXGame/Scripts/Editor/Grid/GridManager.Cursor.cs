@@ -50,7 +50,7 @@ namespace GXGame.Editor
         private void InputArea()
         {
             var e = Event.current;
-            if (e.OnMouseDown(0))
+            if (e.OnMouseUp(0))
             {
                 buttonDown = true;
                 cz();
