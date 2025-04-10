@@ -8,7 +8,7 @@ namespace GXGame
         public const float BufferAngleShove = 120.0f;
         private Vector3 velocity;
         private CollisionMsg collisionMsg;
-        protected static Collider[] OverlapCache = new Collider[20];
+        protected Collider[] OverlapCache = new Collider[20];
 
 
         private void InputMove()
@@ -21,6 +21,7 @@ namespace GXGame
                 var camerRotValue = camera.GetWorldRotate().Value;
                 dir = camerRotValue * dir;
                 dir.y = 0;
+                entity.SetFaceDirection(dir);
             }
 
             FollowGround(ref pos, ref rot);
@@ -38,7 +39,6 @@ namespace GXGame
             capsuleCollider.Value.rotation = rot;
             entity.SetWorldPos(pos);
             entity.SetWorldRotate(rot);
-            entity.SetFaceDirection(new Vector3(dir.x, 0, dir.z));
             UpdateMovingGround(pos, rot);
         }
 
@@ -172,8 +172,10 @@ namespace GXGame
                 {
                     remaining = projected;
                 }
+
                 bounces++;
             }
+
             return position;
         }
 

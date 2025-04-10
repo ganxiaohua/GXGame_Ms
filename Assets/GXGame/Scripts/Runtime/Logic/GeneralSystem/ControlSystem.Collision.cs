@@ -1,4 +1,5 @@
-﻿using UnityEngine;
+﻿using System;
+using UnityEngine;
 
 namespace GXGame
 {
@@ -23,6 +24,7 @@ namespace GXGame
             float skinWidth = 0.0f)
         {
             var ccc = CalculateCapsuleCollider(position, rotation, -skinWidth);
+            Array.Clear(OverlapCache, 0, OverlapCache.Length);
             int overlap = Physics.OverlapCapsuleNonAlloc(ccc.top, ccc.bottom, ccc.radius, OverlapCache, layerMask, queryTriggerInteraction);
             for (int i = 0; i < overlap; i++)
             {
@@ -43,6 +45,7 @@ namespace GXGame
         private bool CastSelf(Vector3 pos, Quaternion rot, Vector3 dir, float dist, out RaycastHit hit, int layerMask, float skinWidth = 0.01f)
         {
             var ccc = CalculateCapsuleCollider(pos, rot, -skinWidth);
+            Array.Clear(raycastHit, 0, raycastHit.Length);
             int count = Physics.CapsuleCastNonAlloc(ccc.top, ccc.bottom, ccc.radius, dir, raycastHit, dist + skinWidth, layerMask,
                 QueryTriggerInteraction.Ignore);
             float directDist = float.MaxValue;

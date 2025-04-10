@@ -119,6 +119,7 @@ namespace GXGame
             return v;
         }
 
+
         public bool IsWorldPosInArea(Vector3 pos)
         {
             var v = WorldToCell(pos);

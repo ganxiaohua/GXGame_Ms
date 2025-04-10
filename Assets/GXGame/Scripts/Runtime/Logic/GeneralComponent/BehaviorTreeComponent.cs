@@ -25,6 +25,7 @@ namespace GXGame
         private AsyncLoadAsset<Object> asyncLoadAsset;
         private BehaviourTreeOwner behaviourTreeOwner;
         private Blackboard blackboard;
+
         private void Real()
         {
             if (gxGameObject == null)
@@ -37,6 +38,7 @@ namespace GXGame
                 blackboard.AddVariable("Entity", Owner);
                 behaviourTreeOwner.blackboard = blackboard;
             }
+
             asyncLoadAsset ??= new AsyncLoadAsset<Object>(LoadOver);
             asyncLoadAsset.LoadAsset(value);
         }
@@ -52,6 +54,11 @@ namespace GXGame
 
         public override void Dispose()
         {
+            var behaviourTreeOwner = gxGameObject.gameObject.GetComponent<BehaviourTreeOwner>();
+            behaviourTreeOwner.StopBehaviour();
+            Object.DestroyImmediate(behaviourTreeOwner);
+            var blackboard = gxGameObject.gameObject.GetComponent<Blackboard>();
+            Object.DestroyImmediate(blackboard);
             gxGameObject.Unbind();
             gxGameObject = null;
             asyncLoadAsset.Clear();

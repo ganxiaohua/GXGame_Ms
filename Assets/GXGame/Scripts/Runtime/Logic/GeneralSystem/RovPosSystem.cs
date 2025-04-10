@@ -24,6 +24,7 @@ namespace GXGame
                 var dir = entity.GetMoveDirection().Value;
                 var speed = entity.GetMoveSpeed().Value;
                 var rovId = entity.GetRovAgent().Value;
+                var gridData = entity.GetGridDataComponent().Value;
                 Simulator.Instance.setAgentPrefVelocity(rovId, new Vector2(dir.x, dir.z) * speed);
 
                 float angle = UnityEngine.Random.Range(0, 1) * 2.0f * (float) Mathf.PI;
@@ -34,6 +35,8 @@ namespace GXGame
                 Vector2 pos = Simulator.Instance.getAgentPosition(rovId);
                 var map = entity.GetGridDataComponent().Value;
                 Vector3 lastPos = new Vector3(pos.x, map.Pos.y, pos.y);
+                if (!gridData.IsWorldPosInArea(lastPos))
+                    continue;
                 entity.SetWorldPos(lastPos);
                 var box = entity.GetBoxCollider();
                 if (box == null)

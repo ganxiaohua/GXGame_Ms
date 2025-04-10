@@ -23,7 +23,7 @@ namespace GXGame.Logic
             this.AddSystem<ViewBaseSystem>();
             this.AddSystem<ViewUpdateSystem>();
             this.AddSystem<ControlSystem>();
-            this.AddSystem<CollisionBehaviorSystem>();
+            // this.AddSystem<CollisionBehaviorSystem>();
             this.AddSystem<WorldPosChangeSystem>();
             this.AddSystem<RovPosSystem>();
             this.AddSystem<WorldDirChangeBaseSystem>();

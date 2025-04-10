@@ -43,7 +43,6 @@ namespace GXGame
                 }
                 RotateAround(ref pos, playerPos, Vector3.up, dir.x);
                 RotateAround(ref pos, playerPos, rot * Vector3.right, dir.y);
-                // pos = Vector3.Slerp(initPos, pos, 10 * Time.deltaTime);
                 owner.SetWorldPos(pos);
                 player2Camera = pos - playerPos;
                 rot = Quaternion.LookRotation(playerPos - pos);

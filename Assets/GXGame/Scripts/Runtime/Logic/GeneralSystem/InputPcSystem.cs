@@ -57,8 +57,8 @@ namespace GXGame
 
             if (Input.GetMouseButton(1))
             {
-                yaw = Input.GetAxis("Mouse X") * 100 * Time.deltaTime;
-                pitch = -1 * Input.GetAxis("Mouse Y") * 100 * Time.deltaTime;
+                yaw = Input.GetAxis("Mouse X") * 500 * Time.deltaTime;
+                pitch = -1 * Input.GetAxis("Mouse Y") * 500 * Time.deltaTime;
             }
 
             comp.Value.CameraDir.x = yaw;
@@ -67,7 +67,7 @@ namespace GXGame
 
         private void Interaction(OperationComponent comp)
         {
-            comp.Value.Interaction = Input.GetKey(KeyCode.F);
+            comp.Value.Interaction = Input.GetKeyDown(KeyCode.F);
         }
 
         public void Dispose()

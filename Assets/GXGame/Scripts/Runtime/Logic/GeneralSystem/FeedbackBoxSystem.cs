@@ -1,4 +1,5 @@
-﻿using GameFrame;
+﻿using System;
+using GameFrame;
 using UnityEngine;
 
 namespace GXGame
@@ -57,7 +58,8 @@ namespace GXGame
             QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.Ignore)
         {
             var pos = rotation * Vector3.forward * 1 + position;
-            int overlap = Physics.OverlapBoxNonAlloc(pos, size, colliders, rotation, layerMask, queryTriggerInteraction);
+            Array.Clear(colliders, 0, colliders.Length);
+            int overlap = Physics.OverlapBoxNonAlloc(pos, size / 2, colliders, rotation, layerMask, queryTriggerInteraction);
 #if UNITY_EDITOR
             SetPosVector3(pos, rotation, size);
 #endif

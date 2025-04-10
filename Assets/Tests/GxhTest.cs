@@ -7,17 +7,40 @@ using UnityEngine.TestTools;
 
 public class GxhTest
 {
-    // A Test behaves as an ordinary method
+    public class testBase
+    {
+        public testBase()
+        {
+            Debug.Log("xxx");
+            asd();
+        }
+
+        public virtual void asd()
+        {
+        }
+    }
+
+    public class testChild : testBase
+    {
+        public testChild()
+        {
+        }
+
+        public override void asd()
+        {
+        }
+    }
+
     [Test]
     public void GxhTestSimplePasses()
     {
-        // Use the Assert class to test conditions
+        testChild x = new testChild();
     }
-    
+
     [Test]
     public void StrongList()
     {
-        StrongList<int> list = new StrongList<int>(10,true);
+        StrongList<int> list = new StrongList<int>(10, true);
         list.Add(1);
         list.Add(2);
         list.Add(3);
@@ -29,22 +52,30 @@ public class GxhTest
             {
                 list.Remove(1);
             }
+
             Debugger.Log(sk);
         }
-        
+
         foreach (var sk in list)
         {
             Debugger.Log(sk);
         }
     }
 
-    // A UnityTest behaves like a coroutine in Play Mode. In Edit Mode you can use
-    // `yield return null;` to skip a frame.
-    [UnityTest]
-    public IEnumerator GxhTestWithEnumeratorPasses()
+    [Test]
+    public void staticeTest()
     {
-        // Use the Assert class to test conditions.
-        // Use yield to skip a frame.
-        yield return null;
+        staticClass.x = 5;
+    }
+
+
+    public static class staticClass
+    {
+        public static int x = 0;
+
+        static staticClass()
+        {
+            Debug.Log("staticClass");
+        }
     }
 }

@@ -36,6 +36,7 @@ namespace GXGame
             {
                 UpdateCamera(operationComponent);
                 UpdateInput(operationComponent);
+                UpdateFeedBack(operationComponent);
             }
         }
 

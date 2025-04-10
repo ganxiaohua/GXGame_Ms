@@ -6,7 +6,8 @@ namespace GXGame
     public class DestroyBaseSystem : UpdateReactiveSystem
     {
 
-        protected override Collector GetTrigger(World world) => Collector.CreateCollector(world,EcsChangeEventState.ChangeEventState.AddRemoveUpdate, Components.Destroy);
+        protected override Collector GetTrigger(World world) 
+            => Collector.CreateCollector(world,EcsChangeEventState.ChangeEventState.AddRemoveUpdate, Components.Destroy);
 
         protected override bool Filter(ECSEntity entity)
         {
