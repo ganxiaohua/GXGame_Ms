@@ -1,83 +1,22 @@
-﻿using System;
-using UnityEngine;
+﻿using UnityEngine;
 
 namespace GXGame
 {
     public partial class ControlSystem
     {
-        private (Vector3 center, float radius, float height, Vector3 bottom, Vector3 top) CalculateCapsuleCollider(Vector3 position, Quaternion rotation,
-            float flared)
-        {
-            Vector3 center = rotation * unityCapsuleCollider.center + position;
-            float radius = unityCapsuleCollider.radius + flared;
-            float height = unityCapsuleCollider.height + flared * 2;
-            Vector3 bottom = center + rotation * Vector3.down * (height / 2 - radius);
-            Vector3 top = center + rotation * Vector3.up * (height / 2 - radius);
-            return (center, radius, height, bottom, top);
-        }
-
-        private int GetOverlapping(
-            Vector3 position,
-            Quaternion rotation,
-            int layerMask,
-            QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.Ignore,
-            float skinWidth = 0.0f)
-        {
-            var ccc = CalculateCapsuleCollider(position, rotation, -skinWidth);
-            Array.Clear(OverlapCache, 0, OverlapCache.Length);
-            int overlap = Physics.OverlapCapsuleNonAlloc(ccc.top, ccc.bottom, ccc.radius, OverlapCache, layerMask, queryTriggerInteraction);
-            for (int i = 0; i < overlap; i++)
-            {
-                var tempHit = OverlapCache[i];
-                //过滤自己
-                if (tempHit.transform == capsuleCollider.Value.transform)
-                {
-                    OverlapCache[i] = default;
-                    OverlapCache[i] = OverlapCache[overlap - 1];
-                    overlap--;
-                    break;
-                }
-            }
-
-            return overlap;
-        }
-
         private bool CastSelf(Vector3 pos, Quaternion rot, Vector3 dir, float dist, out RaycastHit hit, int layerMask, float skinWidth = 0.01f)
         {
-            var ccc = CalculateCapsuleCollider(pos, rot, -skinWidth);
-            Array.Clear(raycastHit, 0, raycastHit.Length);
-            int count = Physics.CapsuleCastNonAlloc(ccc.top, ccc.bottom, ccc.radius, dir, raycastHit, dist + skinWidth, layerMask,
-                QueryTriggerInteraction.Ignore);
-            float directDist = float.MaxValue;
-            bool didHit = false;
-            hit = default;
-            for (int i = 0; i < count; i++)
-            {
-                var tempHit = raycastHit[i];
-                //过滤自己 选出距离最近的
-                if (tempHit.transform != capsuleCollider.Value.transform && directDist > tempHit.distance)
-                {
-                    hit = tempHit;
-                    directDist = tempHit.distance;
-                    didHit = true;
-                }
-            }
-
-            return didHit;
+            return CollisionDetection.CapsuleCastNonAlloc(capsuleCollider.Value.transform, raycastHit, unityCapsuleCollider, pos, rot, dir, dist, out hit,
+                layerMask,
+                skinWidth);
         }
 
-        private bool DoRaycastInDirection(Vector3 source, Vector3 direction, float distance, out RaycastHit stepHit, int layerMask = ~0,
-            QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.Ignore)
-        {
-            bool didHit = Physics.Raycast(new Ray(source, direction), out stepHit, distance, layerMask, queryTriggerInteraction);
-            return didHit;
-        }
 
         private bool CheckPerpendicularBounce(
             RaycastHit hit,
             Vector3 momentum)
         {
-            bool hitStep = DoRaycastInDirection(
+            bool hitStep = CollisionDetection.Raycast(
                 hit.point - Vector3.up * collisionMsg.epsilon + hit.normal * collisionMsg.epsilon,
                 momentum.normalized,
                 momentum.magnitude,
@@ -90,7 +29,7 @@ namespace GXGame
 
         Vector3 GetBottom(Vector3 position, Quaternion rotation)
         {
-            var ccc = CalculateCapsuleCollider(position, rotation, 0);
+            var ccc = CollisionDetection.CalculateCapsuleCollider(unityCapsuleCollider, position, rotation, 0);
             return ccc.bottom + ccc.radius * (rotation * -Vector3.up);
         }
 

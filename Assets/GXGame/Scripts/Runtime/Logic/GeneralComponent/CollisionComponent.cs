@@ -60,9 +60,9 @@ namespace GXGame
         public override void Dispose()
         {
             var box = Value.gameObject.GetComponent<UnityEngine.BoxCollider>();
-            Object.DestroyImmediate(box);
+            Object.Destroy(box);
             var entity = Value.gameObject.GetComponent<CollisionEntity>();
-            Object.DestroyImmediate(entity);
+            Object.Destroy(entity);
             Value.Unbind();
             Value = null;
         }

@@ -3,7 +3,7 @@ using UnityEngine;
 
 namespace GXGame
 {
-    public class GroudMsg
+    public class PreviousGroundMsg
     {
         public Vector3 RelativePos;
         public Quaternion RelativeRotation;
@@ -11,9 +11,22 @@ namespace GXGame
     }
 
 
-    public class GroundMsgComponent : ECSComponent
+    public class PreviousGroundMsgComponent : ECSComponent
     {
-        public GroudMsg Value;
+        public PreviousGroundMsg Value;
+    }
+
+    public class GroundCollision
+    {
+        public bool OnGround;
+        public Vector3 OroundAngle;
+        public RaycastHit RaycastHit;
+    }
+
+
+    public class GroundCollisionComponent : ECSComponent
+    {
+        public GroundCollision Value;
     }
 
     public class CollisionMsg
@@ -26,12 +39,16 @@ namespace GXGame
         public float maxJumpAngle = 70f;
         public float jumpAngleWeightFactor = 0.1f;
         public float stepUpDepth = 0.5f;
-        public float Gravity = 12;
         public int MaskLayer;
     }
 
     public class CollisionMsgComponent : ECSComponent
     {
         public CollisionMsg Value;
+    }
+
+    public class GravityComponent : ECSComponent
+    {
+        public float Value;
     }
 }

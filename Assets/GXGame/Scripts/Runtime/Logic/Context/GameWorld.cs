@@ -122,8 +122,9 @@ namespace GXGame.Logic
             palyer.AddFaceDirection();
             palyer.AddDirectionSpeed(360);
             palyer.AddYAxisASpeed(5);
+            palyer.AddGravityComponent(12);
             palyer.AddYAxisAcceleration(false);
-            palyer.AddGroundMsgComponent(new GroudMsg());
+            palyer.AddGroundMsgComponent(new PreviousGroundMsg());
             palyer.AddCollisionMsgComponent(new CollisionMsg()
             {
                 MaskLayer = ~0 //~(1 << LayerMask.NameToLayer("Interaction") | 1 << LayerMask.NameToLayer("Monster"))

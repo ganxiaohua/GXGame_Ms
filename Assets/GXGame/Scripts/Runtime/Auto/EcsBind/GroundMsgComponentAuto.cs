@@ -12,32 +12,32 @@ public static class AutoGroundMsgComponent
         ecsEntity.AddComponent(Components.GroundMsgComponent);
     }
     
-    public static void AddGroundMsgComponent(this ECSEntity ecsEntity,GXGame.GroudMsg param)
+    public static void AddGroundMsgComponent(this ECSEntity ecsEntity,GXGame.PreviousGroundMsg param)
     {
-        var p  =  (GXGame.GroundMsgComponent)ecsEntity.AddComponent(Components.GroundMsgComponent);
+        var p  =  (GXGame.PreviousGroundMsgComponent)ecsEntity.AddComponent(Components.GroundMsgComponent);
         p.Value = param;
     }
           
-    public static GXGame.GroundMsgComponent GetGroundMsgComponent(this ECSEntity ecsEntity)
+    public static GXGame.PreviousGroundMsgComponent GetGroundMsgComponent(this ECSEntity ecsEntity)
     {
-        return (GXGame.GroundMsgComponent)ecsEntity.GetComponent(Components.GroundMsgComponent);
+        return (GXGame.PreviousGroundMsgComponent)ecsEntity.GetComponent(Components.GroundMsgComponent);
     }
      
-    public static ECSEntity SetGroundMsgComponent(this ECSEntity ecsEntity,GXGame.GroudMsg param)
+    public static ECSEntity SetGroundMsgComponent(this ECSEntity ecsEntity,GXGame.PreviousGroundMsg param)
     {
-        var p = (GXGame.GroundMsgComponent)ecsEntity.GetComponent(Components.GroundMsgComponent);
+        var p = (GXGame.PreviousGroundMsgComponent)ecsEntity.GetComponent(Components.GroundMsgComponent);
         p.Value = param;
         ((World)ecsEntity.Parent).Reactive(Components.GroundMsgComponent, ecsEntity);
         
         return ecsEntity;
     }
     
-    public static ECSEntity AddOrSetGroundMsgComponent(this ECSEntity ecsEntity,GXGame.GroudMsg param)
+    public static ECSEntity AddOrSetGroundMsgComponent(this ECSEntity ecsEntity,GXGame.PreviousGroundMsg param)
     {
-        var p = (GXGame.GroundMsgComponent)ecsEntity.GetComponent(Components.GroundMsgComponent);
+        var p = (GXGame.PreviousGroundMsgComponent)ecsEntity.GetComponent(Components.GroundMsgComponent);
         if(p==null)
         {
-           p = (GXGame.GroundMsgComponent)(ecsEntity.AddComponent(Components.GroundMsgComponent));
+           p = (GXGame.PreviousGroundMsgComponent)(ecsEntity.AddComponent(Components.GroundMsgComponent));
         }
         p.Value = param;
         ((World)ecsEntity.Parent).Reactive(Components.GroundMsgComponent, ecsEntity);

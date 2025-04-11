@@ -46,10 +46,11 @@ public static class Components {
     public const int FindPathComponent= 39;
     public const int GroundMsgComponent= 40;
     public const int CollisionMsgComponent= 41;
-    public const int OperationComponent= 42;
-    public const int RovAgent= 43;
+    public const int GravityComponent= 42;
+    public const int OperationComponent= 43;
+    public const int RovAgent= 44;
     
-    public const int TotalComponents = 44;
+    public const int TotalComponents = 45;
     
     
     public static readonly System.Type[] ComponentTypes = {
@@ -94,8 +95,9 @@ public static class Components {
         typeof(GXGame.FeedBackBoxComponent),
         typeof(GXGame.GridDataComponent),
         typeof(GXGame.FindPathComponent),
-        typeof(GXGame.GroundMsgComponent),
+        typeof(GXGame.PreviousGroundMsgComponent),
         typeof(GXGame.CollisionMsgComponent),
+        typeof(GXGame.GravityComponent),
         typeof(GXGame.OperationComponent),
         typeof(GXGame.Scripts.Runtime.RovAgent),
     };

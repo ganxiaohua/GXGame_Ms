@@ -56,9 +56,9 @@ namespace GXGame
         {
             var behaviourTreeOwner = gxGameObject.gameObject.GetComponent<BehaviourTreeOwner>();
             behaviourTreeOwner.StopBehaviour();
-            Object.DestroyImmediate(behaviourTreeOwner);
+            Object.Destroy(behaviourTreeOwner);
             var blackboard = gxGameObject.gameObject.GetComponent<Blackboard>();
-            Object.DestroyImmediate(blackboard);
+            Object.Destroy(blackboard);
             gxGameObject.Unbind();
             gxGameObject = null;
             asyncLoadAsset.Clear();
