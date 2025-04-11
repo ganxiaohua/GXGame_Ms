@@ -55,7 +55,7 @@ namespace GXGame
             foreach (var input in inputs)
             {
                 input.SetMoveDirection(new Vector3(v.MoveDir.x, 0, v.MoveDir.y));
-                input.SetYAxisAcceleration(v.Jump);
+                input.SetYAxisASpeed(v.Jump ? 5 : 0);
             }
         }
 

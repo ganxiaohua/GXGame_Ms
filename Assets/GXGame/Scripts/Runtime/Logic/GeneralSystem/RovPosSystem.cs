@@ -38,10 +38,10 @@ namespace GXGame
                 if (!gridData.IsWorldPosInArea(lastPos))
                     continue;
                 entity.SetWorldPos(lastPos);
-                var box = entity.GetBoxCollider();
+                var box = entity.GetBoxColliderComponent();
                 if (box == null)
                     continue;
-                box.Value.position = lastPos;
+                box.Value.Go.position = lastPos;
             }
 
             Simulator.Instance.doStep();

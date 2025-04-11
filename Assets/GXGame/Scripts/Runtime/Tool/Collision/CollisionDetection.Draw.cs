@@ -7,20 +7,20 @@ namespace GXGame
 {
     public static partial class CollisionDetection
     {
-        private static Vector3 pos;
+        private static Vector3 epos;
 
-        private static Vector3 size;
+        private static Vector3 esize;
 
-        private static Quaternion qua = quaternion.identity;
+        private static Quaternion equa = quaternion.identity;
 
-        private static GUIStyle guiStyle;
+        private static GUIStyle eguiStyle;
 
         public static void Init()
         {
-            guiStyle = new GUIStyle();
-            guiStyle.normal.textColor = Color.magenta;
-            guiStyle.fontSize = 12;
-            guiStyle.padding = new RectOffset(5, 5, 3, 3);
+            eguiStyle = new GUIStyle();
+            eguiStyle.normal.textColor = Color.magenta;
+            eguiStyle.fontSize = 12;
+            eguiStyle.padding = new RectOffset(5, 5, 3, 3);
             SceneView.duringSceneGui += OnSceneGuiDelegate;
         }
 
@@ -32,9 +32,9 @@ namespace GXGame
 
         private static void SetBox(Vector3 pos, Quaternion qua, Vector3 size)
         {
-            CollisionDetection.pos = pos;
-            CollisionDetection.size = size;
-            CollisionDetection.qua = qua;
+            CollisionDetection.epos = pos;
+            CollisionDetection.esize = size;
+            CollisionDetection.equa = qua;
         }
 
         private static void OnSceneGuiDelegate(SceneView view)
@@ -42,11 +42,11 @@ namespace GXGame
             if (!view.drawGizmos)
                 return;
             var old = Handles.matrix;
-            Handles.matrix = Matrix4x4.TRS(pos, qua, Vector3.one);
+            Handles.matrix = Matrix4x4.TRS(epos, equa, Vector3.one);
             Handles.color = Color.red;
-            Handles.DrawWireCube(Vector3.zero, size);
-            Handles.DrawWireCube(Vector3.zero + new Vector3(0.01f, 0, 0), size);
-            Handles.Label(Vector3.zero, "收集器", guiStyle);
+            Handles.DrawWireCube(Vector3.zero, esize);
+            Handles.DrawWireCube(Vector3.zero + new Vector3(0.01f, 0, 0), esize);
+            Handles.Label(Vector3.zero, "收集器", eguiStyle);
             Handles.matrix = old;
         }
     }

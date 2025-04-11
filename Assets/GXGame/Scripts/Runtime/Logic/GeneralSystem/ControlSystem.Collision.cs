@@ -6,7 +6,9 @@ namespace GXGame
     {
         private bool CastSelf(Vector3 pos, Quaternion rot, Vector3 dir, float dist, out RaycastHit hit, int layerMask, float skinWidth = 0.01f)
         {
-            return CollisionDetection.CapsuleCastNonAlloc(capsuleCollider.Value.transform, raycastHit, unityCapsuleCollider, pos, rot, dir, dist, out hit,
+            return CollisionDetection.CapsuleCastNonAlloc(capsuleColliderComponent.Value.Go.transform, raycastHit,
+                capsuleColliderComponent.Value.CapsuleCollider, pos, rot, dir, dist,
+                out hit,
                 layerMask,
                 skinWidth);
         }
@@ -29,7 +31,7 @@ namespace GXGame
 
         Vector3 GetBottom(Vector3 position, Quaternion rotation)
         {
-            var ccc = CollisionDetection.CalculateCapsuleCollider(unityCapsuleCollider, position, rotation, 0);
+            var ccc = CollisionDetection.CalculateCapsuleCollider(capsuleColliderComponent.Value.CapsuleCollider, position, rotation, 0);
             return ccc.bottom + ccc.radius * (rotation * -Vector3.up);
         }
 

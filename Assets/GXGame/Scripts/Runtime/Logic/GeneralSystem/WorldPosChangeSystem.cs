@@ -28,10 +28,10 @@ namespace GXGame
                 var pos = entity.GetWorldPos().Value;
                 pos += (dir.normalized * distance);
                 entity.SetWorldPos(pos);
-                var box = entity.GetBoxCollider();
+                var box = entity.GetBoxColliderComponent();
                 if (box == null)
                     continue;
-                box.Value.position = pos;
+                box.Value.Go.position = pos;
             }
         }
 

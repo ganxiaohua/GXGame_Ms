@@ -13,7 +13,7 @@ namespace GXGame
 
         private Group group;
 
-        private CapsuleCollider capsuleCollider;
+        private CapsuleColliderComponent capsuleColliderComponent;
 
 
         public void OnInitialize(World world)
@@ -29,11 +29,14 @@ namespace GXGame
             foreach (var entity in group)
             {
                 this.entity = entity;
-                capsuleCollider = entity.GetCapsuleCollider();
+                capsuleColliderComponent = entity.GetCapsuleColliderComponent();
                 var pos = this.entity.GetWorldPos().Value;
                 var rot = this.entity.GetWorldRotate().Value;
                 var feedBackBoxComp = this.entity.GetFeedBackBoxComponent().Value;
-                int overlappingCount = CollisionDetection.OverlapBoxNonAlloc(capsuleCollider.Value.transform, colliders, pos, rot, feedBackBoxComp.Size,
+                int overlappingCount = CollisionDetection.OverlapBoxNonAlloc(capsuleColliderComponent.Value.Go.transform, colliders,
+                    rot * Vector3.forward + pos,
+                    rot,
+                    feedBackBoxComp.Size,
                     feedBackBoxComp.MaskLayer);
                 feedBackBoxComp.FeedBackEntitys ??= new();
                 feedBackBoxComp.FeedBackEntitys.Clear();

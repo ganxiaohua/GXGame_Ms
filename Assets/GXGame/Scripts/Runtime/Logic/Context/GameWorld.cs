@@ -85,7 +85,7 @@ namespace GXGame.Logic
                 monster.AddFindPathComponent(new FindPathData());
                 monster.AddGridDataComponent(chickenHome);
                 monster.AddBehaviorTreeComponent("BTO/IivestockBto");
-                monster.AddBoxCollider(BoxCollider.Create(monster, LayerMask.NameToLayer($"Interaction")));
+                monster.AddBoxColliderComponent(BoxColliderData.Create(monster, LayerMask.NameToLayer($"Interaction")));
             }
         }
 
@@ -103,7 +103,7 @@ namespace GXGame.Logic
                 egg.AddWorldPos(pos);
                 egg.AddWorldRotate(Quaternion.identity);
                 egg.AddLocalScale(new Vector3(0.8f, 0.8f, 0.8f));
-                egg.AddBoxCollider(BoxCollider.Create(egg, LayerMask.NameToLayer($"Interaction")));
+                egg.AddBoxColliderComponent(BoxColliderData.Create(egg, LayerMask.NameToLayer($"Interaction")));
                 egg.AddUnitTypeComponent(UnitTypeEnum.AnimalProducts);
             }
         }
@@ -121,15 +121,14 @@ namespace GXGame.Logic
             palyer.AddMoveSpeed(3.2f);
             palyer.AddFaceDirection();
             palyer.AddDirectionSpeed(360);
-            palyer.AddYAxisASpeed(5);
+            palyer.AddYAxisASpeed(0);
             palyer.AddGravityComponent(12);
-            palyer.AddYAxisAcceleration(false);
-            palyer.AddGroundMsgComponent(new PreviousGroundMsg());
+            palyer.AddPreviousGroundMsgComponent(new PreviousGroundMsg());
             palyer.AddCollisionMsgComponent(new CollisionMsg()
             {
                 MaskLayer = ~0 //~(1 << LayerMask.NameToLayer("Interaction") | 1 << LayerMask.NameToLayer("Monster"))
             });
-            palyer.AddCapsuleCollider(CapsuleCollider.Create(palyer, LayerMask.NameToLayer($"Player")));
+            palyer.AddCapsuleColliderComponent(CapsuleColliderData.Create(palyer, LayerMask.NameToLayer($"Player")));
             palyer.AddCollisionGroundType(CollisionGroundType.Slide);
             palyer.AddFeedBackBoxComponent(new FeedBackBoxData()
             {
@@ -166,7 +165,7 @@ namespace GXGame.Logic
                 monster.AddFindPathComponent(new FindPathData());
                 monster.AddGridDataComponent(map);
                 monster.AddBehaviorTreeComponent("BTO/Monster01Bto");
-                monster.AddBoxCollider(BoxCollider.Create(monster, LayerMask.NameToLayer($"Monster")));
+                monster.AddBoxColliderComponent(BoxColliderData.Create(monster, LayerMask.NameToLayer($"Monster")));
             }
         }
     }

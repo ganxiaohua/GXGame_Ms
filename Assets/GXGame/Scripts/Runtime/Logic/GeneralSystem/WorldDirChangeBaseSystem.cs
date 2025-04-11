@@ -34,10 +34,10 @@ namespace GXGame
                     Vector3 curDir = Vector3.RotateTowards(nowDir, dir, Mathf.Deg2Rad * angle, 0);
                     var roa = Quaternion.LookRotation(curDir);
                     entity.SetWorldRotate(roa);
-                    var box = entity.GetBoxCollider();
+                    var box = entity.GetBoxColliderComponent();
                     if (box == null)
                         continue;
-                    box.Value.rotation = roa;
+                    box.Value.Go.rotation = roa;
                 }
             }
         }

@@ -36,21 +36,22 @@ public static class Components {
     public const int CampComponent= 29;
     public const int UnitTypeComponent= 30;
     public const int BehaviorTreeComponent= 31;
-    public const int CapsuleCollider= 32;
-    public const int BoxCollider= 33;
-    public const int YAxisAcceleration= 34;
-    public const int RaycastHitMsg= 35;
-    public const int CollisionGroundType= 36;
+    public const int CapsuleColliderComponent= 32;
+    public const int BoxColliderComponent= 33;
+    public const int RaycastHitMsg= 34;
+    public const int CollisionGroundType= 35;
+    public const int FallingSpeedComponent= 36;
     public const int FeedBackBoxComponent= 37;
     public const int GridDataComponent= 38;
     public const int FindPathComponent= 39;
-    public const int GroundMsgComponent= 40;
-    public const int CollisionMsgComponent= 41;
-    public const int GravityComponent= 42;
-    public const int OperationComponent= 43;
-    public const int RovAgent= 44;
+    public const int OperationComponent= 40;
+    public const int PreviousGroundMsgComponent= 41;
+    public const int GroundCollisionComponent= 42;
+    public const int CollisionMsgComponent= 43;
+    public const int GravityComponent= 44;
+    public const int RovAgent= 45;
     
-    public const int TotalComponents = 45;
+    public const int TotalComponents = 46;
     
     
     public static readonly System.Type[] ComponentTypes = {
@@ -87,18 +88,19 @@ public static class Components {
         typeof(GXGame.CampComponent),
         typeof(GXGame.UnitTypeComponent),
         typeof(GXGame.BehaviorTreeComponent),
-        typeof(GXGame.CapsuleCollider),
-        typeof(GXGame.BoxCollider),
-        typeof(GXGame.YAxisAcceleration),
+        typeof(GXGame.CapsuleColliderComponent),
+        typeof(GXGame.BoxColliderComponent),
         typeof(GXGame.RaycastHitMsg),
         typeof(GXGame.CollisionGroundType),
+        typeof(GXGame.FallingSpeedComponent),
         typeof(GXGame.FeedBackBoxComponent),
         typeof(GXGame.GridDataComponent),
         typeof(GXGame.FindPathComponent),
+        typeof(GXGame.OperationComponent),
         typeof(GXGame.PreviousGroundMsgComponent),
+        typeof(GXGame.GroundCollisionComponent),
         typeof(GXGame.CollisionMsgComponent),
         typeof(GXGame.GravityComponent),
-        typeof(GXGame.OperationComponent),
         typeof(GXGame.Scripts.Runtime.RovAgent),
     };
 

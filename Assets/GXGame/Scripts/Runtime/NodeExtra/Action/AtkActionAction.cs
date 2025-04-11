@@ -33,7 +33,7 @@ namespace GXGame
             skillEntity.AddDestroyCountdown(2.0f);
             skillEntity.AddLocalScale(Vector3.one * 0.3f);
             skillEntity.AddCampComponent(GXGame.Camp.ENEMY);
-            skillEntity.AddCapsuleCollider(CapsuleCollider.Create(skillEntity, LayerMask.NameToLayer($"Object")));
+            skillEntity.AddCapsuleColliderComponent(CapsuleColliderData.Create(skillEntity, LayerMask.NameToLayer($"Object")));
             skillEntity.AddCollisionGroundType(CollisionGroundType.Reflect);
             skillEntity.AddHP(1);
             owner.AddAtkIntervalComponent(4.0f);

@@ -35,8 +35,8 @@ namespace GXGame
             if (groundMsg.onGround && velocity.y <= 0)
                 pos = SnapPlayerDown(pos);
             rot = CalculateWorldRotate(rot);
-            capsuleCollider.Value.position = pos;
-            capsuleCollider.Value.rotation = rot;
+            capsuleColliderComponent.Value.Go.position = pos;
+            capsuleColliderComponent.Value.Go.rotation = rot;
             entity.SetWorldPos(pos);
             entity.SetWorldRotate(rot);
             UpdateMovingGround(pos, rot);
@@ -59,7 +59,6 @@ namespace GXGame
         {
             var gravity = entity.GetGravityComponent().Value;
             var jumpSpeed = entity.GetYAxisASpeed().Value;
-            var yAxis = entity.GetYAxisAcceleration().Value;
             bool fg = IsFallingOrglide();
             if (fg)
             {
@@ -71,26 +70,28 @@ namespace GXGame
             }
 
             bool canJump = (groundMsg.onGround) && groundMsg.groundAngle <= collisionMsg.maxJumpAngle && !fg;
-            if (canJump && yAxis)
+            if (canJump && jumpSpeed != 0)
             {
                 velocity = Vector3.Lerp(Vector3.up, (groundMsg.hit.normal).normalized, collisionMsg.jumpAngleWeightFactor).normalized * jumpSpeed;
             }
 
             velocity.y = Mathf.Min(velocity.y, gravity * 2);
-            entity.SetYAxisAcceleration(false);
+            entity.SetYAxisASpeed(0);
         }
 
 
         private Vector3 PushOutOverlapping(Vector3 position, Quaternion rotation, float maxDistance, float skinWidth = 0.0f)
         {
             Vector3 pushed = Vector3.zero;
-            var count = CollisionDetection.OverlapCapsuleNonAlloc(capsuleCollider.Value.transform, OverlapCache, unityCapsuleCollider, position, rotation,
+            var count = CollisionDetection.OverlapCapsuleNonAlloc(capsuleColliderComponent.Value.Go.transform, OverlapCache,
+                capsuleColliderComponent.Value.CapsuleCollider, position,
+                rotation,
                 collisionMsg.MaskLayer, QueryTriggerInteraction.Collide, skinWidth);
             for (int i = 0; i < count; i++)
             {
                 var overlap = OverlapCache[i];
                 Physics.ComputePenetration(
-                    unityCapsuleCollider, position, rotation,
+                    capsuleColliderComponent.Value.CapsuleCollider, position, rotation,
                     overlap, overlap.gameObject.transform.position, overlap.gameObject.transform.rotation,
                     out Vector3 direction, out float distance
                 );

@@ -34,7 +34,7 @@ namespace GXGame
         private void MoveAnimation()
         {
             var dir = BindEntity.GetMoveDirection();
-            var ground = BindEntity.GetGroundMsgComponent().Value;
+            var ground = BindEntity.GetPreviousGroundMsgComponent().Value;
             if (dir == null || ground == null)
                 return;
             if (ground.PreviousParent == null)

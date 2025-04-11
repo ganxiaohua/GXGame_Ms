@@ -13,8 +13,7 @@ namespace GXGame
         private World world;
         private ECSEntity entity;
         private Group cameraGroup;
-        private CapsuleCollider capsuleCollider;
-        private UnityEngine.CapsuleCollider unityCapsuleCollider;
+        private CapsuleColliderComponent capsuleColliderComponent;
         private (bool onGround, float groundAngle, RaycastHit hit) groundMsg;
 
         public void OnInitialize(World world)
@@ -31,13 +30,12 @@ namespace GXGame
             foreach (var entity in group)
             {
                 this.entity = entity;
-                var capsuleCollider = entity.GetCapsuleCollider();
+                var capsuleCollider = entity.GetCapsuleColliderComponent();
                 collisionMsg = entity.GetCollisionMsgComponent().Value;
-                this.capsuleCollider = capsuleCollider;
-                unityCapsuleCollider = capsuleCollider.Value.gameObject.GetComponent<UnityEngine.CapsuleCollider>();
+                this.capsuleColliderComponent = capsuleCollider;
                 groundMsg = CheckGrounded();
                 InputMove();
-                entity.SetCapsuleCollider(capsuleCollider.Value);
+                entity.SetCapsuleColliderComponent(capsuleCollider.Value);
             }
         }
 

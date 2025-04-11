@@ -14,11 +14,10 @@ namespace GXGame
             int layerMask,
             QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.Ignore)
         {
-            var pos = rotation * Vector3.forward + position;
             Array.Clear(colliders, 0, colliders.Length);
-            int overlap = Physics.OverlapBoxNonAlloc(pos, size / 2, colliders, rotation, layerMask, queryTriggerInteraction);
+            int overlap = Physics.OverlapBoxNonAlloc(position, size / 2, colliders, rotation, layerMask, queryTriggerInteraction);
 #if UNITY_EDITOR
-            SetBox(pos, rotation, size);
+            SetBox(position, rotation, size);
 #endif
             for (int i = 0; i < overlap; i++)
             {
@@ -33,6 +32,35 @@ namespace GXGame
             }
 
             return overlap;
+        }
+
+        public static bool BoxCastNonAlloc(Transform self, RaycastHit[] raycastHit,
+            Vector3 position,
+            Quaternion rotation,
+            Vector3 dir,
+            float distance,
+            Vector3 size, out RaycastHit hit,
+            int layerMask,
+            QueryTriggerInteraction queryTriggerInteraction = QueryTriggerInteraction.Ignore)
+        {
+            Array.Clear(raycastHit, 0, raycastHit.Length);
+            int count = Physics.BoxCastNonAlloc(position, size / 2, dir, raycastHit, rotation, distance, layerMask, queryTriggerInteraction);
+            float directDist = float.MaxValue;
+            bool didHit = false;
+            hit = default;
+            for (int i = 0; i < count; i++)
+            {
+                var tempHit = raycastHit[i];
+                //过滤自己 选出距离最近的
+                if (tempHit.transform != self && directDist > tempHit.distance)
+                {
+                    hit = tempHit;
+                    directDist = tempHit.distance;
+                    didHit = true;
+                }
+            }
+
+            return didHit;
         }
 
         public static bool Raycast(Vector3 source, Vector3 direction, float distance, out RaycastHit stepHit, int layerMask = ~0,

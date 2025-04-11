@@ -1,77 +1,113 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 using Common.Runtime;
 using GameFrame;
 using UnityEngine;
+using Object = UnityEngine.Object;
 
 namespace GXGame
 {
+    public class CapsuleColliderData : IDisposable
+    {
+        public GXGameObject Go;
+        public UnityEngine.CapsuleCollider CapsuleCollider;
+
+        public static CapsuleColliderData Create(ECSEntity ecsEntity, LayerMask layerMask)
+        {
+            CapsuleColliderData capsuleColliderData = ReferencePool.Acquire<CapsuleColliderData>();
+            capsuleColliderData.Go = new GXGameObject();
+            capsuleColliderData.Go.BindFromEmpty(Main.CollisionLayer);
+            capsuleColliderData.Go.gameObject.name = ecsEntity.Name;
+            capsuleColliderData.Go.gameObject.layer = layerMask;
+            capsuleColliderData.CapsuleCollider = capsuleColliderData.Go.gameObject.AddComponent<UnityEngine.CapsuleCollider>();
+            capsuleColliderData.Go.gameObject.AddComponent<CollisionEntity>().Entity = ecsEntity;
+            capsuleColliderData.CapsuleCollider.radius = 0.31f;
+            capsuleColliderData.CapsuleCollider.height = 1.79f;
+            capsuleColliderData.CapsuleCollider.center = new Vector3(0, 0.92f, 0);
+            capsuleColliderData.Go.position = ecsEntity.GetWorldPos().Value;
+            return capsuleColliderData;
+        }
+
+        public static void Release(CapsuleColliderData capsuleColliderData)
+        {
+            ReferencePool.Release(capsuleColliderData);
+        }
+
+        public void Dispose()
+        {
+            var box = Go.gameObject.GetComponent<UnityEngine.CapsuleCollider>();
+            Object.Destroy(box);
+            var entity = Go.gameObject.GetComponent<CollisionEntity>();
+            Object.Destroy(entity);
+            Go.Unbind();
+            Go = null;
+        }
+    }
+
     /// <summary>
     /// 由于unity自身碰撞逻辑和渲染并不分离这个组件并不典型.
     /// </summary>
-    public class CapsuleCollider : ECSComponent
+    public class CapsuleColliderComponent : ECSComponent
     {
-        public GXGameObject Value;
-
-        public static GXGameObject Create(ECSEntity ecsEntity, LayerMask layerMask)
-        {
-            var value = new GXGameObject();
-            value.BindFromEmpty(Main.CollisionLayer);
-            value.gameObject.name = ecsEntity.Name;
-            value.gameObject.layer = layerMask;
-            var collider = value.gameObject.AddComponent<UnityEngine.CapsuleCollider>();
-            value.gameObject.AddComponent<CollisionEntity>().Entity = ecsEntity;
-            collider.radius = 0.31f;
-            collider.height = 1.79f;
-            collider.center = new Vector3(0, 0.92f, 0);
-            value.position = ecsEntity.GetWorldPos().Value;
-            return value;
-        }
+        public CapsuleColliderData Value;
 
         public override void Dispose()
         {
-            var box = Value.gameObject.GetComponent<UnityEngine.CapsuleCollider>();
-            Object.Destroy(box);
-            var entity = Value.gameObject.GetComponent<CollisionEntity>();
-            Object.Destroy(entity);
-            Value.Unbind();
-            Value = null;
+            CapsuleColliderData.Release(Value);
         }
     }
+    /**********************************************************************************/
+    //Box
 
-    public class BoxCollider : ECSComponent
+    public class BoxColliderData : IDisposable
     {
-        public GXGameObject Value;
+        public GXGameObject Go;
+        public UnityEngine.BoxCollider BoxCollider;
 
-        public static GXGameObject Create(ECSEntity ecsEntity, LayerMask layerMask)
+        public static BoxColliderData Create(ECSEntity ecsEntity, LayerMask layerMask)
         {
-            var value = new GXGameObject();
-            value.BindFromEmpty(Main.CollisionLayer);
-            value.gameObject.name = ecsEntity.Name;
-            value.gameObject.layer = layerMask;
-            var collider = value.gameObject.AddComponent<UnityEngine.BoxCollider>();
-            value.gameObject.AddComponent<CollisionEntity>().Entity = ecsEntity;
+            BoxColliderData boxData = ReferencePool.Acquire<BoxColliderData>();
+            boxData.Go = new GXGameObject();
+            boxData.Go.BindFromEmpty(Main.CollisionLayer);
+            boxData.Go.gameObject.name = ecsEntity.Name;
+            boxData.Go.gameObject.layer = layerMask;
+            boxData.BoxCollider = boxData.Go.gameObject.AddComponent<UnityEngine.BoxCollider>();
+            boxData.Go.gameObject.AddComponent<CollisionEntity>().Entity = ecsEntity;
             var scale = ecsEntity.GetLocalScale().Value;
-            collider.center = new Vector3(0, scale.y / 2, 0);
-            collider.size = scale;
-            value.position = ecsEntity.GetWorldPos().Value;
-            return value;
+            boxData.BoxCollider.center = new Vector3(0, scale.y / 2, 0);
+            boxData.BoxCollider.size = scale;
+            boxData.Go.position = ecsEntity.GetWorldPos().Value;
+            return boxData;
         }
+
+        public static void Release(BoxColliderData doxColliderData)
+        {
+            ReferencePool.Release(doxColliderData);
+        }
+
+        public void Dispose()
+        {
+            var box = Go.gameObject.GetComponent<UnityEngine.BoxCollider>();
+            Object.Destroy(box);
+            var entity = Go.gameObject.GetComponent<CollisionEntity>();
+            Object.Destroy(entity);
+            Go.Unbind();
+            Go = null;
+        }
+    }
+
+
+    public class BoxColliderComponent : ECSComponent
+    {
+        public BoxColliderData Value;
+
 
         public override void Dispose()
         {
-            var box = Value.gameObject.GetComponent<UnityEngine.BoxCollider>();
-            Object.Destroy(box);
-            var entity = Value.gameObject.GetComponent<CollisionEntity>();
-            Object.Destroy(entity);
-            Value.Unbind();
-            Value = null;
+            BoxColliderData.Release(Value);
         }
     }
 
-    public class YAxisAcceleration : ECSComponent
-    {
-        public bool Value;
-    }
 
     public class RaycastHitMsg : ECSComponent
     {
