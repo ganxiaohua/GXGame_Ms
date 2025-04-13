@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------
 using GameFrame;
 using UnityEngine;
-public static class AutoCampComponent
+public static partial class AutoCampComponent
 {
     
     public static void AddCampComponent(this ECSEntity ecsEntity)

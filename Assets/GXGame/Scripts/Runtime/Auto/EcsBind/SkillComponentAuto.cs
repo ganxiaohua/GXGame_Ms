@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------
 using GameFrame;
 using UnityEngine;
-public static class AutoSkillComponent
+public static partial class AutoSkillComponent
 {
     
     public static void AddSkillComponent(this GXGame.SkillEntity ecsEntity)

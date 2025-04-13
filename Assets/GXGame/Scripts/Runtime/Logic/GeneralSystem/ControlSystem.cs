@@ -14,7 +14,7 @@ namespace GXGame
         private ECSEntity entity;
         private Group cameraGroup;
         private CapsuleColliderComponent capsuleColliderComponent;
-        private (bool onGround, float groundAngle, RaycastHit hit) groundMsg;
+        private GroundCollision groundMsg;
 
         public void OnInitialize(World world)
         {
@@ -33,7 +33,7 @@ namespace GXGame
                 var capsuleCollider = entity.GetCapsuleColliderComponent();
                 collisionMsg = entity.GetCollisionMsgComponent().Value;
                 this.capsuleColliderComponent = capsuleCollider;
-                groundMsg = CheckGrounded();
+                groundMsg = entity.GetGroundCollisionComponent().Value;
                 InputMove();
                 entity.SetCapsuleColliderComponent(capsuleCollider.Value);
             }

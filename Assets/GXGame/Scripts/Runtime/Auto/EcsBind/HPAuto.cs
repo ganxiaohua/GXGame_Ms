@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------
 using GameFrame;
 using UnityEngine;
-public static class AutoHP
+public static partial class AutoHP
 {
     
     public static void AddHP(this ECSEntity ecsEntity)

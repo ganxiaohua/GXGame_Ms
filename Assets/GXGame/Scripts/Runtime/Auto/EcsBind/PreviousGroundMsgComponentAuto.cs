@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------
 using GameFrame;
 using UnityEngine;
-public static class AutoPreviousGroundMsgComponent
+public static partial class AutoPreviousGroundMsgComponent
 {
     
     public static void AddPreviousGroundMsgComponent(this ECSEntity ecsEntity)

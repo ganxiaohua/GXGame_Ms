@@ -40,15 +40,15 @@ public static class Components {
     public const int BoxColliderComponent= 33;
     public const int RaycastHitMsg= 34;
     public const int CollisionGroundType= 35;
-    public const int FallingSpeedComponent= 36;
-    public const int FeedBackBoxComponent= 37;
-    public const int GridDataComponent= 38;
-    public const int FindPathComponent= 39;
-    public const int OperationComponent= 40;
-    public const int PreviousGroundMsgComponent= 41;
-    public const int GroundCollisionComponent= 42;
-    public const int CollisionMsgComponent= 43;
-    public const int GravityComponent= 44;
+    public const int FeedBackBoxComponent= 36;
+    public const int GridDataComponent= 37;
+    public const int FindPathComponent= 38;
+    public const int OperationComponent= 39;
+    public const int PreviousGroundMsgComponent= 40;
+    public const int GroundCollisionComponent= 41;
+    public const int CollisionMsgComponent= 42;
+    public const int GravityComponent= 43;
+    public const int GravityDirComponent= 44;
     public const int RovAgent= 45;
     
     public const int TotalComponents = 46;
@@ -92,7 +92,6 @@ public static class Components {
         typeof(GXGame.BoxColliderComponent),
         typeof(GXGame.RaycastHitMsg),
         typeof(GXGame.CollisionGroundType),
-        typeof(GXGame.FallingSpeedComponent),
         typeof(GXGame.FeedBackBoxComponent),
         typeof(GXGame.GridDataComponent),
         typeof(GXGame.FindPathComponent),
@@ -101,6 +100,7 @@ public static class Components {
         typeof(GXGame.GroundCollisionComponent),
         typeof(GXGame.CollisionMsgComponent),
         typeof(GXGame.GravityComponent),
+        typeof(GXGame.GravityDirComponent),
         typeof(GXGame.Scripts.Runtime.RovAgent),
     };
 

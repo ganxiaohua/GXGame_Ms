@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------
 using GameFrame;
 using UnityEngine;
-public static class AutoBehaviorTreeComponent
+public static partial class AutoBehaviorTreeComponent
 {
     
     public static void AddBehaviorTreeComponent(this ECSEntity ecsEntity)

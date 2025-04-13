@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------
 using GameFrame;
 using UnityEngine;
-public static class AutoMonster
+public static partial class AutoMonster
 {
     
     public static void AddMonster(this ECSEntity ecsEntity)

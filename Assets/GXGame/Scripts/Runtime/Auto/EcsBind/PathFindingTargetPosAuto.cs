@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------
 using GameFrame;
 using UnityEngine;
-public static class AutoPathFindingTargetPos
+public static partial class AutoPathFindingTargetPos
 {
     
     public static void AddPathFindingTargetPos(this ECSEntity ecsEntity)

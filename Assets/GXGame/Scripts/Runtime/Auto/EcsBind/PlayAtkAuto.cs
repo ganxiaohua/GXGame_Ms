@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------
 using GameFrame;
 using UnityEngine;
-public static class AutoPlayAtk
+public static partial class AutoPlayAtk
 {
     
     public static void AddPlayAtk(this ECSEntity ecsEntity)

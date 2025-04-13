@@ -1,11 +1,8 @@
-using System.Collections;
-using System.Collections.Generic;
 using GameFrame;
 using NUnit.Framework;
 using UnityEngine;
-using UnityEngine.TestTools;
 
-public class GxhTest
+public partial class GxhTest
 {
     public class testBase
     {

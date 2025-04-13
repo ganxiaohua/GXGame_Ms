@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------
 using GameFrame;
 using UnityEngine;
-public static class AutoFindPathComponent
+public static partial class AutoFindPathComponent
 {
     
     public static void AddFindPathComponent(this ECSEntity ecsEntity)

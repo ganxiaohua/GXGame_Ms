@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------
 using GameFrame;
 using UnityEngine;
-public static class AutoWorldRotate
+public static partial class AutoWorldRotate
 {
     
     public static void AddWorldRotate(this ECSEntity ecsEntity)

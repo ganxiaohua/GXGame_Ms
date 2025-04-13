@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------
 using GameFrame;
 using UnityEngine;
-public static class AutoAssetPath
+public static partial class AutoAssetPath
 {
     
     public static void AddAssetPath(this ECSEntity ecsEntity)

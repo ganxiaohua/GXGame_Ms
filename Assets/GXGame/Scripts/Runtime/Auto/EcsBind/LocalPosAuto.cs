@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------
 using GameFrame;
 using UnityEngine;
-public static class AutoLocalPos
+public static partial class AutoLocalPos
 {
     
     public static void AddLocalPos(this ECSEntity ecsEntity)

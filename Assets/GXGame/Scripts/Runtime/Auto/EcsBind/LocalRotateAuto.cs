@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------
 using GameFrame;
 using UnityEngine;
-public static class AutoLocalRotate
+public static partial class AutoLocalRotate
 {
     
     public static void AddLocalRotate(this ECSEntity ecsEntity)

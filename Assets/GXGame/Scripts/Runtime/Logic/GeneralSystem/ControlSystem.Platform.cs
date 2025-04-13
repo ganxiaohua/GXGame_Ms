@@ -7,7 +7,7 @@ namespace GXGame
         private void UpdateMovingGround(Vector3 position, Quaternion rotation)
         {
             var value = entity.GetPreviousGroundMsgComponent().Value;
-            if (!groundMsg.onGround)
+            if (!groundMsg.OnGround)
             {
                 value.RelativePos = Vector3.zero;
                 value.RelativeRotation = Quaternion.identity;
@@ -15,7 +15,7 @@ namespace GXGame
                 return;
             }
 
-            var parent = groundMsg.hit.transform;
+            var parent = groundMsg.RaycastHit.transform;
             var parentInverse = Quaternion.Inverse(parent.rotation);
             //得到我在父物体中的本地旋转
             value.RelativeRotation = rotation * parentInverse;
@@ -29,7 +29,7 @@ namespace GXGame
         private Quaternion DeltaRotation(Quaternion a)
         {
             var value = entity.GetPreviousGroundMsgComponent().Value;
-            if (!groundMsg.onGround || value.PreviousParent == null)
+            if (!groundMsg.OnGround || value.PreviousParent == null)
             {
                 return a;
             }
@@ -43,7 +43,7 @@ namespace GXGame
         private Vector3 DeltaPosition(Vector3 position)
         {
             var value = entity.GetPreviousGroundMsgComponent().Value;
-            if (!groundMsg.onGround || value.PreviousParent == null)
+            if (!groundMsg.OnGround || value.PreviousParent == null)
             {
                 return Vector3.zero;
             }

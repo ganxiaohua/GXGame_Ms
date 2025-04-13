@@ -6,16 +6,15 @@ namespace GXGame
     {
         public const float MaxAngleShoveDegrees = 180.0f - BufferAngleShove;
         public const float BufferAngleShove = 120.0f;
-        private Vector3 velocity;
         private CollisionMsg collisionMsg;
         protected Collider[] OverlapCache = new Collider[20];
-
 
         private void InputMove()
         {
             var dir = entity.GetMoveDirection().Value;
             var pos = entity.GetWorldPos().Value;
             var rot = entity.GetWorldRotate().Value;
+            var gravityDir = entity.GetGravityDirComponent().Value;
             foreach (var camera in cameraGroup)
             {
                 var camerRotValue = camera.GetWorldRotate().Value;
@@ -27,12 +26,11 @@ namespace GXGame
             FollowGround(ref pos, ref rot);
             pos += PushOutOverlapping(pos, rot, 100 * Time.deltaTime, collisionMsg.skinWidth / 2);
             var moveSpeed = entity.GetMoveSpeed().Value;
-            dir = (groundMsg.onGround && groundMsg.groundAngle <= collisionMsg.maxWalkingAngle) ? Vector3.ProjectOnPlane(dir, groundMsg.hit.normal) : dir;
+            dir = (groundMsg.OnGround && groundMsg.Angle <= collisionMsg.maxWalkingAngle) ? Vector3.ProjectOnPlane(dir, groundMsg.RaycastHit.normal) : dir;
             dir = dir.normalized * (moveSpeed * Time.deltaTime);
-            GravityJump();
             pos = MovePlayer(pos, dir);
-            pos = MovePlayer(pos, velocity * Time.deltaTime);
-            if (groundMsg.onGround && velocity.y <= 0)
+            pos = MovePlayer(pos, gravityDir * Time.deltaTime);
+            if (groundMsg.OnGround && gravityDir.y <= 0)
                 pos = SnapPlayerDown(pos);
             rot = CalculateWorldRotate(rot);
             capsuleColliderComponent.Value.Go.position = pos;
@@ -46,37 +44,13 @@ namespace GXGame
         {
             var dir = entity.GetFaceDirection().Value;
             float speed = entity.GetDirectionSpeed().Value;
-            if (!groundMsg.onGround)
+            if (!groundMsg.OnGround)
                 speed /= 2;
             Vector3 nowDir = rot * Vector3.forward;
             float angle = speed * Time.deltaTime * world.Multiple;
             var curDir = Vector3.RotateTowards(nowDir, dir, Mathf.Deg2Rad * angle, 0);
             var drot = Quaternion.LookRotation(curDir);
             return drot;
-        }
-
-        private void GravityJump()
-        {
-            var gravity = entity.GetGravityComponent().Value;
-            var jumpSpeed = entity.GetYAxisASpeed().Value;
-            bool fg = IsFallingOrglide();
-            if (fg)
-            {
-                velocity.y += -gravity * Time.deltaTime;
-            }
-            else
-            {
-                velocity = Vector3.zero;
-            }
-
-            bool canJump = (groundMsg.onGround) && groundMsg.groundAngle <= collisionMsg.maxJumpAngle && !fg;
-            if (canJump && jumpSpeed != 0)
-            {
-                velocity = Vector3.Lerp(Vector3.up, (groundMsg.hit.normal).normalized, collisionMsg.jumpAngleWeightFactor).normalized * jumpSpeed;
-            }
-
-            velocity.y = Mathf.Min(velocity.y, gravity * 2);
-            entity.SetYAxisASpeed(0);
         }
 
 
@@ -103,21 +77,6 @@ namespace GXGame
             return Vector3.ClampMagnitude(pushed, maxDistance);
         }
 
-
-        private (bool, float, RaycastHit) CheckGrounded()
-        {
-            var pos = entity.GetWorldPos().Value;
-            var rot = entity.GetWorldRotate().Value;
-            bool onGround = CastSelf(pos, rot, Vector3.down, collisionMsg.groundDist, out RaycastHit groundHit,
-                collisionMsg.MaskLayer, collisionMsg.skinWidth);
-            float angle = Vector3.Angle(groundHit.normal, Vector3.up);
-            return (onGround, angle, groundHit);
-        }
-
-        private bool IsFallingOrglide()
-        {
-            return !(groundMsg.onGround && groundMsg.groundAngle <= collisionMsg.maxWalkingAngle);
-        }
 
         private Vector3 MovePlayer(Vector3 position, Vector3 movement)
         {
@@ -151,7 +110,7 @@ namespace GXGame
                 bool perpendicularBounce = CheckPerpendicularBounce(hit, remaining);
                 Vector3 snappedMomentum = remaining;
                 Vector3 snappedPosition = position;
-                if (groundMsg.onGround && perpendicularBounce && AttemptSnapUp(hit, ref snappedMomentum, ref snappedPosition, rotation))
+                if (groundMsg.OnGround && perpendicularBounce && AttemptSnapUp(hit, ref snappedMomentum, ref snappedPosition, rotation))
                 {
                     if (snappedPosition.magnitude >= collisionMsg.epsilon)
                     {
@@ -208,7 +167,6 @@ namespace GXGame
 
         private void Clear()
         {
-            velocity = Vector3.zero;
         }
     }
 }

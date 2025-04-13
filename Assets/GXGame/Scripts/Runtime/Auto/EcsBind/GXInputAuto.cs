@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------
 using GameFrame;
 using UnityEngine;
-public static class AutoGXInput
+public static partial class AutoGXInput
 {
     
     public static void AddGXInput(this ECSEntity ecsEntity)

@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------
 using GameFrame;
 using UnityEngine;
-public static class AutoViewCull
+public static partial class AutoViewCull
 {
     
     public static void AddViewCull(this ECSEntity ecsEntity)

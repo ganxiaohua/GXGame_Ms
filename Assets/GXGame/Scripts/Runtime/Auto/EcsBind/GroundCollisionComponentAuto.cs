@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------
 using GameFrame;
 using UnityEngine;
-public static class AutoGroundCollisionComponent
+public static partial class AutoGroundCollisionComponent
 {
     
     public static void AddGroundCollisionComponent(this ECSEntity ecsEntity)

@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------
 using GameFrame;
 using UnityEngine;
-public static class AutoMeshRendererColor
+public static partial class AutoMeshRendererColor
 {
     
     public static void AddMeshRendererColor(this ECSEntity ecsEntity)

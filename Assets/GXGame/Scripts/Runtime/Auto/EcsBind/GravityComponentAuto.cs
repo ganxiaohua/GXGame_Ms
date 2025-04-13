@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------
 using GameFrame;
 using UnityEngine;
-public static class AutoGravityComponent
+public static partial class AutoGravityComponent
 {
     
     public static void AddGravityComponent(this ECSEntity ecsEntity)

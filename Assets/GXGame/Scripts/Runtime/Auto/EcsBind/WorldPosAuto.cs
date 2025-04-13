@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------
 using GameFrame;
 using UnityEngine;
-public static class AutoWorldPos
+public static partial class AutoWorldPos
 {
     
     public static void AddWorldPos(this ECSEntity ecsEntity)

@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------
 using GameFrame;
 using UnityEngine;
-public static class AutoCapsuleColliderComponent
+public static partial class AutoCapsuleColliderComponent
 {
     
     public static void AddCapsuleColliderComponent(this ECSEntity ecsEntity)

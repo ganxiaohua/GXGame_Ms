@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------
 using GameFrame;
 using UnityEngine;
-public static class AutoYAxisASpeed
+public static partial class AutoYAxisASpeed
 {
     
     public static void AddYAxisASpeed(this ECSEntity ecsEntity)

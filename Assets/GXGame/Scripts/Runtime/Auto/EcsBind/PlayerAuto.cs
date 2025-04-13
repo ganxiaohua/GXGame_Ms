@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------
 using GameFrame;
 using UnityEngine;
-public static class AutoPlayer
+public static partial class AutoPlayer
 {
     
     public static void AddPlayer(this ECSEntity ecsEntity)

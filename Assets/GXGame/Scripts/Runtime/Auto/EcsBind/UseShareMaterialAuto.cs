@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------
 using GameFrame;
 using UnityEngine;
-public static class AutoUseShareMaterial
+public static partial class AutoUseShareMaterial
 {
     
     public static void AddUseShareMaterial(this ECSEntity ecsEntity)

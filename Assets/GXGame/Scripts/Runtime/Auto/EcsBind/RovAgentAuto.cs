@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------
 using GameFrame;
 using UnityEngine;
-public static class AutoRovAgent
+public static partial class AutoRovAgent
 {
     
     public static void AddRovAgent(this ECSEntity ecsEntity)

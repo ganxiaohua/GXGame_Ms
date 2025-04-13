@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------
 using GameFrame;
 using UnityEngine;
-public static class AutoViewType
+public static partial class AutoViewType
 {
     
     public static void AddViewType(this ECSEntity ecsEntity)

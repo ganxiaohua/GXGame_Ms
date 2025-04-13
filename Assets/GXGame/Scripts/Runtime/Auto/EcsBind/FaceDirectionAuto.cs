@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------
 using GameFrame;
 using UnityEngine;
-public static class AutoFaceDirection
+public static partial class AutoFaceDirection
 {
     
     public static void AddFaceDirection(this ECSEntity ecsEntity)

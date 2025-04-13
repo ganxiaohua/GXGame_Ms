@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------
 using GameFrame;
 using UnityEngine;
-public static class AutoCameraComponent
+public static partial class AutoCameraComponent
 {
     
     public static void AddCameraComponent(this ECSEntity ecsEntity)

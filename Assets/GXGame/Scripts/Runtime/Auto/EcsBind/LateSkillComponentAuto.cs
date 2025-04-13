@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------
 using GameFrame;
 using UnityEngine;
-public static class AutoLateSkillComponent
+public static partial class AutoLateSkillComponent
 {
     
     public static void AddLateSkillComponent(this ECSEntity ecsEntity)

@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------
 using GameFrame;
 using UnityEngine;
-public static class AutoCollisionMsgComponent
+public static partial class AutoCollisionMsgComponent
 {
     
     public static void AddCollisionMsgComponent(this ECSEntity ecsEntity)

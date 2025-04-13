@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------
 using GameFrame;
 using UnityEngine;
-public static class AutoLocalScale
+public static partial class AutoLocalScale
 {
     
     public static void AddLocalScale(this ECSEntity ecsEntity)

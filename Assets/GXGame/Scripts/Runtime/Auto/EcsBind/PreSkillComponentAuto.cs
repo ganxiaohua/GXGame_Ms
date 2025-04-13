@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------
 using GameFrame;
 using UnityEngine;
-public static class AutoPreSkillComponent
+public static partial class AutoPreSkillComponent
 {
     
     public static void AddPreSkillComponent(this ECSEntity ecsEntity)

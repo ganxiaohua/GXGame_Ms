@@ -22,7 +22,9 @@ namespace GXGame.Logic
             EstimateChildsCount(monsterCount + otherCount);
             this.AddSystem<ViewBaseSystem>();
             this.AddSystem<ViewUpdateSystem>();
-            this.AddSystem<ControlSystem>();
+            this.AddSystem<GroundSystem>(); //1
+            this.AddSystem<GravitySystem>(); //2
+            this.AddSystem<ControlSystem>(); //3
             // this.AddSystem<CollisionBehaviorSystem>();
             this.AddSystem<WorldPosChangeSystem>();
             this.AddSystem<RovPosSystem>();
@@ -123,6 +125,8 @@ namespace GXGame.Logic
             palyer.AddDirectionSpeed(360);
             palyer.AddYAxisASpeed(0);
             palyer.AddGravityComponent(12);
+            palyer.AddGravityDirComponent(Vector3.zero);
+            palyer.AddGroundCollisionComponent(new GroundCollision());
             palyer.AddPreviousGroundMsgComponent(new PreviousGroundMsg());
             palyer.AddCollisionMsgComponent(new CollisionMsg()
             {

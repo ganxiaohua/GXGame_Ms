@@ -19,7 +19,7 @@ namespace GXGame
     public class GroundCollision
     {
         public bool OnGround;
-        public Vector3 OroundAngle;
+        public float Angle;
         public RaycastHit RaycastHit;
     }
 
@@ -50,5 +50,10 @@ namespace GXGame
     public class GravityComponent : ECSComponent
     {
         public float Value;
+    }
+
+    public class GravityDirComponent : ECSComponent
+    {
+        public Vector3 Value;
     }
 }

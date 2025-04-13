@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------
 using GameFrame;
 using UnityEngine;
-public static class AutoRaycastHitMsg
+public static partial class AutoRaycastHitMsg
 {
     
     public static void AddRaycastHitMsg(this ECSEntity ecsEntity)

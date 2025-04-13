@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------
 using GameFrame;
 using UnityEngine;
-public static class AutoGridDataComponent
+public static partial class AutoGridDataComponent
 {
     
     public static void AddGridDataComponent(this ECSEntity ecsEntity)

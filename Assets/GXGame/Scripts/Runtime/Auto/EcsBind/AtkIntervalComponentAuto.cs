@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------
 using GameFrame;
 using UnityEngine;
-public static class AutoAtkIntervalComponent
+public static partial class AutoAtkIntervalComponent
 {
     
     public static void AddAtkIntervalComponent(this ECSEntity ecsEntity)

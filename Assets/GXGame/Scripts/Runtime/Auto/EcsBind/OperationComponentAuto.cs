@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------
 using GameFrame;
 using UnityEngine;
-public static class AutoOperationComponent
+public static partial class AutoOperationComponent
 {
     
     public static void AddOperationComponent(this ECSEntity ecsEntity)

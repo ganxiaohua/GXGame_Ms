@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------
 using GameFrame;
 using UnityEngine;
-public static class AutoDirectionSpeed
+public static partial class AutoDirectionSpeed
 {
     
     public static void AddDirectionSpeed(this ECSEntity ecsEntity)

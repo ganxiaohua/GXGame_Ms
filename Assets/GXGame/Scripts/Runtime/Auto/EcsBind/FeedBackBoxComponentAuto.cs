@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------
 using GameFrame;
 using UnityEngine;
-public static class AutoFeedBackBoxComponent
+public static partial class AutoFeedBackBoxComponent
 {
     
     public static void AddFeedBackBoxComponent(this ECSEntity ecsEntity)

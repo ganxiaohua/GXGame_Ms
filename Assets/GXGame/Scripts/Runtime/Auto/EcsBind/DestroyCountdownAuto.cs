@@ -4,7 +4,7 @@
 //------------------------------------------------------------------------------
 using GameFrame;
 using UnityEngine;
-public static class AutoDestroyCountdown
+public static partial class AutoDestroyCountdown
 {
     
     public static void AddDestroyCountdown(this ECSEntity ecsEntity)
