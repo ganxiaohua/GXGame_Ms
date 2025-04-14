@@ -10,7 +10,7 @@ namespace GXGame.Logic
         private int monsterCount = 0;
         private GridData map;
         private GridData chickenHome;
-
+        private ECSEntity player;
 
         public override void OnInitialize()
         {
@@ -24,11 +24,12 @@ namespace GXGame.Logic
             this.AddSystem<ViewUpdateSystem>();
             this.AddSystem<GroundSystem>(); //1
             this.AddSystem<GravitySystem>(); //2
-            this.AddSystem<ControlSystem>(); //3
+            this.AddSystem<CollisionWorldPosDirSystem>(); //3
             // this.AddSystem<CollisionBehaviorSystem>();
-            this.AddSystem<WorldPosChangeSystem>();
+            this.AddSystem<BeingCaughtSystem>();
+            this.AddSystem<CommonWorldPosChangeSystem>();
+            this.AddSystem<CommonWorldDirChangeBaseSystem>();
             this.AddSystem<RovPosSystem>();
-            this.AddSystem<WorldDirChangeBaseSystem>();
             this.AddSystem<FindPathSystem>();
             this.AddSystem<FeedbackBoxSystem>();
             this.AddSystem<InputPcSystem>();
@@ -36,19 +37,40 @@ namespace GXGame.Logic
             //最后执行
             this.AddSystem<DestroyBaseSystem>();
 
-            CreatePublicEntity();
             CreateCamera();
             CreatePlayer();
-            CreateMonster();
+            CreatePublicEntity();
+            // CreateMonster();
             CreateChicken();
             CreateChickenEgg();
+            CreateBone();
+        }
+
+        private void CreateBone()
+        {
+            var egg = AddChild();
+            egg.Name = $"骨头";
+            egg.AddGridDataComponent(chickenHome);
+            egg.AddViewType(typeof(GoBaseView));
+            egg.AddAssetPath("Product/Bone/Bone");
+            egg.AddDirectionSpeed(180);
+            egg.AddMoveDirection(new Vector3(0, 0, 0));
+            egg.AddFaceDirection();
+            egg.AddMoveSpeed(3);
+            egg.AddWorldPos(new Vector3(0, 0, -2));
+            egg.AddWorldRotate(Quaternion.identity);
+            egg.AddLocalScale(new Vector3(1.0f, 0.2f, 0.2f));
+            egg.AddYAxisASpeed(0);
+            egg.AddGravityDirComponent();
+            egg.AddBoxColliderComponent(BoxColliderData.Create(egg, LayerMask.NameToLayer($"Interaction")));
+            egg.AddUnitTypeComponent(UnitTypeEnum.Bone);
         }
 
         private void CreatePublicEntity()
         {
             var camera = AddChild();
             camera.Name = $"公共实体";
-            camera.AddOperationComponent(new Operation());
+            camera.AddOperationComponent(new Operation() {OperationTarget = player});
         }
 
         private void CreateCamera()
@@ -112,37 +134,37 @@ namespace GXGame.Logic
 
         private void CreatePlayer()
         {
-            var palyer = AddChild();
-            palyer.Name = $"主角";
-            palyer.AddViewType(typeof(AnimationView));
-            palyer.AddAssetPath("Player/Prefabs/Player");
-            palyer.AddWorldPos(new Vector3(0, 0, 0));
-            palyer.AddLocalScale(Vector3.one);
-            palyer.AddMoveDirection();
-            palyer.AddWorldRotate(Quaternion.identity);
-            palyer.AddMoveSpeed(3.2f);
-            palyer.AddFaceDirection();
-            palyer.AddDirectionSpeed(360);
-            palyer.AddYAxisASpeed(0);
-            palyer.AddGravityComponent(12);
-            palyer.AddGravityDirComponent(Vector3.zero);
-            palyer.AddGroundCollisionComponent(new GroundCollision());
-            palyer.AddPreviousGroundMsgComponent(new PreviousGroundMsg());
-            palyer.AddCollisionMsgComponent(new CollisionMsg()
+            player = AddChild();
+            player.Name = $"主角";
+            player.AddViewType(typeof(AnimationView));
+            player.AddAssetPath("Player/Prefabs/Player");
+            player.AddWorldPos(new Vector3(0, 0, 0));
+            player.AddLocalScale(Vector3.one);
+            player.AddMoveDirection();
+            player.AddWorldRotate(Quaternion.identity);
+            player.AddMoveSpeed(3.2f);
+            player.AddFaceDirection();
+            player.AddDirectionSpeed(360);
+            player.AddYAxisASpeed(0);
+            player.AddGravityComponent(12);
+            player.AddGravityDirComponent(Vector3.zero);
+            player.AddGroundCollisionComponent(new GroundCollision());
+            player.AddPreviousGroundMsgComponent(new PreviousGroundMsg());
+            player.AddCollisionMsgComponent(new CollisionMsg()
             {
-                MaskLayer = ~0 //~(1 << LayerMask.NameToLayer("Interaction") | 1 << LayerMask.NameToLayer("Monster"))
+                MaskLayer = ~(1 << LayerMask.NameToLayer("NoInteraction") | 1 << LayerMask.NameToLayer("Player"))
             });
-            palyer.AddCapsuleColliderComponent(CapsuleColliderData.Create(palyer, LayerMask.NameToLayer($"Player")));
-            palyer.AddCollisionGroundType(CollisionGroundType.Slide);
-            palyer.AddFeedBackBoxComponent(new FeedBackBoxData()
+            player.AddCapsuleColliderComponent(CapsuleColliderData.Create(player, LayerMask.NameToLayer($"Player")));
+            player.AddCollisionGroundType(CollisionGroundType.Slide);
+            player.AddFeedBackBoxComponent(new FeedBackBoxData()
             {
                 Size = new Vector3(1, 1, 1),
                 MaskLayer = 1 << LayerMask.NameToLayer("Interaction"),
             });
-            palyer.AddCampComponent(GXGame.Camp.SELF);
-            palyer.AddGXInput();
-            palyer.AddPlayer();
-            palyer.AddHP(10);
+            player.AddCampComponent(GXGame.Camp.SELF);
+            player.AddGXInput();
+            player.AddPlayer();
+            player.AddHP(10);
         }
 
         private void CreateMonster()

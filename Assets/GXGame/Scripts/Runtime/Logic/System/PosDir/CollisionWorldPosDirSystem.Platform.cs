@@ -2,7 +2,7 @@
 
 namespace GXGame
 {
-    public partial class ControlSystem
+    public partial class CollisionWorldPosDirSystem
     {
         private void UpdateMovingGround(Vector3 position, Quaternion rotation)
         {

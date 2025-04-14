@@ -2,15 +2,30 @@
 
 namespace GXGame
 {
-    public partial class ControlSystem
+    public partial class CollisionWorldPosDirSystem
     {
         private bool CastSelf(Vector3 pos, Quaternion rot, Vector3 dir, float dist, out RaycastHit hit, int layerMask, float skinWidth = 0.01f)
         {
-            return CollisionDetection.CapsuleCastNonAlloc(capsuleColliderComponent.Value.Go.transform, raycastHit,
-                capsuleColliderComponent.Value.CapsuleCollider, pos, rot, dir, dist,
-                out hit,
-                layerMask,
-                skinWidth);
+            if (entity.HasComponent(Components.CapsuleColliderComponent))
+            {
+                var capsuleColliderComponent = entity.GetCapsuleColliderComponent().Value;
+                return CollisionDetection.CapsuleCastNonAlloc(capsuleColliderComponent.Go.transform, raycastHit,
+                    capsuleColliderComponent.CapsuleCollider, pos, rot, dir, dist,
+                    out hit,
+                    layerMask,
+                    skinWidth);
+            }
+            else if (entity.HasComponent(Components.BoxColliderComponent))
+            {
+                var boxColliderComponent = entity.GetBoxColliderComponent().Value;
+                return CollisionDetection.BoxCastNonAlloc(boxColliderComponent.Go.transform, raycastHit, pos, rot, dir, dist,
+                    boxColliderComponent.BoxCollider.size,
+                    out hit, layerMask);
+            }
+
+            Debug.LogError("错误的分支");
+            hit = default;
+            return false;
         }
 
 
@@ -31,8 +46,20 @@ namespace GXGame
 
         Vector3 GetBottom(Vector3 position, Quaternion rotation)
         {
-            var ccc = CollisionDetection.CalculateCapsuleCollider(capsuleColliderComponent.Value.CapsuleCollider, position, rotation, 0);
-            return ccc.bottom + ccc.radius * (rotation * -Vector3.up);
+            if (entity.HasComponent(Components.CapsuleColliderComponent))
+            {
+                var capsuleColliderComponent = entity.GetCapsuleColliderComponent();
+                var ccc = CollisionDetection.CalculateCapsuleCollider(capsuleColliderComponent.Value.CapsuleCollider, position, rotation, 0);
+                return ccc.bottom + ccc.radius * (rotation * -Vector3.up);
+            }
+            else if (entity.HasComponent(Components.BoxColliderComponent))
+            {
+                var boxColliderComponent = entity.GetBoxColliderComponent().Value;
+                return position - new Vector3(0, boxColliderComponent.BoxCollider.size.y / 2, 0);
+            }
+
+            Debug.LogError("错误的分支");
+            return position;
         }
 
         private bool AttemptSnapUp(

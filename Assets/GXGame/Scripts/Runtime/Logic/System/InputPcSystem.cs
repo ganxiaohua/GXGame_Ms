@@ -27,6 +27,7 @@ namespace GXGame
                 var operationComp = entity.GetOperationComponent();
                 Move(operationComp);
                 Jump(operationComp);
+                Throw(operationComp);
                 Interaction(operationComp);
                 CameraInput(operationComp);
                 entity.SetOperationComponent(operationComp.Value);
@@ -68,6 +69,11 @@ namespace GXGame
         private void Interaction(OperationComponent comp)
         {
             comp.Value.Interaction = Input.GetKeyDown(KeyCode.F);
+        }
+
+        private void Throw(OperationComponent comp)
+        {
+            comp.Value.Throw = Input.GetKeyDown(KeyCode.C);
         }
 
         public void Dispose()

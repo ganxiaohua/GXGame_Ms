@@ -6,20 +6,19 @@ namespace GXGame
     /// <summary>
     /// 碰撞系统
     /// </summary>
-    public partial class ControlSystem : IInitializeSystem<World>, IFixedUpdateSystem
+    public partial class CollisionWorldPosDirSystem : IInitializeSystem<World>, IFixedUpdateSystem
     {
         private RaycastHit[] raycastHit = new RaycastHit[5];
         private Group group;
         private World world;
         private ECSEntity entity;
         private Group cameraGroup;
-        private CapsuleColliderComponent capsuleColliderComponent;
         private GroundCollision groundMsg;
 
         public void OnInitialize(World world)
         {
             this.world = world;
-            Matcher matcher = Matcher.SetAll(Components.GXInput);
+            Matcher matcher = Matcher.SetAll(Components.CollisionMsgComponent);
             group = world.GetGroup(matcher);
             matcher = Matcher.SetAll(Components.CameraComponent);
             cameraGroup = world.GetGroup(matcher);
@@ -30,12 +29,9 @@ namespace GXGame
             foreach (var entity in group)
             {
                 this.entity = entity;
-                var capsuleCollider = entity.GetCapsuleColliderComponent();
                 collisionMsg = entity.GetCollisionMsgComponent().Value;
-                this.capsuleColliderComponent = capsuleCollider;
                 groundMsg = entity.GetGroundCollisionComponent().Value;
-                InputMove();
-                entity.SetCapsuleColliderComponent(capsuleCollider.Value);
+                CollisionMovement();
             }
         }
 

@@ -2,14 +2,14 @@
 
 namespace GXGame
 {
-    public partial class ControlSystem
+    public partial class CollisionWorldPosDirSystem
     {
         public const float MaxAngleShoveDegrees = 180.0f - BufferAngleShove;
         public const float BufferAngleShove = 120.0f;
         private CollisionMsg collisionMsg;
         protected Collider[] OverlapCache = new Collider[20];
 
-        private void InputMove()
+        private void CollisionMovement()
         {
             var dir = entity.GetMoveDirection().Value;
             var pos = entity.GetWorldPos().Value;
@@ -33,11 +33,21 @@ namespace GXGame
             if (groundMsg.OnGround && gravityDir.y <= 0)
                 pos = SnapPlayerDown(pos);
             rot = CalculateWorldRotate(rot);
-            capsuleColliderComponent.Value.Go.position = pos;
-            capsuleColliderComponent.Value.Go.rotation = rot;
             entity.SetWorldPos(pos);
             entity.SetWorldRotate(rot);
             UpdateMovingGround(pos, rot);
+            var capsuleColliderComponent = entity.GetCapsuleColliderComponent();
+            var boxColliderComponent = entity.GetBoxColliderComponent();
+            if (capsuleColliderComponent != null)
+            {
+                capsuleColliderComponent.Value.Go.position = pos;
+                capsuleColliderComponent.Value.Go.rotation = rot;
+            }
+            else if (boxColliderComponent != null)
+            {
+                boxColliderComponent.Value.Go.position = pos;
+                boxColliderComponent.Value.Go.rotation = rot;
+            }
         }
 
         private Quaternion CalculateWorldRotate(Quaternion rot)
@@ -57,15 +67,30 @@ namespace GXGame
         private Vector3 PushOutOverlapping(Vector3 position, Quaternion rotation, float maxDistance, float skinWidth = 0.0f)
         {
             Vector3 pushed = Vector3.zero;
-            var count = CollisionDetection.OverlapCapsuleNonAlloc(capsuleColliderComponent.Value.Go.transform, OverlapCache,
-                capsuleColliderComponent.Value.CapsuleCollider, position,
-                rotation,
-                collisionMsg.MaskLayer, QueryTriggerInteraction.Collide, skinWidth);
+            Collider collider = null;
+            var capsuleColliderComponent = entity.GetCapsuleColliderComponent();
+            var boxColliderComponent = entity.GetBoxColliderComponent();
+            int count = 0;
+            if (capsuleColliderComponent != null)
+            {
+                collider = capsuleColliderComponent.Value.CapsuleCollider;
+                count = CollisionDetection.OverlapCapsuleNonAlloc(capsuleColliderComponent.Value.Go.transform, OverlapCache,
+                    capsuleColliderComponent.Value.CapsuleCollider, position,
+                    rotation,
+                    collisionMsg.MaskLayer, QueryTriggerInteraction.Collide, skinWidth);
+            }
+            else if (boxColliderComponent != null)
+            {
+                collider = boxColliderComponent.Value.BoxCollider;
+                count = CollisionDetection.OverlapBoxNonAlloc(boxColliderComponent.Value.Go.transform, OverlapCache, position, rotation,
+                    boxColliderComponent.Value.BoxCollider.size, collisionMsg.MaskLayer, QueryTriggerInteraction.Collide);
+            }
+
             for (int i = 0; i < count; i++)
             {
                 var overlap = OverlapCache[i];
                 Physics.ComputePenetration(
-                    capsuleColliderComponent.Value.CapsuleCollider, position, rotation,
+                    collider, position, rotation,
                     overlap, overlap.gameObject.transform.position, overlap.gameObject.transform.rotation,
                     out Vector3 direction, out float distance
                 );

@@ -48,6 +48,17 @@ namespace GXGame
     }
 
 
+    public class ForceWorldPos : ECSComponent
+    {
+        public Vector3 Value;
+    }
+
+    public class ForceWorldRotate : ECSComponent
+    {
+        public Quaternion Value;
+    }
+
+
     public class ViewCull : ECSComponent
     {
     }

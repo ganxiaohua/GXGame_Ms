@@ -36,7 +36,6 @@ namespace GXGame
                 Quaternion rot = owner.GetWorldRotate().Value;
                 var dir = owner.GetMoveDirection().Value;
                 Vector3 playerPos = player.GetWorldPos().Value;
-                // Vector3 initPos = pos;
                 if (player2Camera != Vector3.zero)
                 {
                     pos = player2Camera.normalized * 5 + playerPos;

@@ -6,16 +6,13 @@ namespace GXGame
 {
     public partial class OprationSystem : UpdateReactiveSystem
     {
-        private Group inputs;
         private Group cameras;
         private World world;
 
         public override void OnInitialize(World world)
         {
             base.OnInitialize(world);
-            Matcher matcher = Matcher.SetAll(Components.GXInput);
-            inputs = world.GetGroup(matcher);
-            matcher = Matcher.SetAll(Components.CameraComponent);
+            Matcher matcher = Matcher.SetAll(Components.CameraComponent);
             cameras = world.GetGroup(matcher);
         }
 
@@ -37,6 +34,7 @@ namespace GXGame
                 UpdateCamera(operationComponent);
                 UpdateInput(operationComponent);
                 UpdateFeedBack(operationComponent);
+                UpdateThrow(operationComponent);
             }
         }
 
@@ -52,11 +50,9 @@ namespace GXGame
         private void UpdateInput(ECSEntity ecsEntity)
         {
             var v = ecsEntity.GetOperationComponent().Value;
-            foreach (var input in inputs)
-            {
-                input.SetMoveDirection(new Vector3(v.MoveDir.x, 0, v.MoveDir.y));
-                input.SetYAxisASpeed(v.Jump ? 5 : 0);
-            }
+
+            v.OperationTarget.SetMoveDirection(new Vector3(v.MoveDir.x, 0, v.MoveDir.y));
+            v.OperationTarget.SetYAxisASpeed(v.Jump ? 5 : 0);
         }
 
 

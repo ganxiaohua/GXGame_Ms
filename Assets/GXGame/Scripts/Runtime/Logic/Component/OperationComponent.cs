@@ -9,6 +9,8 @@ namespace GXGame
         public Vector2 CameraDir;
         public bool Jump;
         public bool Interaction;
+        public bool Throw;
+        public ECSEntity OperationTarget;
     }
 
     public class OperationComponent : ECSComponent

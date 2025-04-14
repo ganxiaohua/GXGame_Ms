@@ -26,5 +26,10 @@
         /// 动物制品
         /// </summary>
         AnimalProducts = 1 << 4,
+
+        /// <summary>
+        /// 骨头
+        /// </summary>
+        Bone = 1 << 5,
     }
 }

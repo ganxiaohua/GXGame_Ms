@@ -19,39 +19,43 @@ public static class Components {
     public const int LocalPos= 12;
     public const int LocalRotate= 13;
     public const int LocalScale= 14;
-    public const int ViewCull= 15;
-    public const int AssetPath= 16;
-    public const int DestroyCountdown= 17;
-    public const int DirectionSpeed= 18;
-    public const int MeshRendererColor= 19;
-    public const int UseShareMaterial= 20;
-    public const int FaceDirection= 21;
-    public const int GXInput= 22;
-    public const int MoveDirection= 23;
-    public const int MoveSpeed= 24;
-    public const int PathFindingTargetPos= 25;
-    public const int ViewType= 26;
-    public const int YAxisASpeed= 27;
-    public const int Monster= 28;
-    public const int CampComponent= 29;
-    public const int UnitTypeComponent= 30;
-    public const int BehaviorTreeComponent= 31;
-    public const int CapsuleColliderComponent= 32;
-    public const int BoxColliderComponent= 33;
-    public const int RaycastHitMsg= 34;
-    public const int CollisionGroundType= 35;
-    public const int FeedBackBoxComponent= 36;
-    public const int GridDataComponent= 37;
-    public const int FindPathComponent= 38;
-    public const int OperationComponent= 39;
-    public const int PreviousGroundMsgComponent= 40;
-    public const int GroundCollisionComponent= 41;
-    public const int CollisionMsgComponent= 42;
-    public const int GravityComponent= 43;
-    public const int GravityDirComponent= 44;
-    public const int RovAgent= 45;
+    public const int ForceWorldPos= 15;
+    public const int ForceWorldRotate= 16;
+    public const int ViewCull= 17;
+    public const int AssetPath= 18;
+    public const int DestroyCountdown= 19;
+    public const int DirectionSpeed= 20;
+    public const int MeshRendererColor= 21;
+    public const int UseShareMaterial= 22;
+    public const int FaceDirection= 23;
+    public const int GXInput= 24;
+    public const int MoveDirection= 25;
+    public const int MoveSpeed= 26;
+    public const int PathFindingTargetPos= 27;
+    public const int ViewType= 28;
+    public const int YAxisASpeed= 29;
+    public const int Monster= 30;
+    public const int CampComponent= 31;
+    public const int UnitTypeComponent= 32;
+    public const int BehaviorTreeComponent= 33;
+    public const int BeingCaughtComponent= 34;
+    public const int CaughtComponent= 35;
+    public const int CapsuleColliderComponent= 36;
+    public const int BoxColliderComponent= 37;
+    public const int RaycastHitMsg= 38;
+    public const int CollisionGroundType= 39;
+    public const int FeedBackBoxComponent= 40;
+    public const int GridDataComponent= 41;
+    public const int FindPathComponent= 42;
+    public const int OperationComponent= 43;
+    public const int PreviousGroundMsgComponent= 44;
+    public const int GroundCollisionComponent= 45;
+    public const int CollisionMsgComponent= 46;
+    public const int GravityComponent= 47;
+    public const int GravityDirComponent= 48;
+    public const int RovAgent= 49;
     
-    public const int TotalComponents = 46;
+    public const int TotalComponents = 50;
     
     
     public static readonly System.Type[] ComponentTypes = {
@@ -71,6 +75,8 @@ public static class Components {
         typeof(GXGame.LocalPos),
         typeof(GXGame.LocalRotate),
         typeof(GXGame.LocalScale),
+        typeof(GXGame.ForceWorldPos),
+        typeof(GXGame.ForceWorldRotate),
         typeof(GXGame.ViewCull),
         typeof(GXGame.AssetPath),
         typeof(GXGame.DestroyCountdown),
@@ -88,6 +94,8 @@ public static class Components {
         typeof(GXGame.CampComponent),
         typeof(GXGame.UnitTypeComponent),
         typeof(GXGame.BehaviorTreeComponent),
+        typeof(GXGame.BeingCaughtComponent),
+        typeof(GXGame.CaughtComponent),
         typeof(GXGame.CapsuleColliderComponent),
         typeof(GXGame.BoxColliderComponent),
         typeof(GXGame.RaycastHitMsg),
