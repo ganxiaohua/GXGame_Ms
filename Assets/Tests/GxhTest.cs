@@ -1,4 +1,3 @@
-using GameFrame;
 using NUnit.Framework;
 using UnityEngine;
 
@@ -37,26 +36,8 @@ public partial class GxhTest
     [Test]
     public void StrongList()
     {
-        StrongList<int> list = new StrongList<int>(10, true);
-        list.Add(1);
-        list.Add(2);
-        list.Add(3);
-        list.Add(4);
-        list.Add(5);
-        foreach (var sk in list)
-        {
-            if (sk == 3)
-            {
-                list.Remove(1);
-            }
-
-            Debugger.Log(sk);
-        }
-
-        foreach (var sk in list)
-        {
-            Debugger.Log(sk);
-        }
+        // var Children = new HashSet<int>(1000);
+        // Children.EnsureCapacity(100000);
     }
 
     [Test]
